@@ -1,0 +1,178 @@
+<project name="epihandy-midlet" default="run-non-obfuscated" basedir=".">
+	<property file="../build.properties"/>
+	<property name="midp" value="${WTK-ROOT}"/>
+	<property name="midp_lib" value="${midp}/lib/midpapi20.jar"/>
+	<property name="cldc_lib" value="${midp}/lib/cldcapi11.jar"/>
+	<property name="mmapi" value="${midp}/lib/mmapi.jar"/>
+	<property name="dbutils" value="../dbutils/dist/dbutils.jar"/>
+	<property name="epihandy-midp" value="../epihandy-midp/dist/epihandy-midp.jar"/>
+	<property name="epihandy" value="../epihandy/dist/epihandy.jar"/>
+	<property name="midp-mvc" value="../midp-mvc/dist/midp-mvc.jar"/>
+	<property name="midp-dbutils" value="../midp-dbutils/dist/midp-dbutils.jar"/>
+	<property name="midp-utils" value="../midp-utils/dist/midp-utils.jar"/>
+	<property name="transport-layer" value="../transport-layer/dist/transportlayer.jar"/>
+	<property name="bluetooth-client" value="../bluetooth-client/dist/bluetoothclient.jar"/>
+	<property name="jzlib" value="../jzlib-1.0.7/dist/jzlib-1.0.7.jar"/>
+	<property name="cldc_classes.zip" value="../epihandy-midp/lib/cldc_classes.zip"/>
+	<property name="bluecove" value="../bluetooth-client/lib/bluecove-2.0.0.jar"/>
+
+	<property name="packaged-jar" value="epihandy-midlet-1.3.jar"/>
+	<property name="obfuscated-jar" value="epihandy-midlet-1.3.jar"/>
+	
+	<property name="wtk.cldc.version" value="1.0"/>
+	<property name="wtk.midp.version" value="2.0"/> 
+	<property name="wtk.home" value="${WTK-ROOT}"/>
+	<property name="wtk.proguard.home" value="${WTK-ROOT}/proguard/"/>
+
+	<taskdef resource="antenna.properties" classpath="../Antenna/${antenna-Jar}"/>
+	<taskdef resource="proguard/ant/task.properties" classpath="${wtk.proguard.home}/lib/proguard.jar"/>
+
+	<target name="init" description="intialization">
+		<path id="bootclasspath">
+			<fileset dir="${wtk.home}/lib">
+				<include name="**/*.jar"/>
+			</fileset>
+		</path>
+		<path id="classpath">
+			
+			<pathelement location="${epihandy}"/>
+			<pathelement location="${midp-dbutils}"/>
+			<pathelement location="${dbutils}"/>
+			<pathelement location="${epihandy-midp}"/>
+			<pathelement location="${midp-mvc}"/>
+			<pathelement location="${midp-utils}"/>
+			<pathelement location="${transport-layer}"/>
+			<pathelement location="${cldc_classes.zip}"/>
+			<pathelement location="${bluecove}"/>
+			<pathelement location="${bluetooth-client}"/>
+			<pathelement location="${jzlib}"/>
+			<!-- <pathelement location="${wtk.proguard.home}/lib/proguard.jar"/> -->
+			<!-- <pathelement location="../proguard/proguard.jar"/> -->
+			
+			<fileset dir="lib">
+				<include name="**/*.jar"/>
+			</fileset>
+		</path>
+		
+		<mkdir dir="dist"/>
+		<mkdir dir="build/obf"/>
+	</target>
+	
+	<target name="clean" description="Delete bin and dist directories">
+		<delete dir="bin"/>
+		<delete dir="dist" />
+		<delete dir="build" />
+		<!-- <delete dir="dist/obf"/> -->
+	</target>
+			
+	<target name="compile" depends="init, clean">
+		<mkdir dir="bin"/>		
+		<javac destdir="bin" bootclasspath="${midp_lib};${cldc_lib}" classpathref="classpath" target="1.3" source="1.3">
+			<src path="src"/>
+		</javac>
+	</target>
+	
+	<target name="preverify" depends="clean, init, compile">
+		<mkdir dir="build/preverified"/>
+		<exec executable="${midp}/bin/preverify">
+			<arg line="-classpath ${midp_lib};${cldc_lib};${epihandy-midp};${dbutils};${epihandy};${midp-dbutils};${midp-mvc};${midp-utils};${transport-layer};${jzlib};${bluetooth-client}"/>
+			<arg line="-d build/preverified"/>
+			<arg line="bin"/>
+		</exec>
+	</target>
+	
+	<target name="obfuscate" depends="package">
+		
+		<!-- obfuscate jar-->
+		<echo>obfuscating jar</echo>
+		<proguard>
+		  -libraryjars ${midp_lib};${cldc_lib};${mmapi};${bluecove}
+		  -injars      dist/${packaged-jar}
+		  -outjars     dist/obf/epihandy-midlet-obf.jar
+		  -keep public class * extends javax.microedition.midlet.MIDlet
+		</proguard>
+		
+		<!-- unjar obfuscated -->
+		<echo>unjarring obfuscated jar</echo>
+		<property name="dir-obf-extract" value="build/obf/extract"/>
+		<unjar src="dist/obf/epihandy-midlet-obf.jar" dest="${dir-obf-extract}" />
+
+		<!-- preverify obfuscated classes-->
+		<echo>preverifying obfuscated classes</echo>
+		<property name="dir-preverified-obf" value="build/obf/preverifiedobf"/>
+		<mkdir dir="${dir-preverified-obf}"/>
+		<exec executable="${midp}/bin/preverify">
+			<arg line="-classpath ${midp_lib};${cldc_lib};${bluecove}"/>
+			<arg line="-d ${dir-preverified-obf}"/>
+			<arg line="${dir-obf-extract}"/>
+		</exec>
+		
+		<!-- repackage new jar -->
+		<echo>repackaging new jar</echo>
+		<jar basedir="${dir-preverified-obf}" jarfile="dist/obf/${obfuscated-jar}" manifest="MANIFEST.MF">
+			<fileset dir="res"/>
+		</jar>
+		
+		<!-- delete temporary jar-->
+		<delete file="dist/obf/epihandy-midlet-obf.jar"/>
+	</target>
+	
+	<target name="package" depends="preverify">
+
+		<!-- call other external build files here before building -->
+		<ant antfile="../epihandy/build.xml" target="package" inheritall="false"/>
+		<ant antfile="../dbutils/build.xml" target="package" inheritall="false" />
+		<ant antfile="../midp-mvc/build.xml" target="package" inheritall="false"/>
+		<ant antfile="../midp-utils/build.xml" target="package" inheritall="false"/>
+		<ant antfile="../midp-dbutils/build.xml" target="package" inheritall="false"/>
+		<ant antfile="../bluetooth-client/build.xml" target="package" inheritall="false"/>
+		<ant antfile="../jzlib-1.0.7/build.xml" target="package" inheritall="false" />
+		<ant antfile="../transport-layer/build.xml" target="package" inheritall="false"/>
+		<ant antfile="../epihandy-midp/build.xml" target="package" inheritall="false"/>
+		<ant antfile="../bluetooth-client/build.xml" target="package" inheritall="false"/>
+		
+		<jar basedir="build/preverified" jarfile="dist/${packaged-jar}" manifest="MANIFEST.MF">
+			<fileset dir="res"/>
+			<zipfileset src="${epihandy}"/>
+			<zipfileset src="${midp-dbutils}"/>
+			<zipfileset src="${dbutils}"/>
+			<zipfileset src="${epihandy-midp}"/>
+			<zipfileset src="${midp-mvc}"/>
+			<zipfileset src="${midp-utils}"/>
+			<zipfileset src="${transport-layer}"/>
+			<zipfileset src="${bluetooth-client}"/>
+			<zipfileset src="${jzlib}"/>
+			<zipfileset src="${cldc_classes.zip}"/>
+		</jar>
+	</target>
+	
+	<target name="run-obfuscated" depends="obfuscate">
+		<!-- moving copying the jad file to the obf folder -->
+		<copy file="epihandy-midlet.jad" tofile="dist/obf/epihandy-midlet.jad"/>
+		
+		<!-- updating the jad file -->
+		<wtkjad jadfile ="dist/obf/epihandy-midlet.jad" jarfile="dist/obf/epihandy-midlet-1.3.jar" update="true">
+			<midlet name="EpiHandy" class="org.fcitmuk.epihandy.forms.MainForm"/>
+		</wtkjad>
+		
+		<!-- executing the jad file -->
+		<exec executable="${midp}/bin/emulator">
+			<arg line="-Xdescriptor:dist/obf/epihandy-midlet.jad" />
+		</exec>
+	</target>
+	
+	<target name="run-non-obfuscated" depends="package">
+		<!-- moving copying the jad file to the obf folder -->
+		<copy file="epihandy-midlet.jad" tofile="dist/epihandy-midlet.jad"/>
+		
+		<!-- updating the jad file -->
+		<wtkjad jadfile ="dist/epihandy-midlet.jad" jarfile="dist/epihandy-midlet-1.3.jar" update="true">
+			<midlet name="EpiHandy" class="org.fcitmuk.epihandy.forms.MainForm"/>
+		</wtkjad>
+		
+		<!-- executing the jad file -->
+		<exec executable="${midp}/bin/emulator">
+			<arg line="-Xdescriptor:dist/epihandy-midlet.jad" />
+		</exec>
+	</target>	
+</project>

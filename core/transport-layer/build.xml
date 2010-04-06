@@ -1,0 +1,77 @@
+<?xml version="1.0"?>
+<!-- ********************************************************* -->
+<!-- ** transport layer                          ** -->
+<!-- **	                                                    ** -->
+<!-- ** @author Tumwebaze charles                               ** -->
+<!-- ** @version 1.0                                        ** -->
+<!-- ********************************************************* -->
+<project name="transportlayer" default="package">
+	<property file="../build.properties"/>
+	<property name="midp" value="${WTK-ROOT}"/>
+	<property name="midp_lib" value="${midp}/lib/midpapi20.jar"/>
+	<property name="cldc_lib" value="${midp}/lib/cldcapi11.jar" />
+	<property name="epihandy" value="../epihandy/dist/epihandy.jar"/>
+	<property name="midp-mvc" value="../midp-mvc/dist/midp-mvc.jar"/>
+	<property name="midp-dbutils" value="../midp-dbutils/dist/midp-dbutils.jar"/>
+	<property name="midp-utils" value="../midp-utils/dist/midp-utils.jar"/>
+	<property name="bluetooth-client" value="../bluetooth-client/dist/bluetoothclient.jar"/>
+	<property name="jzlib" value="../jzlib-1.0.7/dist/jzlib-1.0.7.jar"/>
+	<property name="dbutils" value="../dbutils/dist/dbutils.jar"/>
+	<!-- *********************************************************** -->
+	<!-- **                     TARGETS                           ** -->
+	<!-- *********************************************************** -->
+	<target name="init" description="initialization">
+		
+		<path id="classpath">
+			<pathelement location="${epihandy}"/>
+			<pathelement location="${bluetooth-client}"/>
+			<pathelement location="${dbutils}"/>
+			<pathelement location="${jzlib}"/>
+			<pathelement location="${midp-dbutils}"/>
+			<pathelement location="${midp-mvc}" />
+			<pathelement location="${midp-utils}"/>
+			
+			<fileset dir="lib">
+				<include name="**/*.jar"/>
+			</fileset>
+		</path>
+
+	</target>
+
+	<target name="clean" description="Delete bin and dist directories">
+		<delete dir="dist" />
+		<delete dir="bin" />
+		<delete dir="build/preverified"/>
+	</target>
+
+	<target name="compile" depends="init" description="Compiles the code">
+		<mkdir dir="bin" />
+		
+		<!--  Compile midlet java files -->
+		<javac destdir="bin" bootclasspath="${midp_lib};${cldc_lib}" classpathref="classpath" target="1.3" source="1.3" debug="true" debuglevel="lines,source">
+			<src path="src/" />
+			<include name="**/*.java" />
+		</javac>	
+	</target>
+	
+	<target name="preverify" depends="clean,init, compile">
+		<mkdir dir="build/preverified"/>
+		<exec executable ="${midp}/bin/preverify">
+			<arg line="-classpath ${midp_lib};${cldc_lib};${dbutils};${epihandy};${midp-mvc};${midp-dbutils};${midp-utils};${bluetooth-client};${jzlib}"/>
+			<arg line="-d build/preverified"/>
+			<arg line="bin"/>
+		</exec>
+	</target>
+	
+	<target name="package" depends="preverify" description="Packages code into jar file">
+		<mkdir dir="dist" />
+		
+		<!-- Create distributable jar file -->
+		<jar destfile="dist/transportlayer.jar">
+			<zipfileset dir="build/preverified" prefix="" />
+			<!-- <fileset dir="bin" includes="**/*" /> -->
+		</jar>
+	</target>
+
+</project>
+

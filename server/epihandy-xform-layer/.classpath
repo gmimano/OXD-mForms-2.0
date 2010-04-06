@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="test"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/dbutils"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/epihandy"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/minixpath"/>
+	<classpathentry kind="lib" path="lib/junit-3.8.1.jar"/>
+	<classpathentry kind="lib" path="lib/commons-io-1.1.jar"/>
+	<classpathentry kind="lib" path="/minixpath/lib/kxml2-2.3.0.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
