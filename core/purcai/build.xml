@@ -13,10 +13,11 @@
 	<target name="init" description="initialization">
 		
 		<path id="classpath">
+			<!-- what happened to lib
 			<fileset dir="lib">
 				<include name="**/*.jar"/>
-			</fileset>
-			<fileset dir="../../epihandymobile/dbutils/dist">
+			</fileset>-->
+			<fileset dir="../dbutils/dist">
 				<include name="**/*.jar"/>
 			</fileset>
 		</path>
@@ -44,7 +45,7 @@
 		<!-- Create distributable jar file -->
 		<jar destfile="dist/purcai.jar">
 			<zipfileset dir="bin" prefix="" />
-			<zipfileset src="..\..\epihandymobile\dbutils\dist\dbutils.jar" />
+			<zipfileset src="..\dbutils\dist\dbutils.jar" />
 		</jar>
 	</target>
 
