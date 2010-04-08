@@ -13,19 +13,17 @@
 	<property name="transport-layer" value="../transport-layer/dist/transportlayer.jar"/>
 	<property name="bluetooth-client" value="../bluetooth-client/dist/bluetoothclient.jar"/>
 	<property name="jzlib" value="../jzlib-1.0.7/dist/jzlib-1.0.7.jar"/>
-	<property name="cldc_classes.zip" value="../epihandy-midp/lib/cldc_classes.zip"/>
-	<property name="bluecove" value="../bluetooth-client/lib/bluecove-2.0.0.jar"/>
+	<property name="cldc_classes" value="../epihandy-midp/lib/cldc_classes.jar"/>
+	<property name="bluecove" value="../bluetooth-client/lib/bluecove-2.1.0.jar"/>
 
-	<property name="packaged-jar" value="epihandy-midlet-1.3.jar"/>
-	<property name="obfuscated-jar" value="epihandy-midlet-1.3.jar"/>
-	
-	<property name="wtk.cldc.version" value="1.0"/>
+	<property name="packaged-jar" value="epihandy-midlet-1.7.jar"/>
+	<property name="obfuscated-jar" value="epihandy-midlet-1.7.jar"/>
+	<property name="wtk.cldc.version" value="1.1"/>
 	<property name="wtk.midp.version" value="2.0"/> 
 	<property name="wtk.home" value="${WTK-ROOT}"/>
-	<property name="wtk.proguard.home" value="${WTK-ROOT}/proguard/"/>
 
-	<taskdef resource="antenna.properties" classpath="../Antenna/${antenna-Jar}"/>
-	<taskdef resource="proguard/ant/task.properties" classpath="${wtk.proguard.home}/lib/proguard.jar"/>
+	<taskdef resource="antenna.properties" classpath="antenna-bin-1.2.1-beta.jar"/>
+	<taskdef resource="proguard/ant/task.properties" classpath="proguard.jar"/>
 
 	<target name="init" description="intialization">
 		<path id="bootclasspath">
@@ -34,7 +32,6 @@
 			</fileset>
 		</path>
 		<path id="classpath">
-			
 			<pathelement location="${epihandy}"/>
 			<pathelement location="${midp-dbutils}"/>
 			<pathelement location="${dbutils}"/>
@@ -42,18 +39,16 @@
 			<pathelement location="${midp-mvc}"/>
 			<pathelement location="${midp-utils}"/>
 			<pathelement location="${transport-layer}"/>
-			<pathelement location="${cldc_classes.zip}"/>
+			<pathelement location="${cldc_classes}"/>
 			<pathelement location="${bluecove}"/>
 			<pathelement location="${bluetooth-client}"/>
 			<pathelement location="${jzlib}"/>
-			<!-- <pathelement location="${wtk.proguard.home}/lib/proguard.jar"/> -->
-			<!-- <pathelement location="../proguard/proguard.jar"/> -->
-			
+			<!-- <pathelement location="proguard.jar"/> -->
+			<!-- has lib been removed by accident??
 			<fileset dir="lib">
 				<include name="**/*.jar"/>
-			</fileset>
+			</fileset> -->
 		</path>
-		
 		<mkdir dir="dist"/>
 		<mkdir dir="build/obf"/>
 	</target>
@@ -66,7 +61,7 @@
 	</target>
 			
 	<target name="compile" depends="init, clean">
-		<mkdir dir="bin"/>		
+		<mkdir dir="bin"/>	
 		<javac destdir="bin" bootclasspath="${midp_lib};${cldc_lib}" classpathref="classpath" target="1.3" source="1.3">
 			<src path="src"/>
 		</javac>
@@ -131,7 +126,8 @@
 		<ant antfile="../epihandy-midp/build.xml" target="package" inheritall="false"/>
 		<ant antfile="../bluetooth-client/build.xml" target="package" inheritall="false"/>
 		
-		<jar basedir="build/preverified" jarfile="dist/${packaged-jar}" manifest="MANIFEST.MF">
+		<jar basedir="build/preverified" jarfile="dist/${packaged-jar}" 
+			manifest="Application Descriptor">
 			<fileset dir="res"/>
 			<zipfileset src="${epihandy}"/>
 			<zipfileset src="${midp-dbutils}"/>
@@ -142,16 +138,16 @@
 			<zipfileset src="${transport-layer}"/>
 			<zipfileset src="${bluetooth-client}"/>
 			<zipfileset src="${jzlib}"/>
-			<zipfileset src="${cldc_classes.zip}"/>
+			<zipfileset src="${cldc_classes}"/>
 		</jar>
 	</target>
 	
 	<target name="run-obfuscated" depends="obfuscate">
 		<!-- moving copying the jad file to the obf folder -->
-		<copy file="epihandy-midlet.jad" tofile="dist/obf/epihandy-midlet.jad"/>
+		<copy file="Application Descriptor" tofile="dist/obf/epihandy-midlet.jad"/>
 		
 		<!-- updating the jad file -->
-		<wtkjad jadfile ="dist/obf/epihandy-midlet.jad" jarfile="dist/obf/epihandy-midlet-1.3.jar" update="true">
+		<wtkjad jadfile ="dist/obf/epihandy-midlet.jad" jarfile="dist/obf/${obfuscated-jar}" update="true">
 			<midlet name="EpiHandy" class="org.fcitmuk.epihandy.forms.MainForm"/>
 		</wtkjad>
 		
@@ -163,10 +159,10 @@
 	
 	<target name="run-non-obfuscated" depends="package">
 		<!-- moving copying the jad file to the obf folder -->
-		<copy file="epihandy-midlet.jad" tofile="dist/epihandy-midlet.jad"/>
+		<copy file="Application Descriptor" tofile="dist/epihandy-midlet.jad"/>
 		
 		<!-- updating the jad file -->
-		<wtkjad jadfile ="dist/epihandy-midlet.jad" jarfile="dist/epihandy-midlet-1.3.jar" update="true">
+		<wtkjad jadfile ="dist/epihandy-midlet.jad" jarfile="dist/${packaged-jar}" update="true">
 			<midlet name="EpiHandy" class="org.fcitmuk.epihandy.forms.MainForm"/>
 		</wtkjad>
 		
