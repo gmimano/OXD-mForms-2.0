@@ -30,10 +30,10 @@
 			<pathelement location="${midp-dbutils}"/>
 			<pathelement location="${midp-mvc}" />
 			<pathelement location="${midp-utils}"/>
-			
+			<!-- was the lib removed by accident??
 			<fileset dir="lib">
 				<include name="**/*.jar"/>
-			</fileset>
+			</fileset>-->
 		</path>
 
 	</target>
