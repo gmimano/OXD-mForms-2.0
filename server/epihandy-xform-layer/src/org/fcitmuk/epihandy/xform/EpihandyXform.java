@@ -1815,6 +1815,26 @@ public class EpihandyXform{
 				return EpihandyConstants.OPERATOR_EQUAL;
 			return EpihandyConstants.OPERATOR_NOT_EQUAL;
 		}
+		else if(relevant.indexOf("not(starts-with") > 0){
+			if(isPositiveAction(action))
+				return EpihandyConstants.OPERATOR_NOT_START_WITH;
+			return EpihandyConstants.OPERATOR_STARTS_WITH;
+		}
+		else if(relevant.indexOf("starts-with") > 0){
+			if(isPositiveAction(action))
+				return EpihandyConstants.OPERATOR_STARTS_WITH;
+			return EpihandyConstants.OPERATOR_NOT_START_WITH;
+		}
+		else if(relevant.indexOf("not(contains") > 0){
+			if(isPositiveAction(action))
+				return EpihandyConstants.OPERATOR_NOT_CONTAIN;
+			return EpihandyConstants.OPERATOR_CONTAINS;
+		}
+		else if(relevant.indexOf("contains") > 0){
+			if(isPositiveAction(action))
+				return EpihandyConstants.OPERATOR_CONTAINS;
+			return EpihandyConstants.OPERATOR_NOT_CONTAIN;
+		}
 
 		return EpihandyConstants.OPERATOR_NULL;
 	}
@@ -1887,6 +1907,23 @@ public class EpihandyXform{
 			return pos;
 
 		pos = relevant.lastIndexOf('=');
+		if(pos > 0)
+			return pos;
+		
+		//the order of the code below should not be changed as for example 'starts with' can be taken even when conditon is 'not(starts-with'	
+		pos = relevant.lastIndexOf("not(starts-with");
+		if(pos > 0)
+			return pos;
+		
+		pos = relevant.lastIndexOf("starts-with");
+		if(pos > 0)
+			return pos;
+		
+		pos = relevant.lastIndexOf("not(contains");
+		if(pos > 0)
+			return pos;
+		
+		pos = relevant.lastIndexOf("contains");
 		if(pos > 0)
 			return pos;
 
