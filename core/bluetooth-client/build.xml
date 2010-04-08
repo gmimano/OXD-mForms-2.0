@@ -12,7 +12,7 @@
 	<property name="cldc_lib" value="${midp}/lib/cldcapi11.jar" />
 	<property name="epihandy" value="../epihandy/dist/epihandy.jar"/>
 	<property name="dbutils" value="../dbutils/dist/dbutils.jar"/>
-	<property name="bluecove" value="lib\bluecove-2.0.0.jar"/>
+	<property name="bluecove" value="lib\bluecove-2.1.0.jar"/>
 	
 	<!-- *********************************************************** -->
 	<!-- **                     TARGETS                           ** -->
