@@ -9,7 +9,7 @@
 	<property file="../build.properties"/>
 	<property name="midp" value="${WTK-ROOT}"/>
 	<property name="midp_lib" value="${midp}/lib/midpapi20.jar"/>
-	<property name="cldc_lib" value="${midp}/lib/cldcapi11.jar" />
+	<property name="cldc_lib" value="${midp}/lib/cldcapi10.jar" />
 	<property name="epihandy" value="../epihandy/dist/epihandy.jar"/>
 	<property name="midp-mvc" value="../midp-mvc/dist/midp-mvc.jar"/>
 	<property name="midp-dbutils" value="../midp-dbutils/dist/midp-dbutils.jar"/>
