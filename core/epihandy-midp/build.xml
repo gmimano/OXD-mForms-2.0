@@ -35,6 +35,9 @@
 				<include name="**/*.zip"/>
 			</fileset>
 			
+			<pathelement location="${midp_lib}"/>
+			<pathelement location="${cldc_lib}" />
+			<pathelement location="${mmapi}"/>
 			<pathelement location="${epihandy}"/>
 			<pathelement location="${midp-dbutils}"/>
 			<pathelement location="${dbutils}"/>
@@ -55,7 +58,7 @@
 		<mkdir dir="bin" />
 		
 		<!--  Compile midlet java files -->
-		<javac destdir="bin" bootclasspath="${midp_lib};${cldc_lib};${mmapi}" classpathref="classpath" target="1.3" source="1.3" debug="true" debuglevel="lines,source">
+		<javac destdir="bin" classpathref="classpath" target="1.3" source="1.3" debug="true" debuglevel="lines,source">
 			<src path="src/" />
 			<include name="**/*.java" />
 		</javac>	
