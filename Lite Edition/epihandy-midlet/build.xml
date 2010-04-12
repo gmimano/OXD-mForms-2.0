@@ -32,6 +32,8 @@
 			</fileset>
 		</path>
 		<path id="classpath">
+			<pathelement location="${dbutils}"/>
+			<pathelement location="${midp_lib}"/>
 			<pathelement location="${epihandy}"/>
 			<pathelement location="${midp-dbutils}"/>
 			<pathelement location="${dbutils}"/>
