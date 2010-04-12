@@ -82,8 +82,12 @@
 		
 		<!-- obfuscate jar-->
 		<echo>obfuscating jar</echo>
-		<proguard>
-		  -libraryjars ${midp_lib};${cldc_lib};${mmapi};${bluecove}
+		<proguard microedition="on" overloadaggressively="on" repackageclasses="" allowaccessmodification="on" printseeds="on" usemixedcaseclassnames="false">
+			<libraryjar file="${midp_lib}" /> 
+			<libraryjar file="${cldc_lib}" /> 
+			<libraryjar file="${mmapi}" /> 
+			<libraryjar file="${bluecove}" /> 
+			
 		  -injars      dist/${packaged-jar}
 		  -outjars     dist/obf/epihandy-midlet-obf.jar
 		  -keep public class * extends javax.microedition.midlet.MIDlet
