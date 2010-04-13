@@ -63,6 +63,17 @@
 	</target>
 			
 	<target name="compile" depends="init, clean">
+		<!-- call other external build files here before building -->
+		<ant antfile="../epihandy/build.xml" target="package" inheritall="false"/>
+		<ant antfile="../dbutils/build.xml" target="package" inheritall="false" />
+		<ant antfile="../midp-mvc/build.xml" target="package" inheritall="false"/>
+		<ant antfile="../midp-utils/build.xml" target="package" inheritall="false"/>
+		<ant antfile="../midp-dbutils/build.xml" target="package" inheritall="false"/>
+		<ant antfile="../bluetooth-client/build.xml" target="package" inheritall="false"/>
+		<ant antfile="../jzlib-1.0.7/build.xml" target="package" inheritall="false" />
+		<ant antfile="../transport-layer/build.xml" target="package" inheritall="false"/>
+		<ant antfile="../epihandy-midp/build.xml" target="package" inheritall="false"/>
+		<ant antfile="../bluetooth-client/build.xml" target="package" inheritall="false"/>
 		<mkdir dir="bin"/>	
 		<javac destdir="bin" bootclasspath="${midp_lib};${cldc_lib}" classpathref="classpath" target="1.3" source="1.3">
 			<src path="src"/>
@@ -119,18 +130,6 @@
 	</target>
 	
 	<target name="package" depends="preverify">
-
-		<!-- call other external build files here before building -->
-		<ant antfile="../epihandy/build.xml" target="package" inheritall="false"/>
-		<ant antfile="../dbutils/build.xml" target="package" inheritall="false" />
-		<ant antfile="../midp-mvc/build.xml" target="package" inheritall="false"/>
-		<ant antfile="../midp-utils/build.xml" target="package" inheritall="false"/>
-		<ant antfile="../midp-dbutils/build.xml" target="package" inheritall="false"/>
-		<ant antfile="../bluetooth-client/build.xml" target="package" inheritall="false"/>
-		<ant antfile="../jzlib-1.0.7/build.xml" target="package" inheritall="false" />
-		<ant antfile="../transport-layer/build.xml" target="package" inheritall="false"/>
-		<ant antfile="../epihandy-midp/build.xml" target="package" inheritall="false"/>
-		<ant antfile="../bluetooth-client/build.xml" target="package" inheritall="false"/>
 		
 		<jar basedir="build/preverified" jarfile="dist/${packaged-jar}" 
 			manifest="Application Descriptor">
