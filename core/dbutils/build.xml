@@ -17,9 +17,9 @@
 	<target name="init" description="initialization">
 		
 		<path id="classpath">
-			<fileset dir="lib">
+			<!-- lib deleted?? <fileset dir="lib">
 				<include name="**/*.jar"/>
-			</fileset>
+			</fileset> -->
 		</path>
 
 	</target>
