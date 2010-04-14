@@ -23,7 +23,7 @@
 	<property name="wtk.home" value="${WTK-ROOT}"/>
 
 	<taskdef resource="antenna.properties" classpath="antenna-bin-1.2.1-beta.jar"/>
-	<taskdef resource="proguard/ant/task.properties" classpath="proguard.jar"/>
+	<taskdef resource="proguard/ant/task.properties" classpath="proguard-4.4.jar"/>
 
 	<target name="init" description="intialization">
 		<path id="bootclasspath">
