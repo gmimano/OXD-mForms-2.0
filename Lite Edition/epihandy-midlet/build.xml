@@ -4,16 +4,16 @@
 	<property name="midp_lib" value="${midp}/lib/midpapi20.jar"/>
 	<property name="cldc_lib" value="${midp}/lib/cldcapi11.jar"/>
 	<property name="mmapi" value="${midp}/lib/mmapi.jar"/>
-	<property name="dbutils" value="../dbutils/dist/dbutils.jar"/>
-	<property name="epihandy-midp" value="../epihandy-midp/dist/epihandy-midp.jar"/>
-	<property name="epihandy" value="../epihandy/dist/epihandy.jar"/>
-	<property name="midp-mvc" value="../midp-mvc/dist/midp-mvc.jar"/>
-	<property name="midp-dbutils" value="../midp-dbutils/dist/midp-dbutils.jar"/>
-	<property name="midp-utils" value="../midp-utils/dist/midp-utils.jar"/>
-	<property name="transport-layer" value="../transport-layer/dist/transportlayer.jar"/>
-	<property name="bluetooth-client" value="../bluetooth-client/dist/bluetoothclient.jar"/>
-	<property name="jzlib" value="../jzlib-1.0.7/dist/jzlib-1.0.7.jar"/>
-	<property name="cldc_classes" value="../epihandy-midp/lib/cldc_classes.jar"/>
+	<property name="dbutils" value="../../core/dbutils/dist/dbutils.jar"/>
+	<property name="epihandy-midp" value="../../core/epihandy-midp/dist/epihandy-midp.jar"/>
+	<property name="epihandy" value="../../core/epihandy/dist/epihandy.jar"/>
+	<property name="midp-mvc" value="../../core/midp-mvc/dist/midp-mvc.jar"/>
+	<property name="midp-dbutils" value="../../core/midp-dbutils/dist/midp-dbutils.jar"/>
+	<property name="midp-utils" value="../../core/midp-utils/dist/midp-utils.jar"/>
+	<property name="transport-layer" value="../../core/transport-layer/dist/transportlayer.jar"/>
+	<property name="bluetooth-client" value="../../core/bluetooth-client/dist/bluetoothclient.jar"/>
+	<property name="jzlib" value="../../core/jzlib-1.0.7/dist/jzlib-1.0.7.jar"/>
+	<property name="cldc_classes" value="../../core/epihandy-midp/lib/cldc_classes.jar"/>
 	<property name="bluecove" value="../bluetooth-client/lib/bluecove-2.1.0.jar"/>
 
 	<property name="packaged-jar" value="epihandy-midlet-1.7.jar"/>
@@ -64,16 +64,16 @@
 			
 	<target name="compile" depends="init, clean">
 		<!-- call other external build files here before building -->
-		<ant antfile="../epihandy/build.xml" target="package" inheritall="false"/>
-		<ant antfile="../dbutils/build.xml" target="package" inheritall="false" />
-		<ant antfile="../midp-mvc/build.xml" target="package" inheritall="false"/>
-		<ant antfile="../midp-utils/build.xml" target="package" inheritall="false"/>
-		<ant antfile="../midp-dbutils/build.xml" target="package" inheritall="false"/>
-		<ant antfile="../bluetooth-client/build.xml" target="package" inheritall="false"/>
-		<ant antfile="../jzlib-1.0.7/build.xml" target="package" inheritall="false" />
-		<ant antfile="../transport-layer/build.xml" target="package" inheritall="false"/>
-		<ant antfile="../epihandy-midp/build.xml" target="package" inheritall="false"/>
-		<ant antfile="../bluetooth-client/build.xml" target="package" inheritall="false"/>
+		<ant antfile="../../core/epihandy/build.xml" target="package" inheritall="false"/>
+		<ant antfile="../../core/dbutils/build.xml" target="package" inheritall="false" />
+		<ant antfile="../../core/midp-mvc/build.xml" target="package" inheritall="false"/>
+		<ant antfile="../../core/midp-utils/build.xml" target="package" inheritall="false"/>
+		<ant antfile="../../core/midp-dbutils/build.xml" target="package" inheritall="false"/>
+		<ant antfile="../../core/bluetooth-client/build.xml" target="package" inheritall="false"/>
+		<ant antfile="../../core/jzlib-1.0.7/build.xml" target="package" inheritall="false" />
+		<ant antfile="../../core/transport-layer/build.xml" target="package" inheritall="false"/>
+		<ant antfile="../../core/epihandy-midp/build.xml" target="package" inheritall="false"/>
+		<ant antfile="../../core/bluetooth-client/build.xml" target="package" inheritall="false"/>
 		<mkdir dir="bin"/>	
 		<javac destdir="bin" bootclasspath="${midp_lib};${cldc_lib}" classpathref="classpath" target="1.3" source="1.3">
 			<src path="src"/>
@@ -83,7 +83,7 @@
 	<target name="preverify" depends="clean, init, compile">
 		<mkdir dir="build/preverified"/>
 		<exec executable="${midp}/bin/preverify">
-			<arg line="-classpath ${midp_lib};${cldc_lib};${epihandy-midp};${dbutils};${epihandy};${midp-dbutils};${midp-mvc};${midp-utils};${transport-layer};${jzlib};${bluetooth-client}"/>
+			<arg line="-classpath ${midp_lib}:${cldc_lib}:${epihandy-midp}:${dbutils}:${epihandy}:${midp-dbutils}:${midp-mvc}:${midp-utils}:${transport-layer}:${jzlib}:${bluetooth-client}"/>
 			<arg line="-d build/preverified"/>
 			<arg line="bin"/>
 		</exec>
@@ -114,7 +114,7 @@
 		<property name="dir-preverified-obf" value="build/obf/preverifiedobf"/>
 		<mkdir dir="${dir-preverified-obf}"/>
 		<exec executable="${midp}/bin/preverify">
-			<arg line="-classpath ${midp_lib};${cldc_lib};${bluecove}"/>
+			<arg line="-classpath ${midp_lib}:${cldc_lib}:${bluecove}"/>
 			<arg line="-d ${dir-preverified-obf}"/>
 			<arg line="${dir-obf-extract}"/>
 		</exec>

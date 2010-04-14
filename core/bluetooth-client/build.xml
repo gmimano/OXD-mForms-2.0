@@ -12,7 +12,7 @@
 	<property name="cldc_lib" value="${midp}/lib/cldcapi10.jar" />
 	<property name="epihandy" value="../epihandy/dist/epihandy.jar"/>
 	<property name="dbutils" value="../dbutils/dist/dbutils.jar"/>
-	<property name="bluecove" value="lib\bluecove-2.1.0.jar"/>
+	<property name="bluecove" value="lib/bluecove-2.1.0.jar"/>
 	
 	<!-- *********************************************************** -->
 	<!-- **                     TARGETS                           ** -->
@@ -61,7 +61,7 @@
 	<target name="preverify" depends="clean,init, compile">
 		<mkdir dir="build/preverified"/>
 		<exec executable ="${midp}/bin/preverify">
-			<arg line="-classpath ${midp_lib};${cldc_lib};${dbutils};${epihandy};${bluecove}"/>
+			<arg line="-classpath ${midp_lib}:${cldc_lib}:${dbutils}:${epihandy}:${bluecove}"/>
 			<arg line="-d build/preverified"/>
 			<arg line="bin"/>
 		</exec>
