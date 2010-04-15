@@ -90,6 +90,21 @@ public class DownloadUploadManager implements TransportLayerListener,AlertMessag
 
 	private static final String STORAGE_NAME_SETTINGS = "fcitmuk.DefaultTransportLayer";
 
+	/** Keeps trac of the current number of form data being uploaded to the server. */
+	private int currentDataCount = 0;
+	
+	/** The total number of forms of data that needs to be uploaded to the server. */
+	private int totalDataCount = 0;
+
+	/** The current form data that is being uploaded to the server. */
+	private FormData formData = null;
+
+	/** The id of the study to which the form data that is being uploaded to the server belongs. */
+	private int studyId;
+
+	/** The list of form data that has not yet been uploaded to the server. */
+	private StudyDataList studyDataList = null;
+
 
 	public DownloadUploadManager(TransportLayer transportLayer,EpihandyController controller, String title,TransportLayerListener transportLayerListener) {
 		this.transportLayer = transportLayer;
@@ -156,7 +171,7 @@ public class DownloadUploadManager implements TransportLayerListener,AlertMessag
 
 	public boolean isThereCollectedData(String name, Vector studyList){
 		this.studyList = studyList;
-		
+
 		StudyDataList studyDataList = getCollectedData();
 		if(!(studyDataList == null || studyDataList.getStudies() == null || studyDataList.getStudies().size() == 0)){
 			this.currentAction = CA_NONE;
@@ -293,17 +308,44 @@ public class DownloadUploadManager implements TransportLayerListener,AlertMessag
 	private void uploadData() {
 		alertMsg.showProgress(MenuText.DATA_UPLOAD(), MenuText.UPLOADING_DATA());
 
-		StudyDataList studyDataList = getCollectedData();
+		totalDataCount = currentDataCount = 0;
+		/*StudyDataList*/ studyDataList = getCollectedData();
 		if (studyDataList == null || studyDataList.getStudies() == null || studyDataList.getStudies().size() == 0) {
 			this.currentAction = CA_NONE;
 			this.alertMsg.show(MenuText.NO_UPLOAD_DATA());
 		} 
 		else{
-			requestHeader.setLocale(LanguageSettings.getLocale());
+			/*requestHeader.setLocale(LanguageSettings.getLocale());
 			requestHeader.setAction(RequestHeader.ACTION_UPLOAD_DATA);
 			setCommunicationParams();
-			transportLayer.upload(requestHeader, studyDataList, responseHeader,responseHeader, this, userName, password);
+			transportLayer.upload(requestHeader, studyDataList, responseHeader,responseHeader, this, userName, password);*/
+
+			currentDataCount = 1;
+			
+			uploadFormData();
 		}
+	}
+	
+	private void uploadFormData(){
+		Vector studies = studyDataList.getStudies();
+		for(int index = 0; index < studyDataList.getStudies().size(); index++){
+			StudyData studyData = (StudyData)studies.elementAt(index);
+			studyId = studyData.getId();
+			
+			Vector forms = studyData.getForms();
+			for(int i = 0; i < forms.size(); i++){
+				formData = (FormData)forms.elementAt(i);
+				forms.removeElementAt(i);
+				break;
+			}
+		}
+		
+		alertMsg.showProgress(MenuText.DATA_UPLOAD(), "Uploading " + currentDataCount + " of " + totalDataCount);
+		
+		requestHeader.setLocale(LanguageSettings.getLocale());
+		requestHeader.setAction(RequestHeader.ACTION_UPLOAD_DATA);
+		setCommunicationParams();
+		transportLayer.upload(requestHeader, new StudyDataList(new StudyData(studyId,formData)), responseHeader,responseHeader, this, userName, password);
 	}
 
 	/**
@@ -410,13 +452,13 @@ public class DownloadUploadManager implements TransportLayerListener,AlertMessag
 				EpihandyDataStorage.saveUsers(users);
 
 				StudyDef studyDef = lists.getStudyDef();
-				
+
 				//TODO these three lines have been put from some clients like openclinica
 				//which may have a different oc study id from that of oxd study id
 				studyDef.setId(controller.getCurrentStudy().getId());
 				studyDef.setName(controller.getCurrentStudy().getName());
 				studyDef.setVariableName(controller.getCurrentStudy().getVariableName());
-				
+
 				EpihandyDataStorage.saveStudy(studyDef);
 				this.controller.setStudy(studyDef);
 
@@ -485,12 +527,22 @@ public class DownloadUploadManager implements TransportLayerListener,AlertMessag
 			try {
 				ResponseHeader status = (ResponseHeader) dataOut;
 				if (status.isSuccess()) {
-					if(GeneralSettings.deleteDataAfterUpload())
-						EpihandyDataStorage.deleteData(new StudyDefList(studyList));
+					if(GeneralSettings.deleteDataAfterUpload()){
+						//EpihandyDataStorage.deleteData(new StudyDefList(studyList));
+						//assert(formData != null);
+						EpihandyDataStorage.deleteFormData(studyId, formData);
+					}
 
-					message = MenuText.DATA_UPLOAD_SUCCESS();
-					if (transportLayerListener != null)
-						transportLayerListener.uploaded(dataOutParams, dataOut);
+					if(currentDataCount == totalDataCount){
+						message = MenuText.DATA_UPLOAD_SUCCESS();
+						if (transportLayerListener != null)
+							transportLayerListener.uploaded(dataOutParams, dataOut);
+					}
+					else{
+						currentDataCount++;
+						uploadFormData();
+						return;
+					}
 				} 
 				else
 					message = MenuText.DATA_UPLOAD_FAILURE();
@@ -602,11 +654,14 @@ public class DownloadUploadManager implements TransportLayerListener,AlertMessag
 			for (int i = 0; i < formDefs.size(); i++) {
 				FormDef formDef = ((FormDef) formDefs.elementAt(i));
 				Vector formDatas = EpihandyDataStorage.getFormData(studyDef.getId(), formDef.getId());
+				
 				if (formDatas != null) {
 					setFormDefs(formDatas, formDef); // These are for writing to stream but they are not persisted.
 					studyData.addForms(formDatas);
+					totalDataCount = formDatas.size();
 				}
 			}
+			
 			if (studyData.getForms() != null && studyData.getForms().size() > 0)
 				return studyData;
 		}
@@ -618,7 +673,7 @@ public class DownloadUploadManager implements TransportLayerListener,AlertMessag
 		alertMsg.setPrevScreen(screen); //TODO Need to fix this hack
 	}
 
-	
+
 	/**
 	 * Deletes all form definitions.
 	 *
