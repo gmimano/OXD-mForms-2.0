@@ -59,7 +59,7 @@
 	<target name="preverify" depends="clean,init, compile">
 		<mkdir dir="build/preverified"/>
 		<exec executable ="${midp}/bin/preverify">
-			<arg line="-classpath ${midp_lib}:${cldc_lib}:${dbutils}:${epihandy}:${midp-mvc}:${midp-dbutils}:${midp-utils}:${bluetooth-client}:${jzlib}"/>
+			<arg line="-classpath ${midp_lib}${path.separator}${cldc_lib}${path.separator}${dbutils}${path.separator}${epihandy}${path.separator}${midp-mvc}${path.separator}${midp-dbutils}${path.separator}${midp-utils}${path.separator}${bluetooth-client}${path.separator}${jzlib}"/>
 			<arg line="-d build/preverified"/>
 			<arg line="bin"/>
 		</exec>
