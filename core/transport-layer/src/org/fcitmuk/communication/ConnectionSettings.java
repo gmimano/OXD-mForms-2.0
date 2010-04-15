@@ -184,72 +184,20 @@ public class ConnectionSettings extends AbstractView {
 	private void showHttpConParams(){
 		Form frm = new Form(this.title);
 		
+		// NOTE: see build-configuration.xml to find out about class TransportConstants
+		
 		String s = (String)conParams.get(TransportLayer.KEY_USER_DOWNLOAD_HTTP_URL);
-		
-		//if(s == null) s = "http://ec2-174-129-134-18.compute-1.amazonaws.com:8080/openmrs/moduleServlet/xforms/userDownload";
-		//if(s == null) s = "http://localhost:8080/openmrs/moduleServlet/xforms/userDownload"; //?uname="+userName+"&pw="+password;
-		//if(s == null) s = "http://125.209.121.228:8585/openmrs/moduleServlet/xforms/userDownload";
-		//if(s == null) s = "http://125.209.121.229:8078/epihandy/formdownloadservlet";
-		//if(s == null) s = "http://localhost:8080/epihandy/formdownloadservlet";
-		//if(s == null) s = "http://localhost:8888/formdownloadservlet";
-		//if(s == null) s = "http://125.209.121.229:8079/epihandy/formdownloadservlet";
-		//if(s == null) s = "http://125.209.121.229:8078/openmrs/moduleServlet/xforms/userDownload";
-		
-		//if(s == null) s = "http://196.46.104.201:8080/epihandy/formdownloadservlet";
-		//if(s == null) s = "http://lab7.openmrs.org:8080/openmrs/moduleServlet/xforms/userDownload";
-		//if(s == null) s = "http://127.0.0.1:8080/openxdata/formdownloadservlet";
-		//if(s == null) s = "http://127.0.0.1:8888/formdownloadservlet";
-		
-		//if(s == null) s = "http://129.59.113.123:8088/openxdata/formdownloadservlet";
-		if(s == null) s = "http://localhost:8888/openclinica";
-		
+		if(s == null) s = TransportConstants.USERSSDOWNLOAD_URL;
 		TextField txtField = new TextField(MenuText.USER_DOWNLOAD_URL(),s,500,TextField.ANY);
 		frm.append(txtField);
 		
-		
 		s = (String)conParams.get(TransportLayer.KEY_FORM_DOWNLOAD_HTTP_URL);
-		//if(s == null) s = "http://ec2-174-129-134-18.compute-1.amazonaws.com:8080/openmrs/moduleServlet/xforms/xformDownload?target=xforms";
-		//if(s == null) s = "http://localhost:8080/openmrs/moduleServlet/xforms/xformDownload?target=xforms"; //&uname="+userName+"&pw="+password;
-		//if(s == null) s = "http://125.209.121.228:8585/openmrs/moduleServlet/xforms/xformDownload?target=xforms"; //&uname="+userName+"&pw="+password;
-		//if(s == null) s = "http://125.209.121.229:8078/epihandy/formdownloadservlet";
-	    //if(s == null) s = "http://localhost:8080/epihandy/formdownloadservlet";
-		//if(s == null) s = "http://localhost:8888/formdownloadservlet";
-		//if(s == null) s = "http://125.209.121.229:8079/epihandy/formdownloadservlet";
-		//if(s == null) s = "http://125.209.121.229:8078/openmrs/moduleServlet/xforms/xformDownload?target=xforms"; //&uname="+userName+"&pw="+password;
-		
-		//if(s == null) s = "http://196.46.104.201:8080/epihandy/formdownloadservlet";
-		
-		//if(s == null) s = "http://lab7.openmrs.org:8080/openmrs/moduleServlet/xforms/xformDownload?target=xforms"; //&uname="+userName+"&pw="+password;
-		//if(s == null) s = "http://127.0.0.1:8080/openxdata/formdownloadservlet";
-		//if(s == null) s = "http://127.0.0.1:8888/formdownloadservlet";
-		
-		//if(s == null) s = "http://129.59.113.123:8088/openxdata/formdownloadservlet";
-		if(s == null) s = "http://localhost:8888/openclinica";
-		
+		if(s == null) s = TransportConstants.FORMSDOWNLOAD_URL;
 		txtField = new TextField(MenuText.FORM_DOWNLOAD_URL(),s,500,TextField.ANY);
 		frm.append(txtField);
 		
-		
 		s = (String)conParams.get(TransportLayer.KEY_DATA_UPLOAD_HTTP_URL);
-		//if(s == null) s = "http://ec2-174-129-134-18.compute-1.amazonaws.com:8080/openmrs/moduleServlet/xforms/xformDataUpload?batchEntry=true"; //&uname="+userName+"&pw="+password;
-		//if(s == null) s = "http://localhost:8080/openmrs/moduleServlet/xforms/xformDataUpload?batchEntry=true"; //&uname="+userName+"&pw="+password;
-		//if(s == null) s = "http://125.209.121.228:8585/openmrs/moduleServlet/xforms/xformDataUpload?batchEntry=true"; //&uname="+userName+"&pw="+password;
-		//if(s == null) s = "http://125.209.121.229:8078/epihandy/formdownloadservlet";
-		//if(s == null) s = "http://localhost:8080/epihandy/formdownloadservlet";
-		//if(s == null) s = "http://localhost:8888/formdownloadservlet";
-		//if(s == null) s = "http://125.209.121.229:8079/epihandy/formdownloadservlet";
-		//if(s == null) s = "http://125.209.121.229:8078/openmrs/moduleServlet/xforms/xformDataUpload?batchEntry=true"; //&uname="+userName+"&pw="+password;
-		
-		//if(s == null) s = "http://196.46.104.201:8080/epihandy/formdownloadservlet";
-		
-		//if(s == null) s = "http://lab7.openmrs.org:8080/openmrs/moduleServlet/xforms/xformDataUpload?batchEntry=true";
-		//if(s == null) s = "http://127.0.0.1:8080/openxdata/formdownloadservlet";
-		
-		//if(s == null) s = "http://127.0.0.1:8888/formdownloadservlet";
-		
-		//if(s == null) s = "http://129.59.113.123:8088/openxdata/formdownloadservlet";
-		if(s == null) s = "http://localhost:8888/openclinica";
-		
+		if(s == null) s = TransportConstants.DATAUPLOAD_URL;
 		txtField = new TextField(MenuText.DATA_UPLOAD_URL(),s,500,TextField.ANY);
 		frm.append(txtField);
 		

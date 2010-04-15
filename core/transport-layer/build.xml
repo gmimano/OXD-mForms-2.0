@@ -48,7 +48,8 @@
 
 	<target name="compile" depends="init" description="Compiles the code">
 		<mkdir dir="bin" />
-		
+		<!--  Generate class(es) with configuration/build properties -->
+		<ant antfile="build-configuration.xml" target="init" inheritall="false"/>
 		<!--  Compile midlet java files -->
 		<javac destdir="bin" classpathref="classpath" target="1.3" source="1.3" debug="true" debuglevel="lines,source">
 			<src path="src/" />

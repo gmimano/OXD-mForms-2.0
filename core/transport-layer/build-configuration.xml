@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<!-- ********************************************************* -->
+<!-- ** Mobile transport-layour                             ** -->
+<!-- **	                                                    ** -->
+<!-- ** @author Dagmar Timler                               ** -->
+<!-- ********************************************************* -->
+<project name="build-version" default="init">
+	
+	<property file="build.properties" />
+	
+	<taskdef resource="net/sf/antcontrib/antcontrib.properties">
+		<classpath>
+			<fileset dir="${basedir}" includes="*.jar" />
+		</classpath>
+	</taskdef>
+	
+	
+	<!-- *********************************************************** -->
+	<!-- **                     TARGETS                           ** -->
+	<!-- *********************************************************** -->
+	<target name="init" depends="" description="initialization">
+	
+		<filterset id="variables.to.replace">
+			<filter token="formsdownload.url" value="${formsdownload.url}" />
+			<filter token="dataupload.url" value="${dataupload.url}" />
+			<filter token="usersdownload.url" value="${usersdownload.url}" />
+		</filterset>
+			
+		<copy file="${basedir}/template/TransportConstants.java" toFile="${basedir}/src/org/fcitmuk/communication/TransportConstants.java" overwrite="true">
+		  <filterset refid="variables.to.replace" />
+		</copy>
+		
+		<echo message = "successfully built transport connection setting properties: see ${basedir}/src/org/fcitmuk/communication/TransportConstants.java"/>
+		<echo message = "now please refresh your project (F5)" />
+		
+	</target>
+
+</project>
