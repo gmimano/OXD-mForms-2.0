@@ -83,7 +83,7 @@
 	<target name="preverify" depends="clean, init, compile">
 		<mkdir dir="build/preverified"/>
 		<exec executable="${midp}/bin/preverify">
-			<arg line="-classpath ${midp_lib}:${cldc_lib}:${epihandy-midp}:${dbutils}:${epihandy}:${midp-dbutils}:${midp-mvc}:${midp-utils}:${transport-layer}:${jzlib}:${bluetooth-client}"/>
+			<arg line="-classpath ${midp_lib}${path.separator}${cldc_lib}${path.separator}${epihandy-midp}${path.separator}${dbutils}${path.separator}${epihandy}${path.separator}${midp-dbutils}${path.separator}${midp-mvc}${path.separator}${midp-utils}${path.separator}${transport-layer}${path.separator}${jzlib}${path.separator}${bluetooth-client}"/>
 			<arg line="-d build/preverified"/>
 			<arg line="bin"/>
 		</exec>
@@ -114,7 +114,7 @@
 		<property name="dir-preverified-obf" value="build/obf/preverifiedobf"/>
 		<mkdir dir="${dir-preverified-obf}"/>
 		<exec executable="${midp}/bin/preverify">
-			<arg line="-classpath ${midp_lib}:${cldc_lib}:${bluecove}"/>
+			<arg line="-classpath ${midp_lib}${path.separator}${cldc_lib}${path.separator}${bluecove}"/>
 			<arg line="-d ${dir-preverified-obf}"/>
 			<arg line="${dir-obf-extract}"/>
 		</exec>
