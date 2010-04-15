@@ -51,7 +51,7 @@
 	<target name="preverify" depends="clean,init, compile">
 		<mkdir dir="build/preverified"/>
 		<exec executable ="${midp}/bin/preverify">
-			<arg line="-classpath ${midp_lib}:${cldc_lib}:${dbutils}"/>
+			<arg line="-classpath ${midp_lib}${path.separator}${cldc_lib}${path.separator}${dbutils}"/>
 			<arg line="-d build/preverified"/>
 			<arg line="bin"/>
 		</exec>
