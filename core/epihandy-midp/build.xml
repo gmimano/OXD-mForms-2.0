@@ -67,7 +67,7 @@
 	<target name="preverify" depends="clean,init, compile">
 		<mkdir dir="build/preverified"/>
 		<exec executable ="${midp}/bin/preverify">
-			<arg line="-classpath ${midp_lib}:${cldc_lib}:${mmapi}:${midp-dbutils}:${midp-mvc}:${midp-utils}:${transport-layer}:${dbutils}:${cldc_classes.zip}:${epihandy}"/>
+			<arg line="-classpath ${midp_lib}${path.separator}${cldc_lib}${path.separator}${mmapi}${path.separator}${midp-dbutils}${path.separator}${midp-mvc}${path.separator}${midp-utils}${path.separator}${transport-layer}${path.separator}${dbutils}${path.separator}${cldc_classes.zip}${path.separator}${epihandy}"/>
 			<arg line="-d build/preverified"/>
 			<arg line="bin"/>
 		</exec>
