@@ -175,8 +175,13 @@ public class TransportLayer implements Runnable, BluetoothClientListener, AlertM
 	private static final byte MAX_CONNECTION_RETRIES = 3;
 
 	private Thread thread;
+	
+	/** Flag to know if we should show the data transfer progress message.
+	 * We want to turn this off such that the caller's displayed progress message is not overwritten.
+	 */
+	private boolean showProgressMessage = true;
 
-
+	
 	/** Cconstructs a transport layer object. */
 	public TransportLayer(){
 		super();
@@ -342,6 +347,8 @@ public class TransportLayer implements Runnable, BluetoothClientListener, AlertM
 	 * @param eventListener - Reference to listener for communication events.
 	 */
 	public void download(Persistent dataInParams, Persistent dataIn, Persistent dataOutParams, Persistent dataOut,TransportLayerListener eventListener, String userName, String password){
+		showProgressMessage = true;
+		
 		saveParameters(dataInParams,dataIn,dataOutParams,dataOut,eventListener,true,userName, password);
 
 		if(thread != null)
@@ -362,6 +369,8 @@ public class TransportLayer implements Runnable, BluetoothClientListener, AlertM
 	 * @param eventListener - Reference to listener to communication events.
 	 */
 	public void upload( Persistent dataInParams, Persistent dataIn, Persistent dataOutParams, Persistent dataOut,TransportLayerListener eventListener, String userName, String password){
+		showProgressMessage = false;
+		
 		saveParameters(dataInParams,dataIn,dataOutParams,dataOut,eventListener,false,userName, password);
 		new Thread(this).start();
 	}
@@ -897,7 +906,8 @@ public class TransportLayer implements Runnable, BluetoothClientListener, AlertM
 	}
 
 	private void showConnectionProgress(String message){
-		alertMsg.showProgress(title, message);
+		if(showProgressMessage)
+			alertMsg.showProgress(title, message);
 	}
 	/**
 	 * Processes the command events.
