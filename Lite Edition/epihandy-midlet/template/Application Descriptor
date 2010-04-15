@@ -1,10 +1,10 @@
-MIDlet-Version: 1.7
+MIDlet-Version: @version.major@.@version.minor@
 MIDlet-Vendor: FCIT
 MIDlet-Jar-URL: epihandy-midlet-1.7.jar
 MicroEdition-Configuration: CLDC-1.1
-MIDlet-1: openXdata,/icons/epihandy.png ,org.fcitmuk.epihandy.forms.MainForm
+MIDlet-1: @midlet.name@,@midlet.icon@ ,org.fcitmuk.epihandy.forms.MainForm
 MicroEdition-Profile: MIDP-2.0
 MIDlet-Jar-Size: 38739
-MIDlet-Name: openXdata
+MIDlet-Name: @midlet.name@
 MIDlet-Description: This midlet does data collection for OpenXData.
 MIDlet-Permissions: javax.microedition.media.control.VideoControl.getSnapshot

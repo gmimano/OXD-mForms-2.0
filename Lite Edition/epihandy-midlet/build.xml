@@ -1,5 +1,5 @@
 <project name="epihandy-midlet" default="run-non-obfuscated" basedir=".">
-	<property file="../build.properties"/>
+	<property file="build.properties"/>
 	<property name="midp" value="${WTK-ROOT}"/>
 	<property name="midp_lib" value="${midp}/lib/midpapi20.jar"/>
 	<property name="cldc_lib" value="${midp}/lib/cldcapi11.jar"/>
@@ -16,14 +16,17 @@
 	<property name="cldc_classes" value="../../core/epihandy-midp/lib/cldc_classes.jar"/>
 	<property name="bluecove" value="../bluetooth-client/lib/bluecove-2.1.0.jar"/>
 
-	<property name="packaged-jar" value="epihandy-midlet-1.7.jar"/>
-	<property name="obfuscated-jar" value="epihandy-midlet-1.7.jar"/>
+	<property name="version" value="${version.major}.${version.minor}"/>
+	<property name="packaged-jar" value="${jar.name}-midlet-${version}.jar"/>
+	<property name="obfuscated-jar" value="${jar.name}-midlet-${version}.jar"/>
+
 	<property name="wtk.cldc.version" value="1.1"/>
 	<property name="wtk.midp.version" value="2.0"/> 
 	<property name="wtk.home" value="${WTK-ROOT}"/>
 
 	<taskdef resource="antenna.properties" classpath="antenna-bin-1.2.1-beta.jar"/>
 	<taskdef resource="proguard/ant/task.properties" classpath="proguard-4.4.jar"/>
+	<taskdef resource="net/sf/antcontrib/antcontrib.properties" classpath="ant-contrib-1.0b2.jar"/>
 
 	<target name="init" description="intialization">
 		<path id="bootclasspath">
@@ -74,7 +77,10 @@
 		<ant antfile="../../core/transport-layer/build.xml" target="package" inheritall="false"/>
 		<ant antfile="../../core/epihandy-midp/build.xml" target="package" inheritall="false"/>
 		<ant antfile="../../core/bluetooth-client/build.xml" target="package" inheritall="false"/>
-		<mkdir dir="bin"/>	
+		<!-- insert build properties into template files -->
+		<ant antfile="build-configuration.xml" target="init" inheritall="false"/>
+		<!-- do compile now -->
+		<mkdir dir="bin"/>
 		<javac destdir="bin" bootclasspath="${midp_lib};${cldc_lib}" classpathref="classpath" target="1.3" source="1.3">
 			<src path="src"/>
 		</javac>
@@ -100,14 +106,14 @@
 			<libraryjar file="${bluecove}" /> 
 			
 		  -injars      dist/${packaged-jar}
-		  -outjars     dist/obf/epihandy-midlet-obf.jar
+		  -outjars     dist/obf/${jar.name}-midlet-obf.jar
 		  -keep public class * extends javax.microedition.midlet.MIDlet
 		</proguard>
 		
 		<!-- unjar obfuscated -->
 		<echo>unjarring obfuscated jar</echo>
 		<property name="dir-obf-extract" value="build/obf/extract"/>
-		<unjar src="dist/obf/epihandy-midlet-obf.jar" dest="${dir-obf-extract}" />
+		<unjar src="dist/obf/${jar.name}-midlet-obf.jar" dest="${dir-obf-extract}" />
 
 		<!-- preverify obfuscated classes-->
 		<echo>preverifying obfuscated classes</echo>
@@ -121,12 +127,12 @@
 		
 		<!-- repackage new jar -->
 		<echo>repackaging new jar</echo>
-		<jar basedir="${dir-preverified-obf}" jarfile="dist/obf/${obfuscated-jar}" manifest="MANIFEST.MF">
+		<jar basedir="${dir-preverified-obf}" jarfile="dist/obf/${obfuscated-jar}" manifest="Application Descriptor">
 			<fileset dir="res"/>
 		</jar>
 		
 		<!-- delete temporary jar-->
-		<delete file="dist/obf/epihandy-midlet-obf.jar"/>
+		<delete file="dist/obf/${jar.name}-midlet-obf.jar"/>
 	</target>
 	
 	<target name="package" depends="preverify">
@@ -149,31 +155,31 @@
 	
 	<target name="run-obfuscated" depends="obfuscate">
 		<!-- moving copying the jad file to the obf folder -->
-		<copy file="Application Descriptor" tofile="dist/obf/epihandy-midlet.jad"/>
+		<copy file="Application Descriptor" tofile="dist/obf/${jar.name}-midlet.jad"/>
 		
 		<!-- updating the jad file -->
-		<wtkjad jadfile ="dist/obf/epihandy-midlet.jad" jarfile="dist/obf/${obfuscated-jar}" update="true">
-			<midlet name="EpiHandy" class="org.fcitmuk.epihandy.forms.MainForm"/>
+		<wtkjad jadfile ="dist/obf/${jar.name}-midlet.jad" jarfile="dist/obf/${obfuscated-jar}" update="true">
+			<midlet name="${midlet.name}" class="org.fcitmuk.epihandy.forms.MainForm"/>
 		</wtkjad>
 		
 		<!-- executing the jad file -->
 		<exec executable="${midp}/bin/emulator">
-			<arg line="-Xdescriptor:dist/obf/epihandy-midlet.jad" />
+			<arg line="-Xdescriptor:dist/obf/${jar.name}-midlet.jad" />
 		</exec>
 	</target>
 	
 	<target name="run-non-obfuscated" depends="package">
 		<!-- moving copying the jad file to the obf folder -->
-		<copy file="Application Descriptor" tofile="dist/epihandy-midlet.jad"/>
+		<copy file="Application Descriptor" tofile="dist/${jar.name}-midlet.jad"/>
 		
 		<!-- updating the jad file -->
-		<wtkjad jadfile ="dist/epihandy-midlet.jad" jarfile="dist/${packaged-jar}" update="true">
-			<midlet name="EpiHandy" class="org.fcitmuk.epihandy.forms.MainForm"/>
+		<wtkjad jadfile ="dist/${jar.name}-midlet.jad" jarfile="dist/${packaged-jar}" update="true">
+			<midlet name="${midlet.name}" class="org.fcitmuk.epihandy.forms.MainForm"/>
 		</wtkjad>
 		
 		<!-- executing the jad file -->
 		<exec executable="${midp}/bin/emulator">
-			<arg line="-Xdescriptor:dist/epihandy-midlet.jad" />
+			<arg line="-Xdescriptor:dist/${jar.name}-midlet.jad" />
 		</exec>
 	</target>	
 </project>

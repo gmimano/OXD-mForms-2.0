@@ -63,9 +63,6 @@ public class MainForm extends MIDlet  implements CommandListener,FormListener,St
 	/** Index for selecting a study menu item. */
 	private static final int INDEX_LOGOUT = 6;
 	
-	/** Application tittle. */
-	private static final String TITLE = "openXdata 1.7";
-	
 	/** Reference to epihandy form manager. */
 	private FormManager formMgr;
 	
@@ -98,7 +95,7 @@ public class MainForm extends MIDlet  implements CommandListener,FormListener,St
 		
 		initMainList();
 		
-		alertMsg = new AlertMessage(this.display, TITLE, this.mainList,this);
+		alertMsg = new AlertMessage(this.display, MidletConstants.TITLE, this.mainList,this);
 
 		transportLayer = new TransportLayer(/*new EpihandyTransportLayer().getClass()*/);
 		transportLayer.setDisplay(display);
@@ -108,14 +105,14 @@ public class MainForm extends MIDlet  implements CommandListener,FormListener,St
 		transportLayer.setDefaultCommnucationParameter(TransportLayer.KEY_SMS_DESTINATION_ADDRESS,"sms://+256712330386"); //256782380638 "sms://+256782380638:1234"
 		transportLayer.setDefaultCommnucationParameter(TransportLayer.KEY_SMS_SOURCE_ADDRESS,"sms://:1234"); 
 	
-		formMgr = new FormManager(TITLE,display,this, mainList,transportLayer,null);
+		formMgr = new FormManager(MidletConstants.TITLE,display,this, mainList,transportLayer,null);
 		FormManager.setGlobalInstance(formMgr);
 		
 		EpihandyDataStorage.storageListener = this;
 	}
 	
 	private void initMainList(){
-		mainList = new List(TITLE, Choice.IMPLICIT);
+		mainList = new List(MidletConstants.TITLE, Choice.IMPLICIT);
 		mainList.insert(INDEX_SELECT_STUDY, MenuText.SELECT_STUDY(), null);
 		mainList.insert(INDEX_SELECT_FORM, MenuText.SELECT_FORM(), null);
 		mainList.insert(INDEX_DOWNLOAD_STUDY_LIST, MenuText.DOWNLOAD_STUDIES(), null);
@@ -144,7 +141,7 @@ public class MainForm extends MIDlet  implements CommandListener,FormListener,St
 	}
 
 	protected void startApp() {
-		userMgr = new UserManager(display,mainList,TITLE,this);
+		userMgr = new UserManager(display,mainList,MidletConstants.TITLE,this);
 		userMgr.logOn();
 		formMgr.setUserManager(userMgr);
 	}
