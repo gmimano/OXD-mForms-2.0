@@ -31,6 +31,11 @@ public class StudyData implements Persistent{
 	public StudyData(int id) {
 		setId(id);
 	}
+	
+	public StudyData(int id, FormData formData) {
+		setId(id);
+		addForm(formData);
+	}
 
 	/**
 	 * Creates a new study data object form these parameters.

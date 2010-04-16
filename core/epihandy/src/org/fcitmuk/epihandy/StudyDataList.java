@@ -24,6 +24,10 @@ public class StudyDataList  implements Persistent{
 	public StudyDataList(){
 
 	}
+	
+	public StudyDataList(StudyData studyData){
+		addStudy(studyData);
+	}
 
 	public StudyDataList(Vector studies){
 		setStudies(studies);
