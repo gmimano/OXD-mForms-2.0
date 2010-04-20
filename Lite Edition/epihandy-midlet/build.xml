@@ -67,8 +67,8 @@
 			
 	<target name="compile" depends="init, clean">
 		<!-- call other external build files here before building -->
-		<ant antfile="../../core/epihandy/build.xml" target="package" inheritall="false"/>
 		<ant antfile="../../core/dbutils/build.xml" target="package" inheritall="false" />
+		<ant antfile="../../core/epihandy/build.xml" target="package" inheritall="false"/>
 		<ant antfile="../../core/midp-mvc/build.xml" target="package" inheritall="false"/>
 		<ant antfile="../../core/midp-utils/build.xml" target="package" inheritall="false"/>
 		<ant antfile="../../core/midp-dbutils/build.xml" target="package" inheritall="false"/>
