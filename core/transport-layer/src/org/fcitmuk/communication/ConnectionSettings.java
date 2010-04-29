@@ -186,14 +186,17 @@ public class ConnectionSettings extends AbstractView {
 		
 		// NOTE: see build-configuration.xml to find out about class TransportConstants
 		
-		String s = (String)conParams.get(TransportLayer.KEY_USER_DOWNLOAD_HTTP_URL);
+		//This has been commented out because the users download url is never used since the users
+		//come together with the forms during forms download.
+		
+		/*String s = (String)conParams.get(TransportLayer.KEY_USER_DOWNLOAD_HTTP_URL);
 		if(s == null) s = TransportConstants.USERSSDOWNLOAD_URL;
 		TextField txtField = new TextField(MenuText.USER_DOWNLOAD_URL(),s,500,TextField.ANY);
-		frm.append(txtField);
+		frm.append(txtField);*/
 		
-		s = (String)conParams.get(TransportLayer.KEY_FORM_DOWNLOAD_HTTP_URL);
+		String s = (String)conParams.get(TransportLayer.KEY_FORM_DOWNLOAD_HTTP_URL);
 		if(s == null) s = TransportConstants.FORMSDOWNLOAD_URL;
-		txtField = new TextField(MenuText.FORM_DOWNLOAD_URL(),s,500,TextField.ANY);
+		TextField txtField = new TextField(MenuText.FORM_DOWNLOAD_URL(),s,500,TextField.ANY);
 		frm.append(txtField);
 		
 		s = (String)conParams.get(TransportLayer.KEY_DATA_UPLOAD_HTTP_URL);
