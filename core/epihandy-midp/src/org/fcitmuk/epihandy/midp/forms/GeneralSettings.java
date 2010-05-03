@@ -18,7 +18,7 @@ public class GeneralSettings extends AbstractView{
 	private static final String KEY_SINGLE_QUESTION_EDIT = "SINGLE_QUESTION_EDIT";
 	public static final String KEY_QUESTION_NUMBERING = "QUESTION_NUMBERING";
 	public static final String KEY_OK_ON_RIGHT = "OK_ON_RIGHT";
-	public static final String KEY_DELETE_DATA_AFTER_UPLOAD = "DELETE_DATA_AFTER_UPLOAD";
+	//public static final String KEY_DELETE_DATA_AFTER_UPLOAD = "DELETE_DATA_AFTER_UPLOAD";
 	public static final String STORAGE_NAME_SETTINGS = "fcitmuk.GeneralSettings";
 	
 	private ChoiceGroup currentCtrl;
@@ -37,13 +37,13 @@ public class GeneralSettings extends AbstractView{
 		currentCtrl.append(MenuText.SINGLE_QUESTION_EDIT(), null);
 		currentCtrl.append(MenuText.NUMBERING(), null);
 		currentCtrl.append(MenuText.OK_ON_RIGHT(), null);
-		currentCtrl.append(MenuText.DELETE_AFTER_UPLOAD(), null);
+		//currentCtrl.append(MenuText.DELETE_AFTER_UPLOAD(), null);
 		
 		Settings settings = new Settings(STORAGE_NAME_SETTINGS,true);
 		currentCtrl.setSelectedIndex(0,Utilities.stringToBoolean(settings.getSetting(KEY_SINGLE_QUESTION_EDIT)));
 		currentCtrl.setSelectedIndex(1,Utilities.stringToBoolean(settings.getSetting(KEY_QUESTION_NUMBERING)));
 		currentCtrl.setSelectedIndex(2,Utilities.stringToBoolean(settings.getSetting(KEY_OK_ON_RIGHT)));
-		currentCtrl.setSelectedIndex(3,Utilities.stringToBoolean(settings.getSetting(KEY_DELETE_DATA_AFTER_UPLOAD),true));
+		//currentCtrl.setSelectedIndex(3,Utilities.stringToBoolean(settings.getSetting(KEY_DELETE_DATA_AFTER_UPLOAD),true));
 		
 		screen.setCommandListener(this);
 		((Form)screen).append(currentCtrl);
@@ -82,7 +82,7 @@ public class GeneralSettings extends AbstractView{
 		settings.setSetting(KEY_SINGLE_QUESTION_EDIT,Utilities.booleanToString((currentCtrl.isSelected(0))));
 		settings.setSetting(KEY_QUESTION_NUMBERING,Utilities.booleanToString((currentCtrl.isSelected(1))));
 		settings.setSetting(KEY_OK_ON_RIGHT,Utilities.booleanToString((currentCtrl.isSelected(2))));
-		settings.setSetting(KEY_DELETE_DATA_AFTER_UPLOAD,Utilities.booleanToString((currentCtrl.isSelected(3))));
+		//settings.setSetting(KEY_DELETE_DATA_AFTER_UPLOAD,Utilities.booleanToString((currentCtrl.isSelected(3))));
 		settings.saveSettings();
 		
 		DefaultCommands.cmdOk = new Command(MenuText.OK(), currentCtrl.isSelected(3) ? Command.CANCEL : Command.OK, 1);
@@ -109,7 +109,7 @@ public class GeneralSettings extends AbstractView{
 		return Utilities.stringToBoolean(settings.getSetting(KEY_OK_ON_RIGHT));
 	}
 	
-	public static boolean deleteDataAfterUpload(){
+	/*public static boolean deleteDataAfterUpload(){
 		Settings settings = new Settings(STORAGE_NAME_SETTINGS,true);
 		return Utilities.stringToBoolean(settings.getSetting(KEY_DELETE_DATA_AFTER_UPLOAD),true);
 	}
@@ -117,5 +117,5 @@ public class GeneralSettings extends AbstractView{
 	public static void setDeleteDataAfterUpload(boolean delete){
 		Settings settings = new Settings(STORAGE_NAME_SETTINGS,true);
 		settings.setSetting(KEY_DELETE_DATA_AFTER_UPLOAD,Utilities.booleanToString(delete));
-	}
+	}*/
 }

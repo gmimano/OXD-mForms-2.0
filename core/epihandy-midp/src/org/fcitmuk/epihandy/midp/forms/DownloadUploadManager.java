@@ -527,11 +527,11 @@ public class DownloadUploadManager implements TransportLayerListener,AlertMessag
 			try {
 				ResponseHeader status = (ResponseHeader) dataOut;
 				if (status.isSuccess()) {
-					if(GeneralSettings.deleteDataAfterUpload()){
+					//if(GeneralSettings.deleteDataAfterUpload()){
 						//EpihandyDataStorage.deleteData(new StudyDefList(studyList));
 						//assert(formData != null);
 						EpihandyDataStorage.deleteFormData(studyId, formData);
-					}
+					//}
 
 					if(currentDataCount == totalDataCount){
 						message = MenuText.DATA_UPLOAD_SUCCESS();
