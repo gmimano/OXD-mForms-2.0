@@ -139,10 +139,9 @@ public class ConnectionSettings extends AbstractView {
 		if(currentAction == CA_CON_PARAMS){
 			if(d != null){
 				if(conType == TransportLayer.CON_TYPE_HTTP){
-					conParams.put(TransportLayer.KEY_USER_DOWNLOAD_HTTP_URL, ((TextField)((Form)d).get(0)).getString());
-					//conParams.put(TransportLayer.KEY_PATIENT_DOWNLOAD_HTTP_URL, ((TextField)((Form)d).get(1)).getString());
-					conParams.put(TransportLayer.KEY_FORM_DOWNLOAD_HTTP_URL, ((TextField)((Form)d).get(1)).getString());
-					conParams.put(TransportLayer.KEY_DATA_UPLOAD_HTTP_URL, ((TextField)((Form)d).get(2)).getString());
+					//conParams.put(TransportLayer.KEY_USER_DOWNLOAD_HTTP_URL, ((TextField)((Form)d).get(0)).getString());
+					conParams.put(TransportLayer.KEY_FORM_DOWNLOAD_HTTP_URL, ((TextField)((Form)d).get(0)).getString());
+					conParams.put(TransportLayer.KEY_DATA_UPLOAD_HTTP_URL, ((TextField)((Form)d).get(1)).getString());
 					
 					for(int i=0; i<connectionParameters.size(); i++)
 					{
