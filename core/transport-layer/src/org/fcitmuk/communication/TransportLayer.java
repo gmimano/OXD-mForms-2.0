@@ -176,10 +176,10 @@ public class TransportLayer implements Runnable, BluetoothClientListener, AlertM
 
 	private Thread thread;
 	
-	/** Flag to know if we should show the data transfer progress message.
-	 * We want to turn this off such that the caller's displayed progress message is not overwritten.
+	/** 
+	 * api user custom progress message.
 	 */
-	private boolean showProgressMessage = true;
+	private String progressMessage;
 
 	
 	/** Cconstructs a transport layer object. */
@@ -346,10 +346,8 @@ public class TransportLayer implements Runnable, BluetoothClientListener, AlertM
 	 * @param dataOut - Data received.
 	 * @param eventListener - Reference to listener for communication events.
 	 */
-	public void download(Persistent dataInParams, Persistent dataIn, Persistent dataOutParams, Persistent dataOut,TransportLayerListener eventListener, String userName, String password){
-		showProgressMessage = true;
-		
-		saveParameters(dataInParams,dataIn,dataOutParams,dataOut,eventListener,true,userName, password);
+	public void download(Persistent dataInParams, Persistent dataIn, Persistent dataOutParams, Persistent dataOut,TransportLayerListener eventListener, String userName, String password, String progressMessage){
+		saveParameters(dataInParams,dataIn,dataOutParams,dataOut,eventListener,true,userName, password,progressMessage);
 
 		if(thread != null)
 			thread = null;
@@ -368,10 +366,9 @@ public class TransportLayer implements Runnable, BluetoothClientListener, AlertM
 	 * @param dataOut - Data received if any.
 	 * @param eventListener - Reference to listener to communication events.
 	 */
-	public void upload( Persistent dataInParams, Persistent dataIn, Persistent dataOutParams, Persistent dataOut,TransportLayerListener eventListener, String userName, String password){
-		showProgressMessage = false;
+	public void upload(Persistent dataInParams, Persistent dataIn, Persistent dataOutParams, Persistent dataOut,TransportLayerListener eventListener, String userName, String password, String progressMessage){
+		saveParameters(dataInParams,dataIn,dataOutParams,dataOut,eventListener,false,userName, password,progressMessage);
 		
-		saveParameters(dataInParams,dataIn,dataOutParams,dataOut,eventListener,false,userName, password);
 		new Thread(this).start();
 	}
 
@@ -384,7 +381,7 @@ public class TransportLayer implements Runnable, BluetoothClientListener, AlertM
 	 * @param dataOut - Data received if any.
 	 * @param eventListener - Reference to listener to communication events.
 	 */
-	private void saveParameters(Persistent dataInParams, Persistent dataIn, Persistent dataOutParams, Persistent dataOut,TransportLayerListener eventListener, boolean isDownload, String userName, String password){
+	private void saveParameters(Persistent dataInParams, Persistent dataIn, Persistent dataOutParams, Persistent dataOut,TransportLayerListener eventListener, boolean isDownload, String userName, String password, String progressMessage){
 		this.dataInParams = dataInParams;
 		this.dataIn = dataIn;
 		this.dataOutParams = dataOutParams;
@@ -393,6 +390,7 @@ public class TransportLayer implements Runnable, BluetoothClientListener, AlertM
 		this.isDownload = isDownload;
 		this.userName = userName;
 		this.password = password;
+		this.progressMessage = progressMessage;
 	}
 
 	/** 
@@ -404,7 +402,7 @@ public class TransportLayer implements Runnable, BluetoothClientListener, AlertM
 		cancelled = false;
 		btClient = null;
 
-		//TODO Need to parameterise the title.
+		//TODO Need to parameterize the title.
 		alertMsg  = new AlertMessage(display, title, prevScreen,this);
 
 		showConnectionProgress(MenuText.CONNECTING_TO_SERVER());
@@ -450,9 +448,9 @@ public class TransportLayer implements Runnable, BluetoothClientListener, AlertM
 	 * @param dis - Stream to read data from.
 	 * @throws IOException - Thrown when there is a problem for a read or write operation.
 	 */
-	protected void handleStreams(DataOutputStream dos,DataInputStream dis) throws IOException {
+	protected void handleStreams(DataOutputStream dos, DataInputStream dis) throws IOException {
 		try{			
-			showConnectionProgress(MenuText.TRANSFERING_DATA());
+			showConnectionProgress(progressMessage != null ? progressMessage : MenuText.TRANSFERING_DATA());
 
 			if(dataInParams != null) //for now http will not send this value.
 				dataInParams.write(dos); 
@@ -470,7 +468,7 @@ public class TransportLayer implements Runnable, BluetoothClientListener, AlertM
 			this.eventListener.errorOccured(MenuText.PROBLEM_HANDLING_STREAMS(),e);
 			//e.printStackTrace(); //TODO May need to report this to user.
 		}finally{
-			try{
+			try{				
 				dis.close();
 				dis = null;
 			}catch(Exception ex){
@@ -564,7 +562,7 @@ public class TransportLayer implements Runnable, BluetoothClientListener, AlertM
 		try{
 			String HTTP_URL = (String)conParams.get(TransportLayer.KEY_HTTP_URL);  
 			con = (HttpConnection)Connector.open(HTTP_URL);
-			showConnectionProgress(MenuText.TRANSFERING_DATA());
+			showConnectionProgress(progressMessage != null ? progressMessage : MenuText.TRANSFERING_DATA());
 
 			((HttpConnection)con).setRequestMethod(HttpConnection.POST);
 			((HttpConnection)con).setRequestProperty("Content-Type","application/octet-stream");
@@ -821,7 +819,7 @@ public class TransportLayer implements Runnable, BluetoothClientListener, AlertM
 		 return port1;
 	}*/
 
-	private boolean openBluetoothConnection(){	
+	private synchronized boolean openBluetoothConnection(){	
 		try{
 			connectionRetries++;
 			con = null;
@@ -906,9 +904,9 @@ public class TransportLayer implements Runnable, BluetoothClientListener, AlertM
 	}
 
 	private void showConnectionProgress(String message){
-		if(showProgressMessage)
-			alertMsg.showProgress(title, message);
+			alertMsg.showProgress(title, (progressMessage != null && serviceUrl != null) ? progressMessage : message);
 	}
+	
 	/**
 	 * Processes the command events.
 	 * 

@@ -256,7 +256,7 @@ public class DownloadUploadManager implements TransportLayerListener,AlertMessag
 		requestHeader.setAction(RequestHeader.ACTION_DOWNLOAD_STUDY_LIST);
 
 		setCommunicationParams();
-		transportLayer.download(requestHeader, null, responseHeader,new StudyDefList(), this, userName, password);
+		transportLayer.download(requestHeader, null, responseHeader,new StudyDefList(), this, userName, password,null);
 	}
 
 	private void downloadForms() {
@@ -274,7 +274,7 @@ public class DownloadUploadManager implements TransportLayerListener,AlertMessag
 		}
 
 		setCommunicationParams();
-		transportLayer.download(requestHeader, studyIdParam, responseHeader,new UserStudyDefLists(), this, userName, password); // StudyDef
+		transportLayer.download(requestHeader, studyIdParam, responseHeader,new UserStudyDefLists(), this, userName, password,null); // StudyDef
 	}
 
 	private void downloadUsers() {
@@ -283,7 +283,7 @@ public class DownloadUploadManager implements TransportLayerListener,AlertMessag
 		requestHeader.setLocale(LanguageSettings.getLocale());
 		requestHeader.setAction(RequestHeader.ACTION_DOWNLOAD_USERS);
 		setCommunicationParams();
-		transportLayer.download(requestHeader, null, responseHeader,new UserList(), this, userName, password);
+		transportLayer.download(requestHeader, null, responseHeader,new UserList(), this, userName, password,null);
 	}
 
 	private void downloadLanguages() {
@@ -292,7 +292,7 @@ public class DownloadUploadManager implements TransportLayerListener,AlertMessag
 		requestHeader.setLocale(LanguageSettings.getLocale());
 		requestHeader.setAction(RequestHeader.ACTION_DOWNLOAD_LANGUAGES);
 		setCommunicationParams();
-		transportLayer.download(requestHeader, null, responseHeader,new LanguageList(), this, userName, password);
+		transportLayer.download(requestHeader, null, responseHeader,new LanguageList(), this, userName, password,null);
 	}
 
 	private void downloadMenuText() {
@@ -301,7 +301,7 @@ public class DownloadUploadManager implements TransportLayerListener,AlertMessag
 		requestHeader.setLocale(LanguageSettings.getLocale());
 		requestHeader.setAction(RequestHeader.ACTION_DOWNLOAD_MENU_TEXT);
 		setCommunicationParams();
-		transportLayer.download(requestHeader, null, responseHeader,new MenuTextList(), this, userName, password);
+		transportLayer.download(requestHeader, null, responseHeader,new MenuTextList(), this, userName, password,null);
 	}
 
 	/** Uploads collected data to the server. */
@@ -340,12 +340,12 @@ public class DownloadUploadManager implements TransportLayerListener,AlertMessag
 			}
 		}
 		
-		alertMsg.showProgress(MenuText.DATA_UPLOAD(), "Uploading " + currentDataCount + " of " + totalDataCount);
+		//alertMsg.showProgress(MenuText.DATA_UPLOAD(), "Uploading " + currentDataCount + " of " + totalDataCount);
 		
 		requestHeader.setLocale(LanguageSettings.getLocale());
 		requestHeader.setAction(RequestHeader.ACTION_UPLOAD_DATA);
 		setCommunicationParams();
-		transportLayer.upload(requestHeader, new StudyDataList(new StudyData(studyId,formData)), responseHeader,responseHeader, this, userName, password);
+		transportLayer.upload(requestHeader, new StudyDataList(new StudyData(studyId,formData)), responseHeader,responseHeader, this, userName, password,"Uploading " + currentDataCount + " of " + totalDataCount);
 	}
 
 	/**
@@ -530,7 +530,7 @@ public class DownloadUploadManager implements TransportLayerListener,AlertMessag
 					//if(GeneralSettings.deleteDataAfterUpload()){
 						//EpihandyDataStorage.deleteData(new StudyDefList(studyList));
 						//assert(formData != null);
-						EpihandyDataStorage.deleteFormData(studyId, formData);
+						//EpihandyDataStorage.deleteFormData(studyId, formData);
 					//}
 
 					if(currentDataCount == totalDataCount){
@@ -545,8 +545,7 @@ public class DownloadUploadManager implements TransportLayerListener,AlertMessag
 					}
 				} 
 				else
-					message = MenuText.DATA_UPLOAD_FAILURE();
-			} catch (Exception e) {
+;			} catch (Exception e) {
 				//e.printStackTrace();
 				message = MenuText.PROBLEM_CLEANING_STORE();
 			}
