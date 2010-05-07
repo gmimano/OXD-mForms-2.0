@@ -530,7 +530,7 @@ public class DownloadUploadManager implements TransportLayerListener,AlertMessag
 					//if(GeneralSettings.deleteDataAfterUpload()){
 						//EpihandyDataStorage.deleteData(new StudyDefList(studyList));
 						//assert(formData != null);
-						//EpihandyDataStorage.deleteFormData(studyId, formData);
+						EpihandyDataStorage.deleteFormData(studyId, formData);
 					//}
 
 					if(currentDataCount == totalDataCount){
