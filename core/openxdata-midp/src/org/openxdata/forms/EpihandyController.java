@@ -193,7 +193,7 @@ public class EpihandyController implements Controller, StorageListener, AlertMes
 	}
 
 
-	public void startEdit(QuestionData currentQuestion,byte pos, byte count){		
+	public void startEdit(QuestionData currentQuestion,int pos, int count){		
 		//Inform the user that we are about to start editing.
 		boolean edit = true;
 		edit = formEventListener.beforeQuestionEdit(currentQuestion);

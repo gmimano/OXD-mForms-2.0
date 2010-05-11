@@ -480,7 +480,7 @@ public class FormView extends AbstractView implements AlertMessageListener {
 				edit = listener.beforeQuestionEdit(currentQuestion); //give the API user a chance to override this editing.
 
 			if(edit)
-				getEpihandyController().startEdit(currentQuestion,(byte)(currentQuestionIndex+1),(byte)displayedQuestions.size());
+				getEpihandyController().startEdit(currentQuestion,(currentQuestionIndex+1),displayedQuestions.size());
 		}
 	}
 
