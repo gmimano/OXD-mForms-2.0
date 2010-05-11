@@ -5,9 +5,9 @@
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/transport-layer"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/midp-utils"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/midp-mvc"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/epihandy"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/dbutils"/>
-	<classpathentry kind="con" path="org.elipse.mtj.JavaMEContainer/Sun Java(TM) Wireless Toolkit 2.5.2 for CLDC/MediaControlSkin"/>
+	<classpathentry kind="con" path="org.elipse.mtj.JavaMEContainer/Java(TM) Platform Micro Edition SDK 3.0/DefaultCldcPhone2"/>
 	<classpathentry exported="true" kind="lib" path="lib/cldc_classes.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/openxdata"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

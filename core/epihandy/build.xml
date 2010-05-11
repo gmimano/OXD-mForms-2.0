@@ -5,7 +5,7 @@
 <!-- ** @author Daniel Kayiwa                               ** -->
 <!-- ** @version 1.0                                        ** -->
 <!-- ********************************************************* -->
-<project name="epihandy" default="package">
+<project name="openxdata" default="package">
 	<property file="../build.properties"/>
 	<property name="midp" value="${WTK-ROOT}"/>
 	<property name="midp_lib" value="${midp}/lib/midpapi20.jar"/>
@@ -54,7 +54,7 @@
 		<mkdir dir="dist" />
 		
 		<!-- Create distributable jar file -->
-		<jar destfile="dist/epihandy.jar">
+		<jar destfile="dist/openxdata.jar">
 			<fileset dir="build/preverified" includes="**/*" />
 		</jar>
 	</target>

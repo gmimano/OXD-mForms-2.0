@@ -1,4 +1,4 @@
-package org.fcitmuk.communication;
+package org.openxdata.communication;
 
 /**
  * This class contains properties specifying the server urls used for

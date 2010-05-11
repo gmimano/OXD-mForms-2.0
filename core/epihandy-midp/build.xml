@@ -5,13 +5,13 @@
 <!-- ** @author Daniel Kayiwa                               ** -->
 <!-- ** @version 1.0                                        ** -->
 <!-- ********************************************************* -->
-<project name="epihandy-midp" default="package">
+<project name="openxdata-midp" default="package">
 	<property file="../build.properties"/>
 		<property name="midp" value="${WTK-ROOT}"/>
 	<property name="midp_lib" value="${midp}/lib/midpapi20.jar"/>
 	<property name="cldc_lib" value="${midp}/lib/cldcapi10.jar" />
 	<property name="mmapi" value="${midp}/lib/mmapi.jar"/>
-	<property name="epihandy" value="../epihandy/dist/epihandy.jar"/>
+	<property name="openxdata" value="../openxdata/dist/openxdata.jar"/>
 	<property name="midp-mvc" value="../midp-mvc/dist/midp-mvc.jar"/>
 	<property name="midp-dbutils" value="../midp-dbutils/dist/midp-dbutils.jar"/>
 	<property name="midp-utils" value="../midp-utils/dist/midp-utils.jar"/>
@@ -38,7 +38,7 @@
 			<pathelement location="${midp_lib}"/>
 			<pathelement location="${cldc_lib}" />
 			<pathelement location="${mmapi}"/>
-			<pathelement location="${epihandy}"/>
+			<pathelement location="${openxdata}"/>
 			<pathelement location="${midp-dbutils}"/>
 			<pathelement location="${dbutils}"/>
 			<pathelement location="${midp-utils}"/>
@@ -67,7 +67,7 @@
 	<target name="preverify" depends="clean,init, compile">
 		<mkdir dir="build/preverified"/>
 		<exec executable ="${midp}/bin/preverify">
-			<arg line="-classpath ${midp_lib}${path.separator}${cldc_lib}${path.separator}${mmapi}${path.separator}${midp-dbutils}${path.separator}${midp-mvc}${path.separator}${midp-utils}${path.separator}${transport-layer}${path.separator}${dbutils}${path.separator}${cldc_classes.zip}${path.separator}${epihandy}"/>
+			<arg line="-classpath ${midp_lib}${path.separator}${cldc_lib}${path.separator}${mmapi}${path.separator}${midp-dbutils}${path.separator}${midp-mvc}${path.separator}${midp-utils}${path.separator}${transport-layer}${path.separator}${dbutils}${path.separator}${cldc_classes.zip}${path.separator}${openxdata}"/>
 			<arg line="-d build/preverified"/>
 			<arg line="bin"/>
 		</exec>
@@ -77,7 +77,7 @@
 		<mkdir dir="dist" />
 		
 		<!-- Create distributable jar file -->
-		<jar destfile="dist/epihandy-midp.jar">
+		<jar destfile="dist/openxdata-midp.jar">
 			<fileset dir="build/preverified" includes="**/*" />
 			<!-- <zipfileset src="${cldc_classes.zip}"/> -->
 		</jar>

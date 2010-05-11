@@ -12,7 +12,7 @@
 	<property name="midp_lib" value="${midp}/lib/midpapi20.jar"/>
 	<property name="cldc_lib" value="${midp}/lib/cldcapi10.jar" />
 	<property name="dbutils" value="../dbutils/dist/dbutils.jar"/>
-	<property name="epihandy" value="../epihandy/dist/epihandy.jar"/>
+	<property name="openxdata" value="../openxdata/dist/openxdata.jar"/>
 	
 	<!-- *********************************************************** -->
 	<!-- **                     TARGETS                           ** -->
@@ -23,7 +23,7 @@
 			<pathelement location="${dbutils}"/>
 			<pathelement location="${midp_lib}"/>
 			<pathelement location="${cldc_lib}" />
-			<pathelement location="${epihandy}" />
+			<pathelement location="${openxdata}" />
 			<!-- <fileset dir="lib">
 				<include name="**/*.jar"/>
 			</fileset>

@@ -1,4 +1,4 @@
-package org.fcitmuk.epihandy.forms;
+package org.openxdata.forms;
 
 /**
  * This class contains properties specifying the text that should

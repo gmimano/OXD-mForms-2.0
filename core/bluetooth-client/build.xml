@@ -10,7 +10,7 @@
 	<property name="midp" value="${WTK-ROOT}"/>
 	<property name="midp_lib" value="${midp}/lib/midpapi20.jar"/>
 	<property name="cldc_lib" value="${midp}/lib/cldcapi10.jar" />
-	<property name="epihandy" value="../epihandy/dist/epihandy.jar"/>
+	<property name="openxdata" value="../openxdata/dist/openxdata.jar"/>
 	<property name="dbutils" value="../dbutils/dist/dbutils.jar"/>
 	<property name="bluecove" value="lib/bluecove-2.1.0.jar"/>
 	
@@ -25,7 +25,7 @@
 				<include name="**/*.jar"/>
 			</fileset>
 			
-			<pathelement location="${epihandy}"/>
+			<pathelement location="${openxdata}"/>
 			<pathelement location="${dbutils}"/>
 			<pathelement location="${bluecove}"/>
 		</path>
@@ -61,7 +61,7 @@
 	<target name="preverify" depends="clean,init, compile">
 		<mkdir dir="build/preverified"/>
 		<exec executable ="${midp}/bin/preverify">
-			<arg line="-classpath ${midp_lib}${path.separator}${cldc_lib}${path.separator}${dbutils}${path.separator}${epihandy}${path.separator}${bluecove}"/>
+			<arg line="-classpath ${midp_lib}${path.separator}${cldc_lib}${path.separator}${dbutils}${path.separator}${openxdata}${path.separator}${bluecove}"/>
 			<arg line="-d build/preverified"/>
 			<arg line="bin"/>
 		</exec>

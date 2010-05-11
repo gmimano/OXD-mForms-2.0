@@ -6,7 +6,7 @@
 <!-- ********************************************************* -->
 <project name="build-version" default="init">
 	
-	<property file="build.properties" />
+	<property file="../build.properties"/>
 	
 	<taskdef resource="net/sf/antcontrib/antcontrib.properties">
 		<classpath>
@@ -26,11 +26,11 @@
 			<filter token="usersdownload.url" value="${usersdownload.url}" />
 		</filterset>
 			
-		<copy file="${basedir}/template/TransportConstants.java" toFile="${basedir}/src/org/fcitmuk/communication/TransportConstants.java" overwrite="true">
+		<copy file="${basedir}/template/TransportConstants.java" toFile="${basedir}/src/org/openxdata/communication/TransportConstants.java" overwrite="true">
 		  <filterset refid="variables.to.replace" />
 		</copy>
 		
-		<echo message = "successfully built transport connection setting properties: see ${basedir}/src/org/fcitmuk/communication/TransportConstants.java"/>
+		<echo message = "successfully built transport connection setting properties: see ${basedir}/src/org/openxdata/communication/TransportConstants.java"/>
 		<echo message = "now please refresh your project (F5)" />
 		
 	</target>

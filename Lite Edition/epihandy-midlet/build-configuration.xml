@@ -6,7 +6,7 @@
 <!-- ********************************************************* -->
 <project name="build-version" default="init">
 	
-	<property file="build.properties" />
+	<property file="..\..\core\build.properties"/>
 	
 	<taskdef resource="net/sf/antcontrib/antcontrib.properties">
 		<classpath>
@@ -30,7 +30,7 @@
 		<copy file="${basedir}/template/Application Descriptor" toFile="${basedir}/Application Descriptor" overwrite="true">
 			<filterset refid="variables.to.replace" />
 		</copy>
-		<copy file="${basedir}/template/MidletConstants.java" toFile="${basedir}/src/org/fcitmuk/epihandy/forms/MidletConstants.java" overwrite="true">
+		<copy file="${basedir}/template/MidletConstants.java" toFile="${basedir}/src/org/openxdata/forms/MidletConstants.java" overwrite="true">
 			<filterset refid="variables.to.replace" />
 		</copy>
 
