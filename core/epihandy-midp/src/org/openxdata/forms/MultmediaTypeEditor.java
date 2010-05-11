@@ -50,7 +50,7 @@ public class MultmediaTypeEditor extends AbstractView implements TypeEditor, Ale
 
 	}
 
-	public void startEdit(QuestionData data, ValidationRule validationRule, boolean singleQtnEdit,byte pos, byte count, TypeEditorListener listener){
+	public void startEdit(QuestionData data, ValidationRule validationRule, boolean singleQtnEdit,int pos, int count, TypeEditorListener listener){
 		try{
 			this.questionData = data;
 			this.listener = listener;

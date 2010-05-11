@@ -27,8 +27,8 @@ public class RepeatTypeEditor extends AbstractView implements TypeEditor, TypeEd
 	private RepeatQtnsDataList rptQtnsDataList;
 	private RepeatQtnsDef rptQtnsDef;
 	private RepeatQtnsData rptQtnsData; //the current one.
-	private byte pos; //question position pn the form.
-	private byte count; //total number of questions on the form.
+	private int pos; //question position pn the form.
+	private int count; //total number of questions on the form.
 	
 	private RptQtnsDataListView dataListView = new RptQtnsDataListView();
 	private RptQtnsDataView dataView = new RptQtnsDataView();
@@ -41,7 +41,7 @@ public class RepeatTypeEditor extends AbstractView implements TypeEditor, TypeEd
 		
 	//}
 
-	public void startEdit(QuestionData data, ValidationRule validationRule, boolean singleQtnEdit,byte pos, byte count, TypeEditorListener listener){
+	public void startEdit(QuestionData data, ValidationRule validationRule, boolean singleQtnEdit,int pos, int count, TypeEditorListener listener){
 		questionData = data;
 		this.validationRule = validationRule;
 		this.pos = pos;

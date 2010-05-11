@@ -41,7 +41,7 @@ public class DefaultTypeEditor extends AbstractView implements TypeEditor,AlertM
 
 	private static int BOOLEAN_NO_SELECTION_INDEX = 2;
 
-	public void startEdit(QuestionData data, ValidationRule validationRule, boolean singleQtnEdit,byte pos,byte count,TypeEditorListener listener){
+	public void startEdit(QuestionData data, ValidationRule validationRule, boolean singleQtnEdit,int pos,int count,TypeEditorListener listener){
 		currentQuestion = data;
 		this.validationRule = validationRule;
 		this.listener = listener;

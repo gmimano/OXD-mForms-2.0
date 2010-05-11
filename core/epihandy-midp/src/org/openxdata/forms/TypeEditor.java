@@ -31,5 +31,5 @@ public interface TypeEditor extends View {
 	 * 
 	 * @param listener the listener to type editing events. Eg when editing stops.
 	 */
-	public void startEdit(QuestionData data, ValidationRule validationRule, boolean singleQtnEdit,byte pos, byte count,TypeEditorListener listener);
+	public void startEdit(QuestionData data, ValidationRule validationRule, boolean singleQtnEdit,int pos, int count,TypeEditorListener listener);
 }
