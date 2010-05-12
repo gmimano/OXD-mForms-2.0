@@ -44,41 +44,25 @@ public class FormDataListView extends AbstractView implements AlertMessageListen
 	 * @param def - the form definition.
 	 */
 	public void showFormList(FormDef def, Vector frmDataList){
-		String s = "1";
 		
 		try{
 			this.formDef = def;
 			this.formDataList = frmDataList;
-
-			s = "2";
 			
 			screen = new List(def.getName()+ " - " + MenuText.DATA_LIST() + " - " + title, Choice.IMPLICIT );
+			((List)screen).setFitPolicy(List.TEXT_WRAP_ON);
+			
 			alertMsg = new AlertMessage(display, title, screen, this);
 
-			s = "3";
 			if(formDataList != null){
 				for(int i=0; i<formDataList.size(); i++){
-					s = "4";
 					FormData data = (FormData)formDataList.elementAt(i);
-					s = "5";
-					
-					String ret = data.setDef(def);
-					if(ret != null){
-						s = s + " -> " + ret;
-						throw new Exception(" here");
-					}
-						
-					s = "6";
 					data.buildDataDescription();
-					s = "7";
 					((List)screen).append(data.toString(), null);
-					s = "8";
 				}
 			}
 			else
 				formDataList = new Vector();
-
-			s = "9";
 			
 			screen.setCommandListener(this);
 			screen.addCommand(DefaultCommands.cmdNew);
@@ -89,15 +73,13 @@ public class FormDataListView extends AbstractView implements AlertMessageListen
 
 			/*if((this.currentFormDataIndex != EpihandyConstants.NO_SELECTION) && (this.currentFormDataIndex < formDataList.size()))
 				mainList.setSelectedIndex(this.currentFormDataIndex, true);*/
-
-			s = "10";
 			
 			display.setCurrent(screen);
 		}
 		catch(Exception ex){
 			currentAction = CA_ERROR;
 			//TODO Changing form definition corrupts existing data. So it's safe to first upload all form collected data before downloading new form definitions.
-			alertMsg.showError(s + MenuText.DATA_LIST_DISPLAY_PROBLEM()+ " " + ex.getMessage());
+			alertMsg.showError(MenuText.DATA_LIST_DISPLAY_PROBLEM()+ " " + ex.getMessage());
 			ex.printStackTrace();
 		}
 	}

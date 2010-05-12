@@ -37,6 +37,7 @@ public class UserSettings extends AbstractView {
 		this.transportLayer = transportLayer;
 		
 		screen = new List(MenuText.SETTINGS(), Choice.IMPLICIT);
+		((List)screen).setFitPolicy(List.TEXT_WRAP_ON);
 			
 		screen.addCommand(DefaultCommands.cmdSel);
 		screen.addCommand(DefaultCommands.cmdBack);

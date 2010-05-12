@@ -42,6 +42,7 @@ public class LanguageSettings extends AbstractView implements AlertMessageListen
 		setPrevScreen(prevScreen);
 
 		screen = new List(MenuText.LANGUAGE(), Choice.IMPLICIT);
+		((List)screen).setFitPolicy(List.TEXT_WRAP_ON);
 
 		alertMsg = new AlertMessage(display,title,screen,this);
 
@@ -105,6 +106,8 @@ public class LanguageSettings extends AbstractView implements AlertMessageListen
 					alertMsg.showConfirm(MenuText.NO_LANGUAGES_FOUND());
 				else{
 					languagesDisplay = new List(MenuText.SELECT_LANGUAGE(), Choice.IMPLICIT);
+					((List)languagesDisplay).setFitPolicy(List.TEXT_WRAP_ON);
+					
 					languages = new Vector();
 					String selLang = settings.getSetting(KEY_LOCALE);
 					int selectedLangIndex = 0;

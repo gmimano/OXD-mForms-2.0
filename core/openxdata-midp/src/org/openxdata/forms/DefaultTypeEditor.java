@@ -87,7 +87,8 @@ public class DefaultTypeEditor extends AbstractView implements TypeEditor,AlertM
 				((ChoiceGroup)currentCtrl).append(QuestionData.TRUE_DISPLAY_VALUE, null);
 				((ChoiceGroup)currentCtrl).append(QuestionData.FALSE_DISPLAY_VALUE, null);
 				((ChoiceGroup)currentCtrl).append(QuestionData.NO_SELECTION_VALUE, null);
-
+				((ChoiceGroup)currentCtrl).setFitPolicy(ChoiceGroup.TEXT_WRAP_ON);
+				
 				if(currentQuestion.getAnswer() != null)
 					index = ((Boolean)currentQuestion.getAnswer()).booleanValue() ? 0 : 1;
 				else
@@ -98,6 +99,8 @@ public class DefaultTypeEditor extends AbstractView implements TypeEditor,AlertM
 			case QuestionDef.QTN_TYPE_LIST_EXCLUSIVE:
 			case QuestionDef.QTN_TYPE_LIST_EXCLUSIVE_DYNAMIC:
 				currentCtrl = new ChoiceGroup(qtnText,Choice.EXCLUSIVE);
+				((ChoiceGroup)currentCtrl).setFitPolicy(ChoiceGroup.TEXT_WRAP_ON);
+				
 				Vector options = currentQuestion.getDef().getOptions();
 				if(options == null)
 					options = new Vector();
@@ -117,6 +120,8 @@ public class DefaultTypeEditor extends AbstractView implements TypeEditor,AlertM
 				break;
 			case QuestionDef.QTN_TYPE_LIST_MULTIPLE:
 				currentCtrl = new ChoiceGroup(qtnText,Choice.MULTIPLE);
+				((ChoiceGroup)currentCtrl).setFitPolicy(ChoiceGroup.TEXT_WRAP_ON);
+				
 				options = currentQuestion.getDef().getOptions();
 				if(options != null){
 					for(int i=0; i<options.size(); i++)

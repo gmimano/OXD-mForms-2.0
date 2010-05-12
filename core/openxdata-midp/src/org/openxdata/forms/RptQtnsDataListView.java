@@ -51,6 +51,8 @@ public class RptQtnsDataListView  extends AbstractView implements AlertMessageLi
 			this.controller = controller;
 
 			screen = new List(rptQtnsDef.getText()+ " - Data List - " + title, Choice.IMPLICIT );
+			((List)screen).setFitPolicy(List.TEXT_WRAP_ON);
+			
 			alertMsg = new AlertMessage(display, title, screen, this);
 
 			//rptQtnsDataList should never be null.

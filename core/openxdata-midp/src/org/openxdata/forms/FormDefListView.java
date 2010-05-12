@@ -56,6 +56,8 @@ public class FormDefListView extends AbstractView implements AlertMessageListene
 		studyDef = currentStudy;
 
 		screen = new List(MenuText.SELECT_FORM() + " - "+title , Choice.IMPLICIT);
+		((List)screen).setFitPolicy(List.TEXT_WRAP_ON);
+		
 		alertMsg = new AlertMessage(display, title, screen, this);
 
 		try{

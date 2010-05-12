@@ -70,6 +70,7 @@ public class ConnectionSettings extends AbstractView {
 		currentAction = CA_CON_TYPES;
 		
 		screen = new List(MenuText.CONNECTION_TYPE(), Choice.IMPLICIT);
+		((List)screen).setFitPolicy(List.TEXT_WRAP_ON);
 		
 		//TODO This hashtable does not maintain the order on devices like sony erickson.
 		Enumeration keys = conTypes.keys();

@@ -59,6 +59,7 @@ public class RptQtnsDataView extends AbstractView implements AlertMessageListene
 				return;
 
 			screen = new List(rptQtnsData.getDef().getText(), Choice.IMPLICIT );
+			((List)screen).setFitPolicy(List.TEXT_WRAP_ON);
 			//alertMsg = new AlertMessage(display, title, screen, this);
 				
 			QuestionData data;

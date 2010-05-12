@@ -194,6 +194,8 @@ public class FormView extends AbstractView implements AlertMessageListener {
 
 			//create here such that the show page can use.
 			screen = new List(this.formData.getDef().getName() + " - " + title, Choice.IMPLICIT);
+			((List)screen).setFitPolicy(List.TEXT_WRAP_ON);
+			
 			alertMsg = new AlertMessage(display,title,screen,this);
 
 			showPage(currentPageIndex,new Integer(currentQuestionIndex));

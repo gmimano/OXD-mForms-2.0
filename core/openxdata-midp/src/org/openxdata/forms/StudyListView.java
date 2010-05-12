@@ -32,6 +32,7 @@ public class StudyListView extends AbstractView implements CommandListener  {
 		this.studyList = studyList;
 		
 		screen = new List(MenuText.SELECT_STUDY()+" - "+title , Choice.IMPLICIT);
+		((List)screen).setFitPolicy(List.TEXT_WRAP_ON);
 		
         StudyDef study; int selectedIndex = EpihandyConstants.NO_SELECTION;
 		Settings settings = new Settings(EpihandyConstants.STORAGE_NAME_EPIHANDY_SETTINGS,true);

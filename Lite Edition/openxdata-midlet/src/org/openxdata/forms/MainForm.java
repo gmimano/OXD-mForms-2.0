@@ -113,6 +113,8 @@ public class MainForm extends MIDlet  implements CommandListener,FormListener,St
 	
 	private void initMainList(){
 		mainList = new List(MidletConstants.TITLE, Choice.IMPLICIT);
+		((List)mainList).setFitPolicy(List.TEXT_WRAP_ON);
+		
 		mainList.insert(INDEX_SELECT_STUDY, MenuText.SELECT_STUDY(), null);
 		mainList.insert(INDEX_SELECT_FORM, MenuText.SELECT_FORM(), null);
 		mainList.insert(INDEX_DOWNLOAD_STUDY_LIST, MenuText.DOWNLOAD_STUDIES(), null);
