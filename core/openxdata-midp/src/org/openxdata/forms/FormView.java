@@ -410,7 +410,7 @@ public class FormView extends AbstractView implements AlertMessageListener {
 		if(pageNo != currentPageIndex)
 			showPage(pageNo,new Integer(0));
 
-		for(byte i=0; i<displayedQuestions.size(); i++){
+		for(int i=0; i<displayedQuestions.size(); i++){
 			QuestionData qtn = (QuestionData)displayedQuestions.elementAt(i);
 			QuestionDef def = qtn.getDef();
 			if(def.isMandatory() && !qtn.isAnswered()){
@@ -427,7 +427,7 @@ public class FormView extends AbstractView implements AlertMessageListener {
 		if(pageNo != currentPageIndex)
 			showPage(pageNo,new Integer(0));
 
-		for(byte i=0; i<displayedQuestions.size(); i++){
+		for(int i=0; i<displayedQuestions.size(); i++){
 			QuestionData qtn = (QuestionData)displayedQuestions.elementAt(i);
 
 			ValidationRule rule = formData.getDef().getValidationRule(qtn.getId());
