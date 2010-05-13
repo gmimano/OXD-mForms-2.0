@@ -1,5 +1,5 @@
 <project name="openxdata-midlet" default="run-non-obfuscated" basedir=".">
-	<property file="..\..\core\build.properties"/>
+	<property file="antbuild.properties"/>
 	<property name="midp" value="${WTK-ROOT}"/>
 	<property name="midp_lib" value="${midp}/lib/midpapi20.jar"/>
 	<property name="cldc_lib" value="${midp}/lib/cldcapi10.jar"/>
