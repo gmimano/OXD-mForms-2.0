@@ -6,7 +6,7 @@
 <!-- ********************************************************* -->
 <project name="build-version" default="init">
 	
-	<property file="..\..\core\build.properties"/>
+	<property file="antbuild.properties"/>
 	
 	<taskdef resource="net/sf/antcontrib/antcontrib.properties">
 		<classpath>
