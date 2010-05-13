@@ -61,8 +61,11 @@ public class FormDataListView extends AbstractView implements AlertMessageListen
 					((List)screen).append(data.toString(), null);
 				}
 			}
-			else
+			else{
+				//commandAction(DefaultCommands.cmdNew,screen);
+				//return;
 				formDataList = new Vector();
+			}
 			
 			screen.setCommandListener(this);
 			screen.addCommand(DefaultCommands.cmdNew);

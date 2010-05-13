@@ -1,5 +1,5 @@
 MIDlet-Jar-Size: 38739
-MIDlet-1: openXdata,/icons/openxdata.png ,org.openxdata.forms.MainForm
+MIDlet-1: openXdata,/icons/epihandy.png ,org.openxdata.forms.MainForm
 MIDlet-Jar-URL: openxdata-midlet-1.7.jar
 MicroEdition-Configuration: CLDC-1.0
 MIDlet-Version: 1.7
