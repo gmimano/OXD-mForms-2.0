@@ -1,4 +1,4 @@
-package org.fcitmuk.epihandy.xform;
+package org.openxdata.xform;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -12,15 +12,15 @@ import java.util.Vector;
 
 import junit.framework.TestCase;
 
-import org.fcitmuk.epihandy.FormData;
-import org.fcitmuk.epihandy.FormDef;
-import org.fcitmuk.epihandy.PageDef;
-import org.fcitmuk.epihandy.QuestionData;
-import org.fcitmuk.epihandy.QuestionDef;
-import org.fcitmuk.epihandy.RepeatQtnsData;
-import org.fcitmuk.epihandy.RepeatQtnsDataList;
-import org.fcitmuk.epihandy.RepeatQtnsDef;
 import org.kxml2.kdom.Document;
+import org.openxdata.model.FormData;
+import org.openxdata.model.FormDef;
+import org.openxdata.model.PageDef;
+import org.openxdata.model.QuestionData;
+import org.openxdata.model.QuestionDef;
+import org.openxdata.model.RepeatQtnsData;
+import org.openxdata.model.RepeatQtnsDataList;
+import org.openxdata.model.RepeatQtnsDef;
 
 public class EpihandyXformTest extends TestCase{
 
