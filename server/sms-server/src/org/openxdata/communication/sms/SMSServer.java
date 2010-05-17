@@ -1,4 +1,4 @@
-package org.fcitmuk.communication.sms;
+package org.openxdata.communication.sms;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
