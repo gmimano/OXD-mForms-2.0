@@ -1,17 +1,25 @@
-package org.fcitmuk.epihandy;
+package org.openxdata.serializer;
 
-import java.io.OutputStream;
-import java.io.InputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
-import org.fcitmuk.epihandy.xform.EpihandyXform;
 import org.kxml2.kdom.Document;
+import org.openxdata.model.FormData;
+import org.openxdata.model.FormDef;
+import org.openxdata.model.StudyData;
+import org.openxdata.model.StudyDataList;
+import org.openxdata.model.StudyDef;
+import org.openxdata.model.StudyDefList;
+import org.openxdata.model.User;
+import org.openxdata.xform.EpihandyXform;
+
 
 /**
  * Provides custom serialization of xforms for epihandy. We do binary serialization

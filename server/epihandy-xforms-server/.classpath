@@ -2,8 +2,9 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/epihandy"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/epihandy-xform-layer"/>
 	<classpathentry kind="lib" path="/minixpath/lib/kxml2-2.3.0.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/openxdata"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/openxdata-xform-layer"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/dbutils"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
