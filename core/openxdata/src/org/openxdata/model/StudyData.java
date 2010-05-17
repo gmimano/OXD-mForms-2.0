@@ -15,7 +15,7 @@ import org.openxdata.db.util.*;
  *
  */
 public class StudyData implements Persistent{
-	private int id = EpihandyConstants.NULL_ID; //this is just for storage;
+	private int id = OpenXdataConstants.NULL_ID; //this is just for storage;
 	private StudyDef def;
 	private Vector forms = new Vector();
 

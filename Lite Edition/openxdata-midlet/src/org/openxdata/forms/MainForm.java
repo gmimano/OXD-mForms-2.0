@@ -12,14 +12,14 @@ import javax.microedition.lcdui.List;
 import javax.microedition.midlet.MIDlet;
 
 import org.openxdata.communication.TransportLayer;
-import org.openxdata.db.EpihandyDataStorage;
+import org.openxdata.db.OpenXdataDataStorage;
 import org.openxdata.db.util.Settings;
 import org.openxdata.db.util.StorageListener;
 import org.openxdata.forms.FormListener;
 import org.openxdata.forms.FormManager;
 import org.openxdata.forms.LogonListener;
 import org.openxdata.forms.UserManager;
-import org.openxdata.model.EpihandyConstants;
+import org.openxdata.model.OpenXdataConstants;
 import org.openxdata.model.FormData;
 import org.openxdata.model.FormDef;
 import org.openxdata.model.QuestionData;
@@ -79,7 +79,7 @@ public class MainForm extends MIDlet  implements CommandListener,FormListener,St
 	 * tries to do something before logging in, and the logon mananer intervenes by requiring the
 	 * user to first login. This happens after downloading forms because a new list of users is got
 	 * which makes void the current users info. */
-	private int selectedIndex = EpihandyConstants.NO_SELECTION;
+	private int selectedIndex = OpenXdataConstants.NO_SELECTION;
 		
 	private static final String KEY_LAST_SELECTED_MAIN_MENU_ITEM =  "LAST_SELECTED_MAIN_MENU_ITEM";
 	
@@ -91,7 +91,7 @@ public class MainForm extends MIDlet  implements CommandListener,FormListener,St
 		
 		display = Display.getDisplay(this);
 		
-		MenuText.setMenuTextList(EpihandyDataStorage.getMenuText());
+		MenuText.setMenuTextList(OpenXdataDataStorage.getMenuText());
 		
 		initMainList();
 		
@@ -108,7 +108,7 @@ public class MainForm extends MIDlet  implements CommandListener,FormListener,St
 		formMgr = new FormManager(MidletConstants.TITLE,display,this, mainList,transportLayer,null);
 		FormManager.setGlobalInstance(formMgr);
 		
-		EpihandyDataStorage.storageListener = this;
+		OpenXdataDataStorage.storageListener = this;
 	}
 	
 	private void initMainList(){
@@ -126,7 +126,7 @@ public class MainForm extends MIDlet  implements CommandListener,FormListener,St
 		mainList.addCommand(DefaultCommands.cmdSel);
 		mainList.addCommand(DefaultCommands.cmdExit);
 		
-		Settings settings = new Settings(EpihandyConstants.STORAGE_NAME_EPIHANDY_SETTINGS,true);
+		Settings settings = new Settings(OpenXdataConstants.STORAGE_NAME_EPIHANDY_SETTINGS,true);
 		String val = settings.getSetting(KEY_LAST_SELECTED_MAIN_MENU_ITEM);
 		if(val != null)
 			mainList.setSelectedIndex(Integer.parseInt(val),true);
@@ -249,7 +249,7 @@ public class MainForm extends MIDlet  implements CommandListener,FormListener,St
 				break;
 		}
 		
-		Settings settings = new Settings(EpihandyConstants.STORAGE_NAME_EPIHANDY_SETTINGS,true);
+		Settings settings = new Settings(OpenXdataConstants.STORAGE_NAME_EPIHANDY_SETTINGS,true);
 		settings.setSetting(KEY_LAST_SELECTED_MAIN_MENU_ITEM, String.valueOf(selectedIndex));
 		settings.saveSettings();
 	}
@@ -387,7 +387,7 @@ public class MainForm extends MIDlet  implements CommandListener,FormListener,St
 	
 	public boolean onLoggedOn(){
 		boolean displayPrevScreen = false;
-		if(selectedIndex != EpihandyConstants.NO_SELECTION)
+		if(selectedIndex != OpenXdataConstants.NO_SELECTION)
 			handleMainListSelectCommand(selectedIndex);
 		else
 			displayPrevScreen = true;
@@ -396,7 +396,7 @@ public class MainForm extends MIDlet  implements CommandListener,FormListener,St
 	}
 	
 	public void onLogonCancel(){
-		if(selectedIndex == EpihandyConstants.NO_SELECTION)
+		if(selectedIndex == OpenXdataConstants.NO_SELECTION)
 			exit();
 		else
 			display.setCurrent(mainList);
@@ -405,7 +405,7 @@ public class MainForm extends MIDlet  implements CommandListener,FormListener,St
 	private void logout(){
 		/** If this is not reset, after loggin in, we shall wrongly execute an action that
 		 * the user did not intend to.*/
-		this.selectedIndex = EpihandyConstants.NO_SELECTION;
+		this.selectedIndex = OpenXdataConstants.NO_SELECTION;
 		
 		userMgr.logOut();
 		userMgr.logOn();

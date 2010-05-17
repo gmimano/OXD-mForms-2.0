@@ -29,16 +29,16 @@ public class FormDef implements Persistent{
 	//TODO May not need to serialize this property for smaller pay load. Then we may just rely on the id.
 	//afterall it is not even guaranteed to be unique.
 	/** The string unique identifier of the form definition. */
-	private String variableName = EpihandyConstants.EMPTY_STRING;
+	private String variableName = OpenXdataConstants.EMPTY_STRING;
 
 	/** The display name of the form. */
-	private String name = EpihandyConstants.EMPTY_STRING;
+	private String name = OpenXdataConstants.EMPTY_STRING;
 
 	/** The numeric unique identifier of the form definition. */
-	private int id = EpihandyConstants.NULL_ID;
+	private int id = OpenXdataConstants.NULL_ID;
 	
 	/** The key of the form. */
-	private String formKey = EpihandyConstants.EMPTY_STRING;
+	private String formKey = OpenXdataConstants.EMPTY_STRING;
 
 	/** The collection of skipRules (SkipRule objects) for this form. */
 	private Vector skipRules;
@@ -47,7 +47,7 @@ public class FormDef implements Persistent{
 	private Vector validationRules;
 
 	/** A string constistig for form fields that describe its data. eg description-template="${/data/question1}$ Market" */
-	private String descriptionTemplate =  EpihandyConstants.EMPTY_STRING;
+	private String descriptionTemplate =  OpenXdataConstants.EMPTY_STRING;
 
 	/** A mapping of dynamic lists keyed by the id of the question whose values
 	 *  determine possible values of another question as specified in the DynamicOptionDef object.
@@ -230,7 +230,7 @@ public class FormDef implements Persistent{
 		if(qtn != null)
 			return qtn.getId();
 
-		return EpihandyConstants.NULL_ID;
+		return OpenXdataConstants.NULL_ID;
 	}
 
 	public void addQuestion(QuestionDef qtn){

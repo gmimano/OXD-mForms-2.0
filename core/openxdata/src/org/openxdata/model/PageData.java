@@ -19,7 +19,7 @@ import org.openxdata.db.util.PersistentHelper;
 public class PageData  implements Persistent{
 
 	/** The page number. */
-	private byte pageNo = EpihandyConstants.NULL_ID;
+	private byte pageNo = OpenXdataConstants.NULL_ID;
 
 	/** A list of question data for this object. */
 	private Vector questions = new Vector();

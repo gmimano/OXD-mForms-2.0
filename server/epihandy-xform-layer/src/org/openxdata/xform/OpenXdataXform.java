@@ -19,7 +19,7 @@ import org.kxml2.kdom.Element;
 import org.kxml2.kdom.Node;
 import org.openxdata.model.Condition;
 import org.openxdata.model.DynamicOptionDef;
-import org.openxdata.model.EpihandyConstants;
+import org.openxdata.model.OpenXdataConstants;
 import org.openxdata.model.FormData;
 import org.openxdata.model.FormDef;
 import org.openxdata.model.OptionDef;
@@ -44,7 +44,7 @@ import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
  * @author Daniel Kayiwa
  *
  */
-public class EpihandyXform{
+public class OpenXdataXform{
 
 	public static final String ATTRIBUTE_VALUE_ENABLE = "enable";
 	public static final String ATTRIBUTE_VALUE_DISABLE = "disable";
@@ -58,7 +58,7 @@ public class EpihandyXform{
 	 * Default Constructor
 	 *
 	 */
-	public EpihandyXform(){
+	public OpenXdataXform(){
 
 	}
 	
@@ -564,7 +564,7 @@ public class EpihandyXform{
 		doc.addChild(Element.ELEMENT, htmlNode);
 		htmlNode.addChild(Element.ELEMENT, node);
 
-		String xml = EpihandyXform.fromNode2String(doc.getRootElement()); //doc.getRootElement()
+		String xml = OpenXdataXform.fromNode2String(doc.getRootElement()); //doc.getRootElement()
 
 		doc = getDocument(new StringReader(xml));
 		Element retNode = doc.getRootElement().getElement(0);
@@ -1511,7 +1511,7 @@ public class EpihandyXform{
 
 	private static byte getAction(Object actn){
 		if(actn == null)
-			return EpihandyConstants.ACTION_DISABLE;
+			return OpenXdataConstants.ACTION_DISABLE;
 
 		String value = actn.toString();
 
@@ -1524,18 +1524,18 @@ public class EpihandyXform{
 
 		byte action = 0;
 		if(value.equalsIgnoreCase(ATTRIBUTE_VALUE_ENABLE))
-			action |= EpihandyConstants.ACTION_ENABLE;
+			action |= OpenXdataConstants.ACTION_ENABLE;
 		else if(value.equalsIgnoreCase(ATTRIBUTE_VALUE_DISABLE))
-			action |= EpihandyConstants.ACTION_DISABLE;
+			action |= OpenXdataConstants.ACTION_DISABLE;
 		else if(value.equalsIgnoreCase(ATTRIBUTE_VALUE_SHOW))
-			action |= EpihandyConstants.ACTION_SHOW;
+			action |= OpenXdataConstants.ACTION_SHOW;
 		else if(value.equalsIgnoreCase(ATTRIBUTE_VALUE_HIDE))
-			action |= EpihandyConstants.ACTION_HIDE;
+			action |= OpenXdataConstants.ACTION_HIDE;
 
 		if(required != null && required.equalsIgnoreCase("true()"))
-			action |= EpihandyConstants.ACTION_MAKE_MANDATORY;
+			action |= OpenXdataConstants.ACTION_MAKE_MANDATORY;
 		else 
-			action |= EpihandyConstants.ACTION_MAKE_OPTIONAL;
+			action |= OpenXdataConstants.ACTION_MAKE_OPTIONAL;
 
 		return action;
 
@@ -1722,7 +1722,7 @@ public class EpihandyXform{
 	private static Condition getValidationRuleCondition(FormDef formDef, String constraint, byte questionId){		
 		Condition condition  = new Condition();
 		condition.setId(questionId);
-		condition.setOperator(getOperator(constraint,EpihandyConstants.ACTION_ENABLE));
+		condition.setOperator(getOperator(constraint,OpenXdataConstants.ACTION_ENABLE));
 		condition.setQuestionId(questionId);
 
 		//eg . &lt;= 40"
@@ -1748,26 +1748,26 @@ public class EpihandyXform{
 			value = constraint.substring(pos1,pos2);
 		}
 		else //else we take whole value after operator	
-			value = constraint.substring(pos+getOperatorSize(condition.getOperator(),EpihandyConstants.ACTION_ENABLE),constraint.length());
+			value = constraint.substring(pos+getOperatorSize(condition.getOperator(),OpenXdataConstants.ACTION_ENABLE),constraint.length());
 
 		if(!(value.equals("null") || value.equals(""))){
 			condition.setValue(value.trim());
 
-			if(condition.getOperator() == EpihandyConstants.OPERATOR_NULL)
+			if(condition.getOperator() == OpenXdataConstants.OPERATOR_NULL)
 				return null; //no operator set hence making the condition invalid
 		}
 		else
-			condition.setOperator(EpihandyConstants.OPERATOR_IS_NULL);
+			condition.setOperator(OpenXdataConstants.OPERATOR_IS_NULL);
 
 		if(constraint.contains("length(.)") || constraint.contains("count(.)"))
-			condition.setFunction(EpihandyConstants.FUNCTION_LENGTH);
+			condition.setFunction(OpenXdataConstants.FUNCTION_LENGTH);
 
 		return condition;
 	}
 
 
 	private static boolean isPositiveAction(int action){
-		return ((action & EpihandyConstants.ACTION_ENABLE) != 0) || ((action & EpihandyConstants.ACTION_SHOW) != 0);
+		return ((action & OpenXdataConstants.ACTION_ENABLE) != 0) || ((action & OpenXdataConstants.ACTION_SHOW) != 0);
 	}
 
 	//TODO Add the other xpath operators
@@ -1787,66 +1787,66 @@ public class EpihandyXform{
 
 		if(relevant.indexOf(">=") > 0 || relevant.indexOf("&gt;=") > 0){
 			if(isPositiveAction(action))
-				return EpihandyConstants.OPERATOR_GREATER_EQUAL;
-			return EpihandyConstants.OPERATOR_LESS;
+				return OpenXdataConstants.OPERATOR_GREATER_EQUAL;
+			return OpenXdataConstants.OPERATOR_LESS;
 		}
 		else if(relevant.indexOf('>') > 0 || relevant.indexOf("&gt;") > 0){
 			if(isPositiveAction(action))
-				return EpihandyConstants.OPERATOR_GREATER;
-			return EpihandyConstants.OPERATOR_LESS_EQUAL;
+				return OpenXdataConstants.OPERATOR_GREATER;
+			return OpenXdataConstants.OPERATOR_LESS_EQUAL;
 		}
 		else if(relevant.indexOf("<=") > 0 || relevant.indexOf("&lt;=") > 0){
 			if(isPositiveAction(action))
-				return EpihandyConstants.OPERATOR_LESS_EQUAL;
-			return EpihandyConstants.OPERATOR_GREATER;
+				return OpenXdataConstants.OPERATOR_LESS_EQUAL;
+			return OpenXdataConstants.OPERATOR_GREATER;
 		}
 		else if(relevant.indexOf('<') > 0 || relevant.indexOf("&lt;") > 0){
 			if(isPositiveAction(action))
-				return EpihandyConstants.OPERATOR_LESS;
-			return EpihandyConstants.OPERATOR_GREATER_EQUAL;
+				return OpenXdataConstants.OPERATOR_LESS;
+			return OpenXdataConstants.OPERATOR_GREATER_EQUAL;
 		}
 		else if(relevant.indexOf("!=") > 0 || relevant.indexOf("!=") > 0){
 			if(isPositiveAction(action))
-				return EpihandyConstants.OPERATOR_NOT_EQUAL;
-			return EpihandyConstants.OPERATOR_EQUAL;
+				return OpenXdataConstants.OPERATOR_NOT_EQUAL;
+			return OpenXdataConstants.OPERATOR_EQUAL;
 		}
 		else if(relevant.indexOf('=') > 0){
 			if(isPositiveAction(action))
-				return EpihandyConstants.OPERATOR_EQUAL;
-			return EpihandyConstants.OPERATOR_NOT_EQUAL;
+				return OpenXdataConstants.OPERATOR_EQUAL;
+			return OpenXdataConstants.OPERATOR_NOT_EQUAL;
 		}
 		else if(relevant.indexOf("not(starts-with") > 0){
 			if(isPositiveAction(action))
-				return EpihandyConstants.OPERATOR_NOT_START_WITH;
-			return EpihandyConstants.OPERATOR_STARTS_WITH;
+				return OpenXdataConstants.OPERATOR_NOT_START_WITH;
+			return OpenXdataConstants.OPERATOR_STARTS_WITH;
 		}
 		else if(relevant.indexOf("starts-with") > 0){
 			if(isPositiveAction(action))
-				return EpihandyConstants.OPERATOR_STARTS_WITH;
-			return EpihandyConstants.OPERATOR_NOT_START_WITH;
+				return OpenXdataConstants.OPERATOR_STARTS_WITH;
+			return OpenXdataConstants.OPERATOR_NOT_START_WITH;
 		}
 		else if(relevant.indexOf("not(contains") > 0){
 			if(isPositiveAction(action))
-				return EpihandyConstants.OPERATOR_NOT_CONTAIN;
-			return EpihandyConstants.OPERATOR_CONTAINS;
+				return OpenXdataConstants.OPERATOR_NOT_CONTAIN;
+			return OpenXdataConstants.OPERATOR_CONTAINS;
 		}
 		else if(relevant.indexOf("contains") > 0){
 			if(isPositiveAction(action))
-				return EpihandyConstants.OPERATOR_CONTAINS;
-			return EpihandyConstants.OPERATOR_NOT_CONTAIN;
+				return OpenXdataConstants.OPERATOR_CONTAINS;
+			return OpenXdataConstants.OPERATOR_NOT_CONTAIN;
 		}
 
-		return EpihandyConstants.OPERATOR_NULL;
+		return OpenXdataConstants.OPERATOR_NULL;
 	}
 
 	private static int getOperatorSize(byte operator, int action){
-		if(operator == EpihandyConstants.OPERATOR_GREATER_EQUAL || 
-				operator == EpihandyConstants.OPERATOR_LESS_EQUAL ||
-				operator == EpihandyConstants.OPERATOR_NOT_EQUAL)
+		if(operator == OpenXdataConstants.OPERATOR_GREATER_EQUAL || 
+				operator == OpenXdataConstants.OPERATOR_LESS_EQUAL ||
+				operator == OpenXdataConstants.OPERATOR_NOT_EQUAL)
 			return isPositiveAction(action) ? 2 : 1;
-		else if(operator == EpihandyConstants.OPERATOR_LESS ||
-				operator == EpihandyConstants.OPERATOR_GREATER || 
-				operator == EpihandyConstants.OPERATOR_EQUAL)
+		else if(operator == OpenXdataConstants.OPERATOR_LESS ||
+				operator == OpenXdataConstants.OPERATOR_GREATER || 
+				operator == OpenXdataConstants.OPERATOR_EQUAL)
 			return isPositiveAction(action) ? 1 : 2;
 
 		return 0;
@@ -1995,10 +1995,10 @@ public class EpihandyXform{
 
 	private static byte getConditionsOperator(String relevant){
 		if(relevant.toUpperCase().indexOf(" AND ") > 0)
-			return EpihandyConstants.CONDITIONS_OPERATOR_AND;
+			return OpenXdataConstants.CONDITIONS_OPERATOR_AND;
 		else if(relevant.toUpperCase().indexOf(" OR ") > 0)
-			return EpihandyConstants.CONDITIONS_OPERATOR_OR;
-		return EpihandyConstants.CONDITIONS_OPERATOR_NULL;
+			return OpenXdataConstants.CONDITIONS_OPERATOR_OR;
+		return OpenXdataConstants.CONDITIONS_OPERATOR_NULL;
 	}
 
 	private static String addNonBindControl(FormDef formDef,Element child,Hashtable relevants, String ref, String bind){

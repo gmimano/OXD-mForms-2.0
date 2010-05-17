@@ -9,7 +9,7 @@ import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.List;
 
 import org.openxdata.db.util.Settings;
-import org.openxdata.model.EpihandyConstants;
+import org.openxdata.model.OpenXdataConstants;
 import org.openxdata.model.StudyDef;
 import org.openxdata.mvc.AbstractView;
 import org.openxdata.util.DefaultCommands;
@@ -34,13 +34,13 @@ public class StudyListView extends AbstractView implements CommandListener  {
 		screen = new List(MenuText.SELECT_STUDY()+" - "+title , Choice.IMPLICIT);
 		((List)screen).setFitPolicy(List.TEXT_WRAP_ON);
 		
-        StudyDef study; int selectedIndex = EpihandyConstants.NO_SELECTION;
-		Settings settings = new Settings(EpihandyConstants.STORAGE_NAME_EPIHANDY_SETTINGS,true);
-		String val = settings.getSetting(EpihandyConstants.KEY_LAST_SELECTED_STUDY);
+        StudyDef study; int selectedIndex = OpenXdataConstants.NO_SELECTION;
+		Settings settings = new Settings(OpenXdataConstants.STORAGE_NAME_EPIHANDY_SETTINGS,true);
+		String val = settings.getSetting(OpenXdataConstants.KEY_LAST_SELECTED_STUDY);
 		
 		for(int i=0; i<studyList.size(); i++){
 			study = (StudyDef)studyList.elementAt(i);
-			if(selectedIndex == EpihandyConstants.NO_SELECTION && val != null){
+			if(selectedIndex == OpenXdataConstants.NO_SELECTION && val != null){
 				if(study.getId() == Byte.parseByte(val))
 					selectedIndex = i;
 			}
@@ -48,7 +48,7 @@ public class StudyListView extends AbstractView implements CommandListener  {
 			((List)screen).append(study.getName(), null);
 		}
 		
-		if(selectedIndex != EpihandyConstants.NO_SELECTION)
+		if(selectedIndex != OpenXdataConstants.NO_SELECTION)
 			((List)screen).setSelectedIndex(selectedIndex, true);
 		
 		screen.setCommandListener(this);
@@ -66,9 +66,9 @@ public class StudyListView extends AbstractView implements CommandListener  {
 	public void commandAction(Command c, Displayable d) {
 		try{
 			if(c == List.SELECT_COMMAND || c == DefaultCommands.cmdOk)
-				getEpihandyController().execute(this,DefaultCommands.cmdOk,(StudyDef)studyList.elementAt(((List)d).getSelectedIndex()));
+				getOpenXdataController().execute(this,DefaultCommands.cmdOk,(StudyDef)studyList.elementAt(((List)d).getSelectedIndex()));
 			else if(c == DefaultCommands.cmdCancel)
-				getEpihandyController().execute(this,DefaultCommands.cmdCancel,null);
+				getOpenXdataController().execute(this,DefaultCommands.cmdCancel,null);
 		}
 		catch(Exception e){
 			//alertMsg.showError(e.getMessage());
@@ -103,7 +103,7 @@ public class StudyListView extends AbstractView implements CommandListener  {
 		return studyList;
 	}
 	
-	private EpihandyController getEpihandyController(){
-		return (EpihandyController)controller;
+	private OpenXdataController getOpenXdataController(){
+		return (OpenXdataController)controller;
 	}
 }

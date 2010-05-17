@@ -5,7 +5,7 @@ import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.List;
 
-import org.openxdata.model.EpihandyConstants;
+import org.openxdata.model.OpenXdataConstants;
 import org.openxdata.model.QuestionData;
 import org.openxdata.model.RepeatQtnsData;
 import org.openxdata.mvc.AbstractView;
@@ -28,7 +28,7 @@ public class RptQtnsDataView extends AbstractView implements AlertMessageListene
 	private RepeatQtnsData rptQtnsData;
 	
 	//for managing state
-	private int currentQuestionIndex = EpihandyConstants.NO_SELECTION;
+	private int currentQuestionIndex = OpenXdataConstants.NO_SELECTION;
 	private QuestionData currentQuestion = null;
 	
 	public RptQtnsDataView(){

@@ -18,14 +18,14 @@ import org.openxdata.db.util.PersistentHelper;
 public class StudyDef implements Persistent{
 
 	/** The text indentifier of the study. */
-	private String variableName = EpihandyConstants.EMPTY_STRING;
+	private String variableName = OpenXdataConstants.EMPTY_STRING;
 
 	/** The name of the study. */
-	private String name = EpihandyConstants.EMPTY_STRING;
+	private String name = OpenXdataConstants.EMPTY_STRING;
 
 	//Assuming the number of studies will not exceed 127.
 	/** The numeric identifier of the study. */
-	private int id = EpihandyConstants.NULL_ID;
+	private int id = OpenXdataConstants.NULL_ID;
 
 	/** A list of form definitions (FormDef) in the the study. */
 	private Vector forms = new Vector();

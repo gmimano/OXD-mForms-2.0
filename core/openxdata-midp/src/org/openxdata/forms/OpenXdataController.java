@@ -10,11 +10,11 @@ import javax.microedition.lcdui.Displayable;
 
 import org.openxdata.communication.TransportLayer;
 import org.openxdata.communication.TransportLayerListener;
-import org.openxdata.db.EpihandyDataStorage;
+import org.openxdata.db.OpenXdataDataStorage;
 import org.openxdata.db.util.Persistent;
 import org.openxdata.db.util.Settings;
 import org.openxdata.db.util.StorageListener;
-import org.openxdata.model.EpihandyConstants;
+import org.openxdata.model.OpenXdataConstants;
 import org.openxdata.model.FormData;
 import org.openxdata.model.FormDef;
 import org.openxdata.model.QuestionData;
@@ -43,7 +43,7 @@ import org.openxdata.util.MenuText;
  * @author Daniel Kayiwa
  *
  */
-public class EpihandyController implements Controller, StorageListener, AlertMessageListener,TypeEditorListener, TransportLayerListener {
+public class OpenXdataController implements Controller, StorageListener, AlertMessageListener,TypeEditorListener, TransportLayerListener {
 
 	private boolean studyEditingMode;
 	private FormListener formEventListener;
@@ -76,7 +76,7 @@ public class EpihandyController implements Controller, StorageListener, AlertMes
 
 	private byte currentAction = CA_NONE;
 
-	public EpihandyController(){
+	public OpenXdataController(){
 
 	}
 
@@ -85,11 +85,11 @@ public class EpihandyController implements Controller, StorageListener, AlertMes
 		this.prevScreen = currentScreen;
 		this.display = display;
 
-		StudyDefList studyDefList = EpihandyDataStorage.getStudyList();
+		StudyDefList studyDefList = OpenXdataDataStorage.getStudyList();
 		if(studyDefList != null && studyDefList.getStudies() != null)
 			setStudyList(studyDefList.getStudies());
 		else{
-			StudyDef studyDef = EpihandyDataStorage.getStudy(EpihandyConstants.DEFAULT_STUDY_ID);
+			StudyDef studyDef = OpenXdataDataStorage.getStudy(OpenXdataConstants.DEFAULT_STUDY_ID);
 			if(studyDef != null)
 				setStudy(studyDef); //those that dont deal with studies but just forms are grouped in one study with this id
 		}
@@ -281,7 +281,7 @@ public class EpihandyController implements Controller, StorageListener, AlertMes
 
 		formData.setDateValue("/"+formData.getDef().getVariableName()+"/endtime", new Date());
 
-		if(EpihandyDataStorage.saveFormData(formDefListViewer.getStudy().getId(),formData)){
+		if(OpenXdataDataStorage.saveFormData(formDefListViewer.getStudy().getId(),formData)){
 			currentView = (View)transitionTable.get(formViewer);
 			transitionTable.remove(formViewer);
 
@@ -303,7 +303,7 @@ public class EpihandyController implements Controller, StorageListener, AlertMes
 			delete  = formEventListener.beforeFormDelete(formData);
 
 			if(delete){
-				EpihandyDataStorage.deleteFormData(formDefListViewer.getStudy().getId(),formData);
+				OpenXdataDataStorage.deleteFormData(formDefListViewer.getStudy().getId(),formData);
 				formEventListener.afterFormDelete(formData);
 				handleCancelCommand(sender);
 			}
@@ -320,7 +320,7 @@ public class EpihandyController implements Controller, StorageListener, AlertMes
 			StudyDef studyDef = (StudyDef)list.elementAt(i);
 
 			if(studyDef.getForms() == null || studyDef.getForms().size() == 0){
-				StudyDef retStudyDef = EpihandyDataStorage.getStudy(studyDef.getId());
+				StudyDef retStudyDef = OpenXdataDataStorage.getStudy(studyDef.getId());
 				if(retStudyDef != null) //This can be null for studies whose forms have not yet been downloaded.
 					studyDef.setForms(retStudyDef.getForms());
 			}
@@ -337,8 +337,8 @@ public class EpihandyController implements Controller, StorageListener, AlertMes
 
 		//Get last selected study, if any, and set it as the default one.
 		StudyDef study;
-		Settings settings = new Settings(EpihandyConstants.STORAGE_NAME_EPIHANDY_SETTINGS,true);
-		String val = settings.getSetting(EpihandyConstants.KEY_LAST_SELECTED_STUDY);
+		Settings settings = new Settings(OpenXdataConstants.STORAGE_NAME_EPIHANDY_SETTINGS,true);
+		String val = settings.getSetting(OpenXdataConstants.KEY_LAST_SELECTED_STUDY);
 		if(val != null){
 			for(int i=0; i<list.size(); i++){
 				study = (StudyDef)list.elementAt(i);
@@ -375,7 +375,7 @@ public class EpihandyController implements Controller, StorageListener, AlertMes
 		display = formEventListener.beforeFormDataListDisplay(frmDef);
 
 		if(display){
-			this.formDataListViewer.showFormList(frmDef, EpihandyDataStorage.getFormData(formDefListViewer.getStudy().getId(), formDef.getId()));
+			this.formDataListViewer.showFormList(frmDef, OpenXdataDataStorage.getFormData(formDefListViewer.getStudy().getId(), formDef.getId()));
 			saveCurrentView(formDataListViewer);
 		}
 	}
@@ -400,8 +400,8 @@ public class EpihandyController implements Controller, StorageListener, AlertMes
 
 		if(save){
 			//Save settings for next run
-			Settings settings = new Settings(EpihandyConstants.STORAGE_NAME_EPIHANDY_SETTINGS,true);
-			settings.setSetting(EpihandyConstants.KEY_LAST_SELECTED_STUDY,String.valueOf(studyDef.getId()));
+			Settings settings = new Settings(OpenXdataConstants.STORAGE_NAME_EPIHANDY_SETTINGS,true);
+			settings.setSetting(OpenXdataConstants.KEY_LAST_SELECTED_STUDY,String.valueOf(studyDef.getId()));
 			settings.saveSettings();
 
 			formDefListViewer.setStudy(studyDef);
@@ -438,14 +438,14 @@ public class EpihandyController implements Controller, StorageListener, AlertMes
 		if(studyList != null){ //get for all studies as passed
 			for(int i=0; i<studyList.size(); i++){
 				retStudyDef = (StudyDef)studyList.elementAt(i);
-				retStudyDef = EpihandyDataStorage.getStudy(retStudyDef.getId());
+				retStudyDef = OpenXdataDataStorage.getStudy(retStudyDef.getId());
 
 				if(retStudyDef != null)
 					break;
 			}
 		}
 		else //get only for the passed in study
-			retStudyDef = EpihandyDataStorage.getStudy(studyDef.getId());
+			retStudyDef = OpenXdataDataStorage.getStudy(studyDef.getId());
 
 		//If no forms saved yet, this will be null, hence we preserve the
 		//blank study, to hold study info for the time being, until when we have forms
@@ -549,7 +549,7 @@ public class EpihandyController implements Controller, StorageListener, AlertMes
 	}
 
 	public void showForm(boolean studyEditingMode,int studyId,FormDef formDef, int formDataRecordId,boolean allowDelete,Displayable currentScreen){
-		FormData formData = EpihandyDataStorage.getFormData(studyId, formDef.getId(), formDataRecordId);
+		FormData formData = OpenXdataDataStorage.getFormData(studyId, formDef.getId(), formDataRecordId);
 		formData.setDef(formDef);
 		showForm(studyEditingMode,formData,allowDelete,currentScreen);
 	}

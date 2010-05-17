@@ -21,7 +21,7 @@ import org.openxdata.model.UserList;
  * @author Daniel Kayiwa
  *
  */
-public class EpihandyDataStorage {
+public class OpenXdataDataStorage {
 
 	/** The unique identifier for storage of studies. */
 	private static final String IDENTIFIER_STUDY_LIST_STORAGE = "StudyDefList";

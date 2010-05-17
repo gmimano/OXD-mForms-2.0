@@ -96,15 +96,15 @@ public class FormDataListView extends AbstractView implements AlertMessageListen
 	public void commandAction(Command c, Displayable d) {
 		try{
 			if(c == DefaultCommands.cmdOk || c == List.SELECT_COMMAND)
-				getEpihandyController().showForm(true,(FormData)this.formDataList.elementAt(((List)d).getSelectedIndex()),true,prevScreen);
+				getOpenXdataController().showForm(true,(FormData)this.formDataList.elementAt(((List)d).getSelectedIndex()),true,prevScreen);
 			else if(c == DefaultCommands.cmdBack)
-				getEpihandyController().handleCancelCommand(this);
+				getOpenXdataController().handleCancelCommand(this);
 			else if(c == DefaultCommands.cmdNew)
-				getEpihandyController().showForm(true,new FormData(this.formDef),false,prevScreen);
+				getOpenXdataController().showForm(true,new FormData(this.formDef),false,prevScreen);
 			else if(c == DefaultCommands.cmdDelete)
 				handleDeleteCommand(d);
 			else if(c == DefaultCommands.cmdMainMenu)
-				getEpihandyController().backToMainMenu();
+				getOpenXdataController().backToMainMenu();
 		}
 		catch(Exception e){
 			alertMsg.showError(e.getMessage());
@@ -154,7 +154,7 @@ public class FormDataListView extends AbstractView implements AlertMessageListen
 		int index = ((List)screen).getSelectedIndex();
 		FormData formData = (FormData)this.formDataList.elementAt(index);
 
-		getEpihandyController().deleteForm(formData,this);
+		getOpenXdataController().deleteForm(formData,this);
 
 		((List)screen).delete(index);
 		formDataList.removeElementAt(index);
@@ -194,7 +194,7 @@ public class FormDataListView extends AbstractView implements AlertMessageListen
 				deleteCurrentForm();
 			}
 			else if(currentAction == CA_ERROR){
-				getEpihandyController().handleCancelCommand(this);
+				getOpenXdataController().handleCancelCommand(this);
 				return;
 			}
 		}
@@ -206,7 +206,7 @@ public class FormDataListView extends AbstractView implements AlertMessageListen
 		return formDataList;
 	}
 
-	private EpihandyController getEpihandyController(){
-		return (EpihandyController)controller;
+	private OpenXdataController getOpenXdataController(){
+		return (OpenXdataController)controller;
 	}
 }

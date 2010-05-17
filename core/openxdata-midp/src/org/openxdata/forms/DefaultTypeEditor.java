@@ -14,7 +14,7 @@ import javax.microedition.lcdui.ItemStateListener;
 import javax.microedition.lcdui.TextField;
 import javax.microedition.lcdui.Ticker;
 
-import org.openxdata.model.EpihandyConstants;
+import org.openxdata.model.OpenXdataConstants;
 import org.openxdata.model.OptionData;
 import org.openxdata.model.OptionDef;
 import org.openxdata.model.QuestionData;
@@ -62,24 +62,24 @@ public class DefaultTypeEditor extends AbstractView implements TypeEditor,AlertM
 			byte type = currentQuestion.getDef().getType();
 			switch(type){
 			case QuestionDef.QTN_TYPE_TEXT:
-				currentCtrl = new TextField(qtnText,currentQuestion.getTextAnswer(),EpihandyConstants.MAX_NUM_CHARS,TextField.ANY);
+				currentCtrl = new TextField(qtnText,currentQuestion.getTextAnswer(),OpenXdataConstants.MAX_NUM_CHARS,TextField.ANY);
 				break;
 			case QuestionDef.QTN_TYPE_NUMERIC:
-				currentCtrl = new TextField(qtnText,currentQuestion.getTextAnswer(),EpihandyConstants.MAX_NUM_CHARS,TextField.NUMERIC);
+				currentCtrl = new TextField(qtnText,currentQuestion.getTextAnswer(),OpenXdataConstants.MAX_NUM_CHARS,TextField.NUMERIC);
 				break;
 			case QuestionDef.QTN_TYPE_DECIMAL:
-				currentCtrl = new TextField(qtnText,currentQuestion.getTextAnswer(),EpihandyConstants.MAX_NUM_CHARS,TextField.DECIMAL);
+				currentCtrl = new TextField(qtnText,currentQuestion.getTextAnswer(),OpenXdataConstants.MAX_NUM_CHARS,TextField.DECIMAL);
 				break;
 			case QuestionDef.QTN_TYPE_DATE:
-				currentCtrl = new DateField(qtnText,DateField.DATE,EpihandyConstants.DEFAULT_TIME_ZONE);
+				currentCtrl = new DateField(qtnText,DateField.DATE,OpenXdataConstants.DEFAULT_TIME_ZONE);
 				((DateField)currentCtrl).setDate((Date)currentQuestion.getAnswer());
 				break;
 			case QuestionDef.QTN_TYPE_TIME:
-				currentCtrl = new DateField(qtnText,DateField.TIME,EpihandyConstants.DEFAULT_TIME_ZONE);
+				currentCtrl = new DateField(qtnText,DateField.TIME,OpenXdataConstants.DEFAULT_TIME_ZONE);
 				((DateField)currentCtrl).setDate((Date)currentQuestion.getAnswer());
 				break;
 			case QuestionDef.QTN_TYPE_DATE_TIME:
-				currentCtrl = new DateField(qtnText,DateField.DATE_TIME,EpihandyConstants.DEFAULT_TIME_ZONE);
+				currentCtrl = new DateField(qtnText,DateField.DATE_TIME,OpenXdataConstants.DEFAULT_TIME_ZONE);
 				((DateField)currentCtrl).setDate((Date)currentQuestion.getAnswer());
 				break;
 			case QuestionDef.QTN_TYPE_BOOLEAN:

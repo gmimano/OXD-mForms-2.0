@@ -19,24 +19,24 @@ import org.openxdata.db.util.Persistent;
 public class Condition implements Persistent{
 
 	/** The unique identifier of the question referenced by this condition. */
-	private byte questionId = EpihandyConstants.NULL_ID;
+	private byte questionId = OpenXdataConstants.NULL_ID;
 
 	/** The operator of the condition. Eg Equal to, Greater than, etc. */
-	private byte operator = EpihandyConstants.OPERATOR_NULL;
+	private byte operator = OpenXdataConstants.OPERATOR_NULL;
 
 	/** The aggregate function. Eg Length, Value. */
-	private byte function = EpihandyConstants.FUNCTION_VALUE;
+	private byte function = OpenXdataConstants.FUNCTION_VALUE;
 
 	/** The value checked to see if the condition is true or false.
 	 * For the above example, the value would be 4 or the id of the Male option.
 	 * For a list of options this value is the option id, not the value or text value.
 	 */
-	private String value = EpihandyConstants.EMPTY_STRING;
+	private String value = OpenXdataConstants.EMPTY_STRING;
 
-	private String secondValue = EpihandyConstants.EMPTY_STRING;
+	private String secondValue = OpenXdataConstants.EMPTY_STRING;
 
 	/** The unique identifier of a condition. */
-	private byte id = EpihandyConstants.NULL_ID;
+	private byte id = OpenXdataConstants.NULL_ID;
 
 	/** Creates a new condition object. */
 	public Condition(){
@@ -190,10 +190,10 @@ public class Condition implements Persistent{
 
 		try{			
 			if(data.getValueAnswer() == null || data.getValueAnswer().trim().length() == 0){
-				if(validation || operator == EpihandyConstants.OPERATOR_NOT_EQUAL ||
-						operator == EpihandyConstants.OPERATOR_NOT_BETWEEN)
+				if(validation || operator == OpenXdataConstants.OPERATOR_NOT_EQUAL ||
+						operator == OpenXdataConstants.OPERATOR_NOT_BETWEEN)
 					return true;
-				return operator == EpihandyConstants.OPERATOR_IS_NULL;
+				return operator == OpenXdataConstants.OPERATOR_IS_NULL;
 			}
 			
 			removeDecimalPoints();
@@ -205,21 +205,21 @@ public class Condition implements Persistent{
 			if(secondValue != null && secondValue.trim().length() > 0)
 				secondLongValue = Long.parseLong(secondValue);
 
-			if(operator == EpihandyConstants.OPERATOR_EQUAL)
+			if(operator == OpenXdataConstants.OPERATOR_EQUAL)
 				return longValue == answer;
-			else if(operator == EpihandyConstants.OPERATOR_NOT_EQUAL)
+			else if(operator == OpenXdataConstants.OPERATOR_NOT_EQUAL)
 				return longValue != answer;
-			else if(operator == EpihandyConstants.OPERATOR_LESS)
+			else if(operator == OpenXdataConstants.OPERATOR_LESS)
 				return answer < longValue;
-			else if(operator == EpihandyConstants.OPERATOR_LESS_EQUAL)
+			else if(operator == OpenXdataConstants.OPERATOR_LESS_EQUAL)
 				return answer < longValue || longValue == answer;
-			else if(operator == EpihandyConstants.OPERATOR_GREATER)
+			else if(operator == OpenXdataConstants.OPERATOR_GREATER)
 				return answer > longValue;
-				else if(operator == EpihandyConstants.OPERATOR_GREATER_EQUAL)
+				else if(operator == OpenXdataConstants.OPERATOR_GREATER_EQUAL)
 					return answer > longValue || longValue == answer;
-					else if(operator == EpihandyConstants.OPERATOR_BETWEEN)
+					else if(operator == OpenXdataConstants.OPERATOR_BETWEEN)
 						return answer > longValue && longValue < secondLongValue;
-						else if(operator == EpihandyConstants.OPERATOR_NOT_BETWEEN)
+						else if(operator == OpenXdataConstants.OPERATOR_NOT_BETWEEN)
 							return !(answer > longValue && longValue < secondLongValue);
 		}
 		catch(Exception ex){
@@ -235,27 +235,27 @@ public class Condition implements Persistent{
 
 		Object answer = data.getValueAnswer();
 
-		if(function == EpihandyConstants.FUNCTION_VALUE){
+		if(function == OpenXdataConstants.FUNCTION_VALUE){
 			if(answer == null || answer.toString().trim().length() == 0){
-				if(validation || operator == EpihandyConstants.OPERATOR_NOT_EQUAL ||
-						operator == EpihandyConstants.OPERATOR_NOT_START_WITH ||
-						operator == EpihandyConstants.OPERATOR_NOT_CONTAIN)
+				if(validation || operator == OpenXdataConstants.OPERATOR_NOT_EQUAL ||
+						operator == OpenXdataConstants.OPERATOR_NOT_START_WITH ||
+						operator == OpenXdataConstants.OPERATOR_NOT_CONTAIN)
 					return true;
 
-				return operator == EpihandyConstants.OPERATOR_IS_NULL;
+				return operator == OpenXdataConstants.OPERATOR_IS_NULL;
 			}
 
-			if(operator == EpihandyConstants.OPERATOR_EQUAL)
+			if(operator == OpenXdataConstants.OPERATOR_EQUAL)
 				return value.equals(data.getValueAnswer());
-			else if(operator == EpihandyConstants.OPERATOR_NOT_EQUAL)
+			else if(operator == OpenXdataConstants.OPERATOR_NOT_EQUAL)
 				return !value.equals(data.getValueAnswer());
-			else if(operator == EpihandyConstants.OPERATOR_STARTS_WITH)
+			else if(operator == OpenXdataConstants.OPERATOR_STARTS_WITH)
 				return answer.toString().startsWith(value);
-			else if(operator == EpihandyConstants.OPERATOR_NOT_START_WITH)
+			else if(operator == OpenXdataConstants.OPERATOR_NOT_START_WITH)
 				return !answer.toString().startsWith(value);
-			else if(operator == EpihandyConstants.OPERATOR_CONTAINS)
+			else if(operator == OpenXdataConstants.OPERATOR_CONTAINS)
 				return answer.toString().indexOf(value) >= 0;
-				else if(operator == EpihandyConstants.OPERATOR_NOT_CONTAIN)
+				else if(operator == OpenXdataConstants.OPERATOR_NOT_CONTAIN)
 					return !(answer.toString().indexOf(value) >= 0);
 		}
 		else{
@@ -270,21 +270,21 @@ public class Condition implements Persistent{
 
 			len = answer.toString().trim().length();
 			
-			if(operator == EpihandyConstants.OPERATOR_EQUAL)
+			if(operator == OpenXdataConstants.OPERATOR_EQUAL)
 				return len == len1;
-			else if(operator == EpihandyConstants.OPERATOR_NOT_EQUAL)
+			else if(operator == OpenXdataConstants.OPERATOR_NOT_EQUAL)
 				return len != len1;
-			else if(operator == EpihandyConstants.OPERATOR_LESS)
+			else if(operator == OpenXdataConstants.OPERATOR_LESS)
 				return len < len1;
-			else if(operator == EpihandyConstants.OPERATOR_LESS_EQUAL)
+			else if(operator == OpenXdataConstants.OPERATOR_LESS_EQUAL)
 				return len <= len1;
-			else if(operator == EpihandyConstants.OPERATOR_GREATER)
+			else if(operator == OpenXdataConstants.OPERATOR_GREATER)
 				return len > len1;
-			else if(operator == EpihandyConstants.OPERATOR_GREATER_EQUAL)
+			else if(operator == OpenXdataConstants.OPERATOR_GREATER_EQUAL)
 				return len >= len1;
-			else if(operator == EpihandyConstants.OPERATOR_BETWEEN)
+			else if(operator == OpenXdataConstants.OPERATOR_BETWEEN)
 				return len > len1 && len < len2;
-			else if(operator == EpihandyConstants.OPERATOR_NOT_BETWEEN)
+			else if(operator == OpenXdataConstants.OPERATOR_NOT_BETWEEN)
 				return !(len > len1 && len < len2);
 		}
 
@@ -302,10 +302,10 @@ public class Condition implements Persistent{
 
 		try{
 			if(qtn.getAnswer() == null || qtn.getAnswer().toString().trim().length() == 0){
-				if(validation || operator == EpihandyConstants.OPERATOR_NOT_EQUAL ||
-						operator == EpihandyConstants.OPERATOR_NOT_BETWEEN)
+				if(validation || operator == OpenXdataConstants.OPERATOR_NOT_EQUAL ||
+						operator == OpenXdataConstants.OPERATOR_NOT_BETWEEN)
 					return true;
-				return operator == EpihandyConstants.OPERATOR_IS_NULL;
+				return operator == OpenXdataConstants.OPERATOR_IS_NULL;
 			}
 
 			if(!(qtn.getAnswer() instanceof Date) && qtn.getAnswer().equals(qtn.getDef().getDefaultValue()))
@@ -331,21 +331,21 @@ public class Condition implements Persistent{
 					calenderdateSecondDateValue.setTime(fromString2Date(secondValue));
 			}
 
-			if(operator == EpihandyConstants.OPERATOR_EQUAL)
+			if(operator == OpenXdataConstants.OPERATOR_EQUAL)
 				return calenderdateValue.equals(calenderAnswer);
-			else if(operator == EpihandyConstants.OPERATOR_NOT_EQUAL)
+			else if(operator == OpenXdataConstants.OPERATOR_NOT_EQUAL)
 				return !calenderdateValue.equals(calenderAnswer);
-			else if(operator == EpihandyConstants.OPERATOR_LESS)
+			else if(operator == OpenXdataConstants.OPERATOR_LESS)
 				return calenderAnswer.before(calenderdateValue);
-			else if(operator == EpihandyConstants.OPERATOR_LESS_EQUAL)
+			else if(operator == OpenXdataConstants.OPERATOR_LESS_EQUAL)
 				return calenderAnswer.before(calenderdateValue) || calenderdateValue.equals(calenderAnswer);
-			else if(operator == EpihandyConstants.OPERATOR_GREATER)
+			else if(operator == OpenXdataConstants.OPERATOR_GREATER)
 				return calenderAnswer.after(calenderdateValue);
-			else if(operator == EpihandyConstants.OPERATOR_GREATER_EQUAL)
+			else if(operator == OpenXdataConstants.OPERATOR_GREATER_EQUAL)
 				return calenderAnswer.after(calenderdateValue) || calenderdateValue.equals(calenderAnswer);
-			else if(operator == EpihandyConstants.OPERATOR_BETWEEN)
+			else if(operator == OpenXdataConstants.OPERATOR_BETWEEN)
 				return calenderAnswer.after(calenderdateValue) && calenderdateValue.before(calenderdateSecondDateValue);
-			else if(operator == EpihandyConstants.OPERATOR_NOT_BETWEEN)
+			else if(operator == OpenXdataConstants.OPERATOR_NOT_BETWEEN)
 				return !(calenderAnswer.after(calenderdateValue) && calenderdateValue.before(calenderdateSecondDateValue));
 		}
 		catch(Exception ex){
@@ -424,21 +424,21 @@ public class Condition implements Persistent{
 
 		try{
 			if(data.getValueAnswer() == null || data.getValueAnswer().trim().length() == 0){
-				if(validation || operator == EpihandyConstants.OPERATOR_NOT_EQUAL || 
-						operator == EpihandyConstants.OPERATOR_NOT_IN_LIST)
+				if(validation || operator == OpenXdataConstants.OPERATOR_NOT_EQUAL || 
+						operator == OpenXdataConstants.OPERATOR_NOT_IN_LIST)
 					return true;
-				return operator == EpihandyConstants.OPERATOR_IS_NULL;
+				return operator == OpenXdataConstants.OPERATOR_IS_NULL;
 			}
 			//return qtn.getValueAnswer().contains(value);
 
 			switch(operator){
-			case EpihandyConstants.OPERATOR_EQUAL:
+			case OpenXdataConstants.OPERATOR_EQUAL:
 				return data.getValueAnswer().toString().indexOf(value) >= 0;//data.getValueAnswer().equals(value);
-			case EpihandyConstants.OPERATOR_NOT_EQUAL:
+			case OpenXdataConstants.OPERATOR_NOT_EQUAL:
 				return !(data.getValueAnswer().indexOf(value) >= 0);//!data.getValueAnswer().equals(value);
-			case EpihandyConstants.OPERATOR_IN_LIST:
+			case OpenXdataConstants.OPERATOR_IN_LIST:
 				return value.indexOf(data.getValueAnswer()) >= 0;
-			case EpihandyConstants.OPERATOR_NOT_IN_LIST:
+			case OpenXdataConstants.OPERATOR_NOT_IN_LIST:
 				return !(value.indexOf(data.getValueAnswer()) >= 0);
 			default:
 				return false;
@@ -478,20 +478,20 @@ public class Condition implements Persistent{
 		try{
 			if(data.getValueAnswer() == null || data.getValueAnswer().trim().length() == 0){
 				//return operator != PurcConstants.OPERATOR_EQUAL;
-				if(validation || operator == EpihandyConstants.OPERATOR_NOT_EQUAL || 
-						operator == EpihandyConstants.OPERATOR_NOT_IN_LIST)
+				if(validation || operator == OpenXdataConstants.OPERATOR_NOT_EQUAL || 
+						operator == OpenXdataConstants.OPERATOR_NOT_IN_LIST)
 					return true;
-				return operator == EpihandyConstants.OPERATOR_IS_NULL;
+				return operator == OpenXdataConstants.OPERATOR_IS_NULL;
 			}
 
 			switch(operator){
-			case EpihandyConstants.OPERATOR_EQUAL:
+			case OpenXdataConstants.OPERATOR_EQUAL:
 				return data.getValueAnswer().equals(value);
-			case EpihandyConstants.OPERATOR_NOT_EQUAL:
+			case OpenXdataConstants.OPERATOR_NOT_EQUAL:
 				return !data.getValueAnswer().equals(value);
-			case EpihandyConstants.OPERATOR_IN_LIST:
+			case OpenXdataConstants.OPERATOR_IN_LIST:
 				return value.indexOf(data.getValueAnswer()) > 0;
-			case EpihandyConstants.OPERATOR_NOT_IN_LIST:
+			case OpenXdataConstants.OPERATOR_NOT_IN_LIST:
 				return !(value.indexOf(data.getValueAnswer()) > 0);
 			default:
 				return false;
@@ -509,10 +509,10 @@ public class Condition implements Persistent{
 
 		try{
 			if(data.getValueAnswer() == null || data.getValueAnswer().trim().length() == 0){
-				if(validation || operator == EpihandyConstants.OPERATOR_NOT_EQUAL ||
-						operator == EpihandyConstants.OPERATOR_NOT_BETWEEN)
+				if(validation || operator == OpenXdataConstants.OPERATOR_NOT_EQUAL ||
+						operator == OpenXdataConstants.OPERATOR_NOT_BETWEEN)
 					return true;
-				return operator == EpihandyConstants.OPERATOR_IS_NULL;
+				return operator == OpenXdataConstants.OPERATOR_IS_NULL;
 			}
 			
 			removeDecimalPoints();
@@ -524,21 +524,21 @@ public class Condition implements Persistent{
 			if(secondValue != null && secondValue.trim().length() > 0)
 				secondFloatValue = Long.parseLong(secondValue); //Float.parseFloat(secondValue);
 
-			if(operator == EpihandyConstants.OPERATOR_EQUAL)
+			if(operator == OpenXdataConstants.OPERATOR_EQUAL)
 				return floatValue == answer;
-			else if(operator == EpihandyConstants.OPERATOR_NOT_EQUAL)
+			else if(operator == OpenXdataConstants.OPERATOR_NOT_EQUAL)
 				return floatValue != answer;
-			else if(operator == EpihandyConstants.OPERATOR_LESS)
+			else if(operator == OpenXdataConstants.OPERATOR_LESS)
 				return answer < floatValue;
-			else if(operator == EpihandyConstants.OPERATOR_LESS_EQUAL)
+			else if(operator == OpenXdataConstants.OPERATOR_LESS_EQUAL)
 				return answer < floatValue || floatValue == answer;
-			else if(operator == EpihandyConstants.OPERATOR_GREATER)
+			else if(operator == OpenXdataConstants.OPERATOR_GREATER)
 				return answer > floatValue;
-			else if(operator == EpihandyConstants.OPERATOR_GREATER_EQUAL)
+			else if(operator == OpenXdataConstants.OPERATOR_GREATER_EQUAL)
 				return answer > floatValue || floatValue == answer;
-			else if(operator == EpihandyConstants.OPERATOR_BETWEEN)
+			else if(operator == OpenXdataConstants.OPERATOR_BETWEEN)
 				return answer > floatValue && floatValue < secondFloatValue;
-			else if(operator == EpihandyConstants.OPERATOR_NOT_BETWEEN)
+			else if(operator == OpenXdataConstants.OPERATOR_NOT_BETWEEN)
 				return !(answer > floatValue && floatValue < secondFloatValue);
 		}
 		catch(Exception ex){

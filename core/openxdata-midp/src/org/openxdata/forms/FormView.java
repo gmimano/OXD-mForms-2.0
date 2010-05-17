@@ -8,7 +8,7 @@ import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.List;
 
 import org.openxdata.db.util.Settings;
-import org.openxdata.model.EpihandyConstants;
+import org.openxdata.model.OpenXdataConstants;
 import org.openxdata.model.FormData;
 import org.openxdata.model.PageData;
 import org.openxdata.model.QuestionData;
@@ -54,8 +54,8 @@ public class FormView extends AbstractView implements AlertMessageListener {
 	private FormListener listener;
 
 	//for managing state
-	private int currentPageIndex = EpihandyConstants.NO_SELECTION;
-	private int currentQuestionIndex = EpihandyConstants.NO_SELECTION;
+	private int currentPageIndex = OpenXdataConstants.NO_SELECTION;
+	private int currentQuestionIndex = OpenXdataConstants.NO_SELECTION;
 	private QuestionData currentQuestion = null;
 
 	private final byte CA_NONE = 0;
@@ -123,7 +123,7 @@ public class FormView extends AbstractView implements AlertMessageListener {
 		//	currentQuestionIndex = getNextQuestionIndex(false);
 		showPage(this.currentPageIndex,new Integer(currentQuestionIndex));
 
-		if(cmd != DefaultCommands.cmdBackParent && getEpihandyController().isSingleQuestionEdit())
+		if(cmd != DefaultCommands.cmdBackParent && getOpenXdataController().isSingleQuestionEdit())
 		{
 			//if we are on the last question.
 			if(currentQuestionIndex == displayedQuestions.size()){
@@ -399,7 +399,7 @@ public class FormView extends AbstractView implements AlertMessageListener {
 				save = listener.beforeFormSaved(formData,formData.isNew()); //Give the API user a chance to do some custom validations.
 
 			if(save){
-				getEpihandyController().saveForm(formData);
+				getOpenXdataController().saveForm(formData);
 
 				if(listener != null)
 					listener.afterFormSaved(formData,formData.isNew());
@@ -482,12 +482,12 @@ public class FormView extends AbstractView implements AlertMessageListener {
 				edit = listener.beforeQuestionEdit(currentQuestion); //give the API user a chance to override this editing.
 
 			if(edit)
-				getEpihandyController().startEdit(currentQuestion,(currentQuestionIndex+1),displayedQuestions.size());
+				getOpenXdataController().startEdit(currentQuestion,(currentQuestionIndex+1),displayedQuestions.size());
 		}
 	}
 
-	private EpihandyController getEpihandyController(){
-		return (EpihandyController)controller;
+	private OpenXdataController getOpenXdataController(){
+		return (OpenXdataController)controller;
 	}
 
 	/**
@@ -496,9 +496,9 @@ public class FormView extends AbstractView implements AlertMessageListener {
 	public void onAlertMessage(byte msg){
 		if(msg == AlertMessageListener.MSG_OK){
 			if(currentAction == CA_CONFIRM_CANCEL || currentAction == CA_ERROR)
-				getEpihandyController().handleCancelCommand(this);
+				getOpenXdataController().handleCancelCommand(this);
 			else if(currentAction == CA_CONFIRM_DELETE)
-				getEpihandyController().deleteForm(formData,this);
+				getOpenXdataController().deleteForm(formData,this);
 			else
 				display.setCurrent(screen);
 		}

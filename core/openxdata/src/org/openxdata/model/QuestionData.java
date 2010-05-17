@@ -50,7 +50,7 @@ public class QuestionData implements Persistent{
 	private QuestionDef def;
 
 	/** The numeric unique identifier for the question that this data is collected for. */
-	private byte id = EpihandyConstants.NULL_ID;
+	private byte id = OpenXdataConstants.NULL_ID;
 
 	private String dataDescription;
 
@@ -324,7 +324,7 @@ public class QuestionData implements Persistent{
 
 	//TODO This does not belong here.
 	public static String DateToString(Date d, byte format){
-		Calendar cd = Calendar.getInstance(EpihandyConstants.DEFAULT_TIME_ZONE);
+		Calendar cd = Calendar.getInstance(OpenXdataConstants.DEFAULT_TIME_ZONE);
 		cd.setTime(d);
 		String year = "" + cd.get(Calendar.YEAR);
 		String month = "" + (cd.get(Calendar.MONTH)+1);
@@ -346,7 +346,7 @@ public class QuestionData implements Persistent{
 	}
 
 	public static String TimeToString(Date d){
-		Calendar cd = Calendar.getInstance(EpihandyConstants.DEFAULT_TIME_ZONE);
+		Calendar cd = Calendar.getInstance(OpenXdataConstants.DEFAULT_TIME_ZONE);
 		cd.setTime(d);
 		String hour = "" + cd.get(Calendar.HOUR);
 		String minute = "" + (cd.get(Calendar.MINUTE));

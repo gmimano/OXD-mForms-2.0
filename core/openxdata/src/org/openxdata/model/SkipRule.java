@@ -22,7 +22,7 @@ public class SkipRule implements Persistent{
 	/** The numeric identifier of a rule. This is assigned in code and hence
 	 * is not known by the user.
 	 */
-	private byte id = EpihandyConstants.NULL_ID;
+	private byte id = OpenXdataConstants.NULL_ID;
 
 	/** A list of conditions (Condition object) to be tested for a rule. 
 	 * E.g. If sex is Male. If age is greatern than 4. etc
@@ -32,7 +32,7 @@ public class SkipRule implements Persistent{
 	/** The action taken when conditions are true.
 	 * Example of actions are Disable, Hide, Show, etc
 	 */
-	private byte action = EpihandyConstants.ACTION_NONE;
+	private byte action = OpenXdataConstants.ACTION_NONE;
 
 	/** A list of question identifiers (bytes) acted upon when conditions for the rule are true. */
 	private Vector actionTargets;
@@ -139,9 +139,9 @@ public class SkipRule implements Persistent{
 				falseFound = true;
 		}
 
-		if(getConditions().size() == 1 || getConditionsOperator() == EpihandyConstants.CONDITIONS_OPERATOR_AND)
+		if(getConditions().size() == 1 || getConditionsOperator() == OpenXdataConstants.CONDITIONS_OPERATOR_AND)
 			ExecuteAction(data,!falseFound);
-		else if(getConditionsOperator() == EpihandyConstants.CONDITIONS_OPERATOR_OR)
+		else if(getConditionsOperator() == OpenXdataConstants.CONDITIONS_OPERATOR_OR)
 			ExecuteAction(data,trueFound);
 		//else do nothing
 	}
@@ -182,16 +182,16 @@ public class SkipRule implements Persistent{
 		qtn.setEnabled(true);
 		qtn.setMandatory(false);
 		
-		if((action & EpihandyConstants.ACTION_ENABLE) != 0)
+		if((action & OpenXdataConstants.ACTION_ENABLE) != 0)
 			qtn.setEnabled(conditionTrue);
-		else if((action & EpihandyConstants.ACTION_DISABLE) != 0)
+		else if((action & OpenXdataConstants.ACTION_DISABLE) != 0)
 			qtn.setEnabled(!conditionTrue);
-		else if((action & EpihandyConstants.ACTION_SHOW) != 0)
+		else if((action & OpenXdataConstants.ACTION_SHOW) != 0)
 			qtn.setVisible(conditionTrue);
-		else if((action & EpihandyConstants.ACTION_HIDE) != 0)
+		else if((action & OpenXdataConstants.ACTION_HIDE) != 0)
 			qtn.setVisible(!conditionTrue);
 		
-		if((action & EpihandyConstants.ACTION_MAKE_MANDATORY) != 0)
+		if((action & OpenXdataConstants.ACTION_MAKE_MANDATORY) != 0)
 			qtn.setMandatory(conditionTrue);
 		
 		if(!qtn.isEnabled() || !qtn.isVisible())

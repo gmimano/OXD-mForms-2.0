@@ -74,11 +74,11 @@ public class RepeatTypeEditor extends AbstractView implements TypeEditor, TypeEd
 	public void commandAction(Command c, Displayable d) {
 		try{
 			if(c == DefaultCommands.cmdOk || c == DefaultCommands.cmdNext)
-				getEpihandyController().endEdit(true, questionData, c);
+				getOpenXdataController().endEdit(true, questionData, c);
 			else if(c == DefaultCommands.cmdCancel || c == DefaultCommands.cmdPrev)
-				getEpihandyController().endEdit(false, questionData, c);
+				getOpenXdataController().endEdit(false, questionData, c);
 			else
-				getEpihandyController().endEdit(false, questionData, c);
+				getOpenXdataController().endEdit(false, questionData, c);
 		}
 		catch(Exception e){
 			//alertMsg.showError(e.getMessage());
@@ -95,8 +95,8 @@ public class RepeatTypeEditor extends AbstractView implements TypeEditor, TypeEd
 		dataView.showQtnData(rptQtnsData, this);
 	}*/
 	
-	private EpihandyController getEpihandyController(){
-		return (EpihandyController)controller;
+	private OpenXdataController getOpenXdataController(){
+		return (OpenXdataController)controller;
 	}
 	
 	public void endEdit(boolean save, QuestionData data, Command cmd){
@@ -117,10 +117,10 @@ public class RepeatTypeEditor extends AbstractView implements TypeEditor, TypeEd
 			}
 			else if(commandAction == CommandAction.OK){
 				questionData.setAnswer(rptQtnsDataList);
-				getEpihandyController().endEdit(false, questionData, null);
+				getOpenXdataController().endEdit(false, questionData, null);
 			}
 			else if(commandAction == CommandAction.CANCEL)
-				getEpihandyController().endEdit(false, null, null);
+				getOpenXdataController().endEdit(false, null, null);
 		}
 		else if(view == dataView){
 			if(commandAction == CommandAction.EDIT)

@@ -25,8 +25,8 @@ import org.openxdata.model.RepeatQtnsDef;
 public class EpihandyXformTest extends TestCase{
 
 	public void testUpdateXformModel() throws Exception {
-		Document doc = EpihandyXform.getDocument(new FileReader("adult opd.xml"));
-		FormDef def = EpihandyXform.getFormDef(doc);
+		Document doc = OpenXdataXform.getDocument(new FileReader("adult opd.xml"));
+		FormDef def = OpenXdataXform.getFormDef(doc);
 		Vector pages = def.getPages();
 		Vector qtns = ((PageDef)pages.elementAt(0)).getQuestions();
 		for(int i=0; i<qtns.size(); i++){
@@ -123,7 +123,7 @@ public class EpihandyXformTest extends TestCase{
 		
 		
 		
-		String xformModel = EpihandyXform.updateXformModel(doc, formData);
+		String xformModel = OpenXdataXform.updateXformModel(doc, formData);
 		//System.out.println(xformModel);
 		File outFile = new File("problem_lists_model.xml");
 		FileWriter out = new FileWriter(outFile);
@@ -134,8 +134,8 @@ public class EpihandyXformTest extends TestCase{
 	public void testFromXform2FormDef() throws IOException{
 		try{
 			//Document doc = EpihandyXform.getDocument(new FileReader("adult opd.xml"/*"C:\\OdmXformTest.xml"*//*"C:\\epihandy data\\form definitions\\Study1\\registration form.xml"*/));
-			Document doc = EpihandyXform.getDocument(new FileReader("repeatadvanced.txt"/*"C:\\OdmXformTest.xml"*//*"C:\\epihandy data\\form definitions\\Study1\\registration form.xml"*/));
-			FormDef def = EpihandyXform.getFormDef(doc);
+			Document doc = OpenXdataXform.getDocument(new FileReader("repeatadvanced.txt"/*"C:\\OdmXformTest.xml"*//*"C:\\epihandy data\\form definitions\\Study1\\registration form.xml"*/));
+			FormDef def = OpenXdataXform.getFormDef(doc);
 			
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			DataOutputStream dos = new DataOutputStream(baos);

@@ -9,7 +9,7 @@ import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.List;
 
-import org.openxdata.db.EpihandyDataStorage;
+import org.openxdata.db.OpenXdataDataStorage;
 import org.openxdata.db.util.Settings;
 import org.openxdata.model.LanguageList;
 import org.openxdata.mvc.AbstractView;
@@ -101,7 +101,7 @@ public class LanguageSettings extends AbstractView implements AlertMessageListen
 		}
 		else{
 			if(index == 0){
-				langlist = EpihandyDataStorage.getLanguages();
+				langlist = OpenXdataDataStorage.getLanguages();
 				if(langlist == null || langlist.size() == 0)
 					alertMsg.showConfirm(MenuText.NO_LANGUAGES_FOUND());
 				else{

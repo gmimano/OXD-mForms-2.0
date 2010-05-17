@@ -17,10 +17,10 @@ import org.openxdata.db.util.PersistentHelper;
  */
 public class QuestionDef implements Persistent{
 	/** The prompt text. The text the user sees. */
-	private String text = EpihandyConstants.EMPTY_STRING;
+	private String text = OpenXdataConstants.EMPTY_STRING;
 
 	/** The help text. */
-	private String helpText = EpihandyConstants.EMPTY_STRING;
+	private String helpText = OpenXdataConstants.EMPTY_STRING;
 
 	/** The type of question. eg Numeric,Date,Text etc. */
 	private byte type = QTN_TYPE_TEXT;
@@ -48,7 +48,7 @@ public class QuestionDef implements Persistent{
 	/** The text indentifier of the question. This is used by the users of the questionaire 
 	 * but in code we use the dynamically generated numeric id for speed. 
 	 */
-	private String variableName = EpihandyConstants.EMPTY_STRING;
+	private String variableName = OpenXdataConstants.EMPTY_STRING;
 
 	/** The allowed set of values (OptionDef) for an answer of the question. 
 	 * This also holds repeat sets of questions (RepeatQtnsDef) for the QTN_TYPE_REPEAT.
@@ -62,7 +62,7 @@ public class QuestionDef implements Persistent{
 	 * given a unique (on a form) id starting from 1 up to 127. The assumption is that one will never need to have
 	 * a form with more than 127 questions for a mobile device (It would be too big).
 	 */
-	private byte id = EpihandyConstants.NULL_ID;
+	private byte id = OpenXdataConstants.NULL_ID;
 
 	public static final byte QTN_TYPE_NULL = 0;
 	
@@ -280,10 +280,10 @@ public class QuestionDef implements Persistent{
 
 		//Intensionally done this way to provide some optimizations.
 		byte val = dis.readByte();
-		setVisible((val & EpihandyConstants.BIT_FLAG1) != 0);
-		setEnabled((val & EpihandyConstants.BIT_FLAG2) != 0);
-		setLocked((val & EpihandyConstants.BIT_FLAG3) != 0);
-		setMandatory((val & EpihandyConstants.BIT_FLAG4) != 0);
+		setVisible((val & OpenXdataConstants.BIT_FLAG1) != 0);
+		setEnabled((val & OpenXdataConstants.BIT_FLAG2) != 0);
+		setLocked((val & OpenXdataConstants.BIT_FLAG3) != 0);
+		setMandatory((val & OpenXdataConstants.BIT_FLAG4) != 0);
 
 		setVariableName(dis.readUTF());
 
@@ -316,13 +316,13 @@ public class QuestionDef implements Persistent{
 		//Intensionally done this way to provide some optimizations.
 		byte val = 0;
 		if(isVisible())
-			val |= EpihandyConstants.BIT_FLAG1;
+			val |= OpenXdataConstants.BIT_FLAG1;
 		if(isEnabled())
-			val |= EpihandyConstants.BIT_FLAG2;
+			val |= OpenXdataConstants.BIT_FLAG2;
 		if(isLocked())
-			val |= EpihandyConstants.BIT_FLAG3;
+			val |= OpenXdataConstants.BIT_FLAG3;
 		if(isMandatory())
-			val |= EpihandyConstants.BIT_FLAG4;
+			val |= OpenXdataConstants.BIT_FLAG4;
 		dos.writeByte(val);
 
 		dos.writeUTF(getVariableName());

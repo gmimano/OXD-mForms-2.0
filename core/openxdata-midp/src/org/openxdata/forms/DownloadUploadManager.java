@@ -6,12 +6,12 @@ import javax.microedition.lcdui.Displayable;
 
 import org.openxdata.communication.TransportLayer;
 import org.openxdata.communication.TransportLayerListener;
-import org.openxdata.db.EpihandyDataStorage;
+import org.openxdata.db.OpenXdataDataStorage;
 import org.openxdata.db.util.Persistent;
 import org.openxdata.db.util.PersistentInt;
 import org.openxdata.db.util.PersistentString;
 import org.openxdata.db.util.Settings;
-import org.openxdata.model.EpihandyConstants;
+import org.openxdata.model.OpenXdataConstants;
 import org.openxdata.model.FormData;
 import org.openxdata.model.FormDef;
 import org.openxdata.model.LanguageList;
@@ -68,7 +68,7 @@ public class DownloadUploadManager implements TransportLayerListener,AlertMessag
 
 	private ResponseHeader responseHeader;
 
-	private EpihandyController controller;
+	private OpenXdataController controller;
 
 	private StudyDef currentStudy;
 
@@ -106,7 +106,7 @@ public class DownloadUploadManager implements TransportLayerListener,AlertMessag
 	private StudyDataList studyDataList = null;
 
 
-	public DownloadUploadManager(TransportLayer transportLayer,EpihandyController controller, String title,TransportLayerListener transportLayerListener) {
+	public DownloadUploadManager(TransportLayer transportLayer,OpenXdataController controller, String title,TransportLayerListener transportLayerListener) {
 		this.transportLayer = transportLayer;
 		this.controller = controller;
 		//this.title = title;
@@ -265,7 +265,7 @@ public class DownloadUploadManager implements TransportLayerListener,AlertMessag
 		requestHeader.setLocale(LanguageSettings.getLocale());
 		requestHeader.setAction(RequestHeader.ACTION_DOWNLOAD_USERS_AND_FORMS); // ACTION_DOWNLOAD_STUDY_FORMS
 
-		Persistent studyIdParam = new PersistentInt(EpihandyConstants.NULL_ID);
+		Persistent studyIdParam = new PersistentInt(OpenXdataConstants.NULL_ID);
 		if (this.currentStudy != null){
 			if(FormManager.useStudyNumericId)
 				studyIdParam = new PersistentInt(currentStudy.getId());
@@ -433,12 +433,12 @@ public class DownloadUploadManager implements TransportLayerListener,AlertMessag
 		try {
 			if (currentAction == CA_STUDY_LIST_DOWNLOAD) {
 				deleteAllForms(); //delete all existing forms to prevent bugs of orphan forms who studies are no longer on server, and more.
-				EpihandyDataStorage.saveStudyList((StudyDefList) dataOut);
+				OpenXdataDataStorage.saveStudyList((StudyDefList) dataOut);
 				this.controller.setStudyList(((StudyDefList) dataOut).getStudies());
 				message = ((StudyDefList) dataOut).getStudies().size()+" "+MenuText.STUDY_DOWNLOAD_SAVED();
 			} 
 			else if (currentAction == CA_USERS_DOWNLOAD) {
-				EpihandyDataStorage.saveUsers((UserList) dataOut);
+				OpenXdataDataStorage.saveUsers((UserList) dataOut);
 				wasUserDownload = true;
 				alertMsg.showProgress(MenuText.FORM_DOWNLOAD(),((UserList)dataOut).size()+" "+MenuText.USER_DOWNLOAD_SAVED());
 				currentAction = CA_FORMS_DOWNLOAD;
@@ -449,7 +449,7 @@ public class DownloadUploadManager implements TransportLayerListener,AlertMessag
 				UserStudyDefLists lists = ((UserStudyDefLists) dataOut);
 
 				UserList users = lists.getUsers();
-				EpihandyDataStorage.saveUsers(users);
+				OpenXdataDataStorage.saveUsers(users);
 
 				StudyDef studyDef = lists.getStudyDef();
 
@@ -459,7 +459,7 @@ public class DownloadUploadManager implements TransportLayerListener,AlertMessag
 				studyDef.setName(controller.getCurrentStudy().getName());
 				studyDef.setVariableName(controller.getCurrentStudy().getVariableName());
 
-				EpihandyDataStorage.saveStudy(studyDef);
+				OpenXdataDataStorage.saveStudy(studyDef);
 				this.controller.setStudy(studyDef);
 
 				if(studyDef.getForms() == null || studyDef.getForms().size() == 0)
@@ -475,7 +475,7 @@ public class DownloadUploadManager implements TransportLayerListener,AlertMessag
 			}
 			else if (currentAction == CA_LANGUAGES_DOWNLOAD) {
 				LanguageList languages = (LanguageList)dataOut;
-				EpihandyDataStorage.saveLanguages(languages);
+				OpenXdataDataStorage.saveLanguages(languages);
 
 				if(languages.size() == 0)
 					message = MenuText.NO_LANGUAGES();
@@ -484,7 +484,7 @@ public class DownloadUploadManager implements TransportLayerListener,AlertMessag
 			}
 			else if (currentAction == CA_MENU_TEXT_DOWNLOAD) {
 				MenuTextList menuTextList = (MenuTextList)dataOut;
-				EpihandyDataStorage.saveMenuText(menuTextList);
+				OpenXdataDataStorage.saveMenuText(menuTextList);
 
 				MenuText.setMenuTextList(menuTextList);
 
@@ -530,7 +530,7 @@ public class DownloadUploadManager implements TransportLayerListener,AlertMessag
 					//if(GeneralSettings.deleteDataAfterUpload()){
 						//EpihandyDataStorage.deleteData(new StudyDefList(studyList));
 						//assert(formData != null);
-						EpihandyDataStorage.deleteFormData(studyId, formData);
+						OpenXdataDataStorage.deleteFormData(studyId, formData);
 					//}
 
 					if(currentDataCount == totalDataCount){
@@ -609,7 +609,7 @@ public class DownloadUploadManager implements TransportLayerListener,AlertMessag
 		for (int i = 0; i < studyList.size(); i++){
 			StudyDef studyDef = (StudyDef) studyList.elementAt(i);
 			//Study list always has no forms, so we have to get them from the database.
-			studyDef = EpihandyDataStorage.getStudy(studyDef.getId());
+			studyDef = OpenXdataDataStorage.getStudy(studyDef.getId());
 
 			//If no forms downloaded yet, then we don't expect any data to save.
 			if(studyDef != null){
@@ -652,7 +652,7 @@ public class DownloadUploadManager implements TransportLayerListener,AlertMessag
 		if (formDefs != null && formDefs.size() > 0) {
 			for (int i = 0; i < formDefs.size(); i++) {
 				FormDef formDef = ((FormDef) formDefs.elementAt(i));
-				Vector formDatas = EpihandyDataStorage.getFormData(studyDef.getId(), formDef.getId());
+				Vector formDatas = OpenXdataDataStorage.getFormData(studyDef.getId(), formDef.getId());
 				
 				if (formDatas != null) {
 					setFormDefs(formDatas, formDef); // These are for writing to stream but they are not persisted.
@@ -683,6 +683,6 @@ public class DownloadUploadManager implements TransportLayerListener,AlertMessag
 			return;
 
 		for(byte i=0; i<list.size(); i++)
-			EpihandyDataStorage.deleteStudy((StudyDef)list.elementAt(i));
+			OpenXdataDataStorage.deleteStudy((StudyDef)list.elementAt(i));
 	}
 }

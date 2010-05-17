@@ -14,14 +14,14 @@ import org.openxdata.db.util.Persistent;
  */
 public class OptionDef implements Persistent {
 	/** The numeric unique identifier of an answer option. */
-	private byte id = EpihandyConstants.NULL_ID;
+	private byte id = OpenXdataConstants.NULL_ID;
 
 	/** The display text of the answer option. */
-	private String text = EpihandyConstants.EMPTY_STRING;
+	private String text = OpenXdataConstants.EMPTY_STRING;
 
 	//TODO May not need to serialize this property for smaller pay load. Then we would just rely on the id.
 	/** The unique text ientifier of an answer option. */
-	private String variableName = EpihandyConstants.EMPTY_STRING;
+	private String variableName = OpenXdataConstants.EMPTY_STRING;
 
 	public static final char SEPARATOR_CHAR = ',';
 

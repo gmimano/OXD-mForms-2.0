@@ -8,7 +8,7 @@ import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.List;
 
 import org.openxdata.db.util.Settings;
-import org.openxdata.model.EpihandyConstants;
+import org.openxdata.model.OpenXdataConstants;
 import org.openxdata.model.FormDef;
 import org.openxdata.model.StudyDef;
 import org.openxdata.mvc.AbstractView;
@@ -78,7 +78,7 @@ public class FormDefListView extends AbstractView implements AlertMessageListene
 						screen.addCommand(DefaultCommands.cmdSel);
 						screen.addCommand(DefaultCommands.cmdBack);
 
-						Settings settings = new Settings(EpihandyConstants.STORAGE_NAME_EPIHANDY_SETTINGS,true);
+						Settings settings = new Settings(OpenXdataConstants.STORAGE_NAME_EPIHANDY_SETTINGS,true);
 						String val = settings.getSetting(KEY_LAST_SELECTED_FORMDEF);
 						if(val != null)
 							lastSelectionIndex = Integer.parseInt(val);
@@ -115,7 +115,7 @@ public class FormDefListView extends AbstractView implements AlertMessageListene
 		if(c == DefaultCommands.cmdSel || c == List.SELECT_COMMAND)
 			handleOkCommand(d);
 		else if(c == DefaultCommands.cmdBack)
-			getEpihandyController().handleCancelCommand(this);
+			getOpenXdataController().handleCancelCommand(this);
 	}
 
 	/**
@@ -134,9 +134,9 @@ public class FormDefListView extends AbstractView implements AlertMessageListene
 	private void handleOkCommand(Displayable d){
 		try{
 			lastSelectionIndex = ((List)d).getSelectedIndex();
-			getEpihandyController().showFormDataList((FormDef)formDefList.elementAt(lastSelectionIndex)/*(FormDef)studyDef.getForms().elementAt(lastSelectionIndex)*/);
+			getOpenXdataController().showFormDataList((FormDef)formDefList.elementAt(lastSelectionIndex)/*(FormDef)studyDef.getForms().elementAt(lastSelectionIndex)*/);
 
-			Settings settings = new Settings(EpihandyConstants.STORAGE_NAME_EPIHANDY_SETTINGS,true);
+			Settings settings = new Settings(OpenXdataConstants.STORAGE_NAME_EPIHANDY_SETTINGS,true);
 			settings.setSetting(KEY_LAST_SELECTED_FORMDEF, String.valueOf(lastSelectionIndex));
 			settings.saveSettings();
 		}
@@ -157,12 +157,12 @@ public class FormDefListView extends AbstractView implements AlertMessageListene
 			if(currentAction == CA_ERROR)
 				show();
 			else
-				getEpihandyController().handleCancelCommand(this);
+				getOpenXdataController().handleCancelCommand(this);
 
 			currentAction = CA_NONE;
 		}
 		else
-			getEpihandyController().handleCancelCommand(this);
+			getOpenXdataController().handleCancelCommand(this);
 	}
 
 	public void setStudy(StudyDef study){
@@ -173,7 +173,7 @@ public class FormDefListView extends AbstractView implements AlertMessageListene
 		return studyDef;
 	}
 
-	private EpihandyController getEpihandyController(){
-		return (EpihandyController)controller;
+	private OpenXdataController getOpenXdataController(){
+		return (OpenXdataController)controller;
 	}
 }

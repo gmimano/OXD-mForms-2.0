@@ -7,7 +7,7 @@ import java.util.TimeZone;
  *
  * @version ,
  */
-public class EpihandyConstants {
+public class OpenXdataConstants {
 	
 	//Bit flags for some optimizations (e.g data compression.)
 	public static final byte BIT_FLAG1 = 1 << 0;  //  1 

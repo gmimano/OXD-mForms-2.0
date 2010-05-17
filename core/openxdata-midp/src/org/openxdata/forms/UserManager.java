@@ -7,7 +7,7 @@ import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Displayable;
 
 import org.bouncycastle.crypto.digests.SHA1Digest;
-import org.openxdata.db.EpihandyDataStorage;
+import org.openxdata.db.OpenXdataDataStorage;
 import org.openxdata.db.util.Settings;
 import org.openxdata.model.User;
 import org.openxdata.model.UserList;
@@ -102,7 +102,7 @@ public class UserManager extends AbstractView implements AlertMessageListener {
 		if(name.trim().length() == 0 || password.trim().length() == 0)
 			return false;
 		
-		UserList users = EpihandyDataStorage.getUsers();
+		UserList users = OpenXdataDataStorage.getUsers();
 		if(users == null || users.size() == 0)
 			return true; //No users in db so every one has free entry
 		

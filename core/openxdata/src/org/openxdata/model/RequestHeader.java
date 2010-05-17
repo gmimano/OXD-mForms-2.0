@@ -47,8 +47,8 @@ public class RequestHeader implements Persistent{
 	/** The current status. This could be a request or return code status. */
 	public byte action = ACTION_NONE;
 
-	private String userName = EpihandyConstants.EMPTY_STRING;
-	private String password = EpihandyConstants.EMPTY_STRING;
+	private String userName = OpenXdataConstants.EMPTY_STRING;
+	private String password = OpenXdataConstants.EMPTY_STRING;
 	private static String serializer = "epihandyser";
 	private String locale = "en";
 

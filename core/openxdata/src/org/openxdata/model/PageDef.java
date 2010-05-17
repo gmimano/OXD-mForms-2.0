@@ -20,10 +20,10 @@ public class PageDef implements Persistent{
 	private Vector questions = new Vector();
 
 	/** The page number. */
-	private byte pageNo = EpihandyConstants.NULL_ID;
+	private byte pageNo = OpenXdataConstants.NULL_ID;
 
 	/** The name of the page. */
-	private String name = EpihandyConstants.EMPTY_STRING;
+	private String name = OpenXdataConstants.EMPTY_STRING;
 
 	public PageDef() {
 

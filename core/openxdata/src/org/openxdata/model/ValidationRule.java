@@ -29,7 +29,7 @@ public class ValidationRule implements Persistent {
 	private String errorMessage;
 	
 	/** Operator for combining more than one condition. (And, Or) only these two for now. */
-	private int conditionsOperator = EpihandyConstants.CONDITIONS_OPERATOR_NULL;
+	private int conditionsOperator = OpenXdataConstants.CONDITIONS_OPERATOR_NULL;
 	
 	private FormData formData;
 	
@@ -123,9 +123,9 @@ public class ValidationRule implements Persistent {
 				falseFound = true;
 		}
 		
-		if(conditions.size() == 1 || getConditionsOperator() == EpihandyConstants.CONDITIONS_OPERATOR_AND)
+		if(conditions.size() == 1 || getConditionsOperator() == OpenXdataConstants.CONDITIONS_OPERATOR_AND)
 			return !falseFound;
-		else if(getConditionsOperator() == EpihandyConstants.CONDITIONS_OPERATOR_OR)
+		else if(getConditionsOperator() == OpenXdataConstants.CONDITIONS_OPERATOR_OR)
 			return trueFound;
 		
 		return false;

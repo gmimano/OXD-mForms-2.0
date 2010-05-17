@@ -43,7 +43,7 @@ public class FormManager implements TransportLayerListener{
 	private Displayable prevScreen;
 	
 	private DownloadUploadManager downloadMgr;
-	private EpihandyController controller;
+	private OpenXdataController controller;
 	private UserManager userMgr;
 	TransportLayer transportLayer;
 	TransportLayerListener transportLayerListener;
@@ -81,7 +81,7 @@ public class FormManager implements TransportLayerListener{
 		this.transportLayer = transportLayer;
 		AbstractView.display = display;
 				
-		controller = new EpihandyController();
+		controller = new OpenXdataController();
 		controller.init( title, display, formEventListener, currentScreen, transportLayer);
 		
 		//Just testing type editor extension;
@@ -98,8 +98,8 @@ public class FormManager implements TransportLayerListener{
 		userMgr = new UserManager(display,prevScreen,title,null);
 		downloadMgr = new DownloadUploadManager(transportLayer, controller, title,this);
 		
-		((EpihandyController)controller).setDownloadManager(downloadMgr);
-		((EpihandyController)controller).setUserManager(userMgr);
+		((OpenXdataController)controller).setDownloadManager(downloadMgr);
+		((OpenXdataController)controller).setUserManager(userMgr);
 		
 		if(GeneralSettings.isOkOnRight()){
 			DefaultCommands.cmdOk = new Command(MenuText.OK(), Command.CANCEL, 1);
@@ -111,7 +111,7 @@ public class FormManager implements TransportLayerListener{
 
 	public void setUserManager(UserManager userManager){
 		this.userMgr = userManager;
-		((EpihandyController)controller).setUserManager(userMgr);
+		((OpenXdataController)controller).setUserManager(userMgr);
 	}
 	
 	public String getTitle() {

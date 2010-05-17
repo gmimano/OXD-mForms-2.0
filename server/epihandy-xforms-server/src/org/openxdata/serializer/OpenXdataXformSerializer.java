@@ -18,7 +18,7 @@ import org.openxdata.model.StudyDataList;
 import org.openxdata.model.StudyDef;
 import org.openxdata.model.StudyDefList;
 import org.openxdata.model.User;
-import org.openxdata.xform.EpihandyXform;
+import org.openxdata.xform.OpenXdataXform;
 
 
 /**
@@ -31,7 +31,7 @@ import org.openxdata.xform.EpihandyXform;
  * @author Daniel
  *
  */
-public class EpihandyXformSerializer {
+public class OpenXdataXformSerializer {
 	
 	public void serializeStudies(OutputStream os,Object data) throws Exception{
 		//try{
@@ -59,7 +59,7 @@ public class EpihandyXformSerializer {
 				
 				//Wrapped in a try catch block such that when a form fails, we carry on with the rest
 				try{
-					FormDef formDef = EpihandyXform.fromXform2FormDef(new StringReader(xml));
+					FormDef formDef = OpenXdataXform.fromXform2FormDef(new StringReader(xml));
 					studyDef.addForm(formDef);
 				}catch(Exception ex){
 					ex.printStackTrace();
@@ -146,9 +146,9 @@ public class EpihandyXformSerializer {
 			if(xml == null)
 				throw new Exception("Cannot find form with id = "+formData.getDefId());
 			
-			Document doc = EpihandyXform.getDocument(new StringReader(xml));
-			formData.setDef(EpihandyXform.getFormDef(doc));
-			xml = EpihandyXform.updateXformModel(doc,formData);
+			Document doc = OpenXdataXform.getDocument(new StringReader(xml));
+			formData.setDef(OpenXdataXform.getFormDef(doc));
+			xml = OpenXdataXform.updateXformModel(doc,formData);
 			xmlforms.add(xml);
 		}
 	}
