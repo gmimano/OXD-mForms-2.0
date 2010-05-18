@@ -40,9 +40,10 @@ public class GeneralSettings extends AbstractView{
 		//currentCtrl.append(MenuText.DELETE_AFTER_UPLOAD(), null);
 		
 		Settings settings = new Settings(STORAGE_NAME_SETTINGS,true);
-		currentCtrl.setSelectedIndex(0,Utilities.stringToBoolean(settings.getSetting(KEY_SINGLE_QUESTION_EDIT)));
-		currentCtrl.setSelectedIndex(1,Utilities.stringToBoolean(settings.getSetting(KEY_QUESTION_NUMBERING)));
-		currentCtrl.setSelectedIndex(2,Utilities.stringToBoolean(settings.getSetting(KEY_OK_ON_RIGHT)));
+		
+		currentCtrl.setSelectedIndex(0,getSingleQtnEditSetting(settings));
+		currentCtrl.setSelectedIndex(1,getQtnNumberingSetting(settings));
+		currentCtrl.setSelectedIndex(2,getOkOnRightSetting(settings));
 		//currentCtrl.setSelectedIndex(3,Utilities.stringToBoolean(settings.getSetting(KEY_DELETE_DATA_AFTER_UPLOAD),true));
 		
 		screen.setCommandListener(this);
@@ -99,14 +100,38 @@ public class GeneralSettings extends AbstractView{
 		display.setCurrent(getPrevScreen());
 	}
 	
-	public static boolean isSingleQtnEdit(){
+	private static boolean getSingleQtnEditSetting(Settings settings) {
+		String setting = settings.getSetting(KEY_SINGLE_QUESTION_EDIT);
+		if (setting == null) {
+			setting = FormsConstants.SINGLE_QUESTION_EDIT;
+		}
+		return Utilities.stringToBoolean(setting);
+	}
+	
+	public static boolean isSingleQtnEdit() {
 		Settings settings = new Settings(STORAGE_NAME_SETTINGS,true);
-		return Utilities.stringToBoolean(settings.getSetting(KEY_SINGLE_QUESTION_EDIT));
+		return getSingleQtnEditSetting(settings);
+	}
+	
+	public static boolean getQtnNumberingSetting(Settings settings) {
+		String setting = settings.getSetting(KEY_QUESTION_NUMBERING);
+		if (setting == null) {
+			setting = FormsConstants.QUESTION_NUMBERING;
+		}
+		return Utilities.stringToBoolean(setting);
+	}
+	
+	public static boolean getOkOnRightSetting(Settings settings) {
+		String setting = settings.getSetting(KEY_OK_ON_RIGHT);
+		if (setting == null) {
+			setting = FormsConstants.OK_ON_RIGHT;
+		}
+		return Utilities.stringToBoolean(setting);
 	}
 	
 	public static boolean isOkOnRight(){
 		Settings settings = new Settings(STORAGE_NAME_SETTINGS,true);
-		return Utilities.stringToBoolean(settings.getSetting(KEY_OK_ON_RIGHT));
+		return getOkOnRightSetting(settings);
 	}
 	
 	/*public static boolean deleteDataAfterUpload(){

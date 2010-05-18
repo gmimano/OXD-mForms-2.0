@@ -6,7 +6,7 @@
 <!-- ** @version 1.0                                        ** -->
 <!-- ********************************************************* -->
 <project name="openxdata-midp" default="package">
-	<property file="../build.properties"/>
+	<property file="antbuild.properties"/>
 		<property name="midp" value="${WTK-ROOT}"/>
 	<property name="midp_lib" value="${midp}/lib/midpapi20.jar"/>
 	<property name="cldc_lib" value="${midp}/lib/cldcapi10.jar" />
@@ -56,7 +56,8 @@
 
 	<target name="compile" depends="clean,init" description="Compiles the midlet">
 		<mkdir dir="bin" />
-		
+		<!-- generate classes with constants -->
+		<ant antfile="build-configuration.xml" target="init" inheritall="false"/>
 		<!--  Compile midlet java files -->
 		<javac destdir="bin" classpathref="classpath" target="1.3" source="1.3" debug="true" debuglevel="lines,source">
 			<src path="src/" />
