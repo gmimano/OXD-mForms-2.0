@@ -2,5 +2,8 @@
 <classpath>
 	<classpathentry excluding="**/.svn/|**/CVS/" kind="src" path="src"/>
 	<classpathentry kind="con" path="org.elipse.mtj.JavaMEContainer/Java(TM) Platform Micro Edition SDK 3.0/DefaultCldcPhone2"/>
+	<classpathentry kind="var" path="J2MELIB/cldcapi10.jar"/>
+	<classpathentry kind="var" path="J2MELIB/midpapi20.jar"/>
+	<classpathentry kind="var" path="J2MELIB/mmapi.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

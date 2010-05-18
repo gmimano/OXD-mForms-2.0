@@ -5,5 +5,8 @@
 	<classpathentry kind="lib" path="lib/bluecove-2.1.0.jar"/>
 	<classpathentry kind="con" path="org.elipse.mtj.JavaMEContainer/Java(TM) Platform Micro Edition SDK 3.0/DefaultCldcPhone2"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/openxdata"/>
+	<classpathentry kind="var" path="J2MELIB/cldcapi10.jar"/>
+	<classpathentry kind="var" path="J2MELIB/midpapi20.jar"/>
+	<classpathentry kind="var" path="J2MELIB/mmapi.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

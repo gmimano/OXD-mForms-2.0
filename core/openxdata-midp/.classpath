@@ -7,6 +7,9 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/midp-mvc"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/dbutils"/>
 	<classpathentry kind="con" path="org.elipse.mtj.JavaMEContainer/Java(TM) Platform Micro Edition SDK 3.0/DefaultCldcPhone2"/>
+	<classpathentry kind="var" path="J2MELIB/cldcapi10.jar"/>
+	<classpathentry kind="var" path="J2MELIB/midpapi20.jar"/>
+	<classpathentry kind="var" path="J2MELIB/mmapi.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/cldc_classes.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/openxdata"/>
 	<classpathentry kind="output" path="bin"/>
