@@ -18,8 +18,8 @@ public class LoginForm extends Form{
 	public LoginForm(String title , String userName) {
 		super(title);
 			
-		txtUserName = new TextField(MenuText.USER_NAME(),"guyzb" /*userName*/,50,TextField.ANY); //Guyzb
-		txtPassword = new TextField(MenuText.PASSWORD(),"daniel123" /*""*/,50,TextField.PASSWORD); //daniel123
+		txtUserName = new TextField(MenuText.USER_NAME(),"" /*userName*/,50,TextField.ANY); //Guyzb
+		txtPassword = new TextField(MenuText.PASSWORD(),"" /*""*/,50,TextField.PASSWORD); //daniel123
 
 		this.append(txtUserName);
 		this.append(txtPassword);
