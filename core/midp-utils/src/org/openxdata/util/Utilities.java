@@ -44,7 +44,11 @@ public class Utilities {
 	public static boolean stringToBoolean(String val, boolean defaultValue){
 		if(val == null)
 			return defaultValue;
-		return !val.equals("0");
+		if (val.length() > 1) {
+			return !val.toLowerCase().equals("false");
+		} else {
+			return !val.equals("0");
+		}
 	}
 	
 	public static String booleanToString(boolean val){
