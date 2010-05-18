@@ -12,25 +12,6 @@ import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.List;
 import javax.microedition.midlet.MIDlet;
 
-import org.fcitmuk.communication.ConnectionParameter;
-import org.fcitmuk.communication.TransportLayer;
-import org.fcitmuk.communication.TransportLayerListener;
-import org.fcitmuk.db.util.Persistent;
-import org.fcitmuk.epihandy.EpihandyConstants;
-import org.fcitmuk.epihandy.FormData;
-import org.fcitmuk.epihandy.FormDef;
-import org.fcitmuk.epihandy.QuestionData;
-import org.fcitmuk.epihandy.RequestHeader;
-import org.fcitmuk.epihandy.ResponseHeader;
-import org.fcitmuk.epihandy.midp.db.EpihandyDataStorage;
-import org.fcitmuk.epihandy.midp.forms.DateSettings;
-import org.fcitmuk.epihandy.midp.forms.FormListener;
-import org.fcitmuk.epihandy.midp.forms.FormManager;
-import org.fcitmuk.epihandy.midp.forms.GeneralSettings;
-import org.fcitmuk.epihandy.midp.forms.LogonListener;
-import org.fcitmuk.epihandy.midp.forms.UserManager;
-import org.fcitmuk.midp.db.util.Settings;
-import org.fcitmuk.midp.db.util.StorageListener;
 import org.fcitmuk.openmrs.Cohort;
 import org.fcitmuk.openmrs.CohortList;
 import org.fcitmuk.openmrs.MedicalHistoryField;
@@ -45,10 +26,28 @@ import org.fcitmuk.openmrs.PatientForm;
 import org.fcitmuk.openmrs.PatientMedicalHistory;
 import org.fcitmuk.openmrs.VarNames;
 import org.fcitmuk.openmrs.db.OpenmrsDataStorage;
-import org.fcitmuk.util.AlertMessage;
-import org.fcitmuk.util.AlertMessageListener;
-import org.fcitmuk.util.DefaultCommands;
-import org.fcitmuk.util.Utilities;
+import org.openxdata.communication.ConnectionParameter;
+import org.openxdata.communication.TransportLayer;
+import org.openxdata.communication.TransportLayerListener;
+import org.openxdata.db.OpenXdataDataStorage;
+import org.openxdata.db.util.Persistent;
+import org.openxdata.db.util.Settings;
+import org.openxdata.db.util.StorageListener;
+import org.openxdata.forms.DateSettings;
+import org.openxdata.forms.FormListener;
+import org.openxdata.forms.FormManager;
+import org.openxdata.forms.LogonListener;
+import org.openxdata.forms.UserManager;
+import org.openxdata.model.FormData;
+import org.openxdata.model.FormDef;
+import org.openxdata.model.OpenXdataConstants;
+import org.openxdata.model.QuestionData;
+import org.openxdata.model.RequestHeader;
+import org.openxdata.model.ResponseHeader;
+import org.openxdata.util.AlertMessage;
+import org.openxdata.util.AlertMessageListener;
+import org.openxdata.util.DefaultCommands;
+import org.openxdata.util.Utilities;
 
 
 /** This is the main midlet that displays the main user inteface for openmrs. 
@@ -181,7 +180,7 @@ public class MainForm extends MIDlet  implements CommandListener,FormListener,St
 	 * tries to do something before logging in, and the logon mananer intervenes by requiring the
 	 * user to first login. This happens after downloading forms because a new list of users is got
 	 * which makes void the current users info. */
-	private int selectedIndex = EpihandyConstants.NO_SELECTION;
+	private int selectedIndex = OpenXdataConstants.NO_SELECTION;
 
 	//the id of the patient cohort to download.
 	//private int cohortId;
@@ -231,9 +230,9 @@ public class MainForm extends MIDlet  implements CommandListener,FormListener,St
 
 		alertMsg = new AlertMessage(this.display, TITLE, this.mainList,this);
 
-		EpihandyDataStorage.storageListener = this;
+		OpenXdataDataStorage.storageListener = this;
 		OpenmrsDataStorage.storageListener = this;
-		GeneralSettings.setDeleteDataAfterUpload(true);
+		//GeneralSettings.setDeleteDataAfterUpload(true);
 	}
 
 	private void initMainList(){
@@ -687,8 +686,8 @@ public class MainForm extends MIDlet  implements CommandListener,FormListener,St
 		if(patient != null){
 			display = false;
 			int formDataRecordId = OpenmrsDataStorage.getPatientFormRecordId(patient.getPatientId(), formDef.getId());
-			if(formDataRecordId != EpihandyConstants.NULL_ID)
-				formMgr.showForm(false,EpihandyConstants.DEFAULT_STUDY_ID, formDef, formDataRecordId,true,mainList);
+			if(formDataRecordId != OpenXdataConstants.NULL_ID)
+				formMgr.showForm(false,OpenXdataConstants.DEFAULT_STUDY_ID, formDef, formDataRecordId,true,mainList);
 			else
 				formMgr.showForm(false,new FormData(formDef),false,mainList);
 		}
@@ -838,7 +837,7 @@ public class MainForm extends MIDlet  implements CommandListener,FormListener,St
 		comnParam.setIdentifier(id);
 		comnParam.setName(name); 
 		transportLayer.setCommnucationParameter(TransportLayer.KEY_HTTP_URL, transportLayer.getConnectionParameterValue(TransportLayer.CON_TYPE_HTTP, NAME_PATIENT_DOWNLOAD_URL)+"&uname="+userMgr.getUserName()+"&pw="+userMgr.getPassword()+"&identifier="+id+"&name="+name);
-		transportLayer.download(comnParam, null, new ResponseHeader(), new PatientData(), this,userMgr.getUserName(),userMgr.getPassword());		
+		transportLayer.download(comnParam, null, new ResponseHeader(), new PatientData(), this,userMgr.getUserName(),userMgr.getPassword(),null);		
 	}
 
 	private void startPatientDownload(int cohortId){
@@ -852,7 +851,7 @@ public class MainForm extends MIDlet  implements CommandListener,FormListener,St
 		
 		//String url = "http://localhost:8080/openmrs/module/xforms/patientDownload.form?downloadPatients=true&uname="+userMgr.getUserName()+"&pw="+userMgr.getPassword();
 		transportLayer.setCommnucationParameter(TransportLayer.KEY_HTTP_URL, transportLayer.getConnectionParameterValue(TransportLayer.CON_TYPE_HTTP, NAME_PATIENT_DOWNLOAD_URL)+"&uname="+userMgr.getUserName()+"&pw="+userMgr.getPassword()+"&cohortId="+cohortId);
-		transportLayer.download(comnParam, null, new ResponseHeader(), new PatientData(), this,userMgr.getUserName(),userMgr.getPassword());		
+		transportLayer.download(comnParam, null, new ResponseHeader(), new PatientData(), this,userMgr.getUserName(),userMgr.getPassword(),null);		
 	}
 
 	private void startCohortDownload(){
@@ -862,7 +861,7 @@ public class MainForm extends MIDlet  implements CommandListener,FormListener,St
 		comnParam.setPassword(userMgr.getPassword());
 		//String url = "http://localhost:8080/openmrs/module/xforms/patientDownload.form?downloadPatients=true&uname="+userMgr.getUserName()+"&pw="+userMgr.getPassword();
 		transportLayer.setCommnucationParameter(TransportLayer.KEY_HTTP_URL, transportLayer.getConnectionParameterValue(TransportLayer.CON_TYPE_HTTP, NAME_COHORT_DOWNLOAD_URL)+"&uname="+userMgr.getUserName()+"&pw="+userMgr.getPassword());
-		transportLayer.download(comnParam, null, new ResponseHeader(), new CohortList(), this,userMgr.getUserName(),userMgr.getPassword());		
+		transportLayer.download(comnParam, null, new ResponseHeader(), new CohortList(), this,userMgr.getUserName(),userMgr.getPassword(),null);		
 	}
 
 	/**
@@ -944,7 +943,7 @@ public class MainForm extends MIDlet  implements CommandListener,FormListener,St
 		if(connections != null && connections.length > 0)
 			transportLayer.handleIncomingSmsData(connections[0]);
 		else{*/
-		if(selectedIndex != EpihandyConstants.NO_SELECTION)
+		if(selectedIndex != OpenXdataConstants.NO_SELECTION)
 			handleMainListSelectCommand(selectedIndex);
 		else
 			displayPrevScreen = true;
@@ -954,7 +953,7 @@ public class MainForm extends MIDlet  implements CommandListener,FormListener,St
 	}
 
 	public void onLogonCancel(){
-		if(selectedIndex == EpihandyConstants.NO_SELECTION)
+		if(selectedIndex == OpenXdataConstants.NO_SELECTION)
 			exit();
 		else
 			display.setCurrent(mainList);
@@ -963,7 +962,7 @@ public class MainForm extends MIDlet  implements CommandListener,FormListener,St
 	private void logout(){
 		/** If this is not reset, after loggin in, we shall wrongly execute an action that
 		 * the user did not intend to.*/
-		this.selectedIndex = EpihandyConstants.NO_SELECTION;
+		this.selectedIndex = OpenXdataConstants.NO_SELECTION;
 
 		userMgr.logOut();
 		userMgr.logOn();

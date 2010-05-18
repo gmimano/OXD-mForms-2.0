@@ -5,9 +5,9 @@ import javax.microedition.lcdui.ChoiceGroup;
 import javax.microedition.lcdui.Form;
 import javax.microedition.lcdui.TextField;
 
-import org.fcitmuk.epihandy.midp.forms.GeneralSettings;
-import org.fcitmuk.midp.db.util.Settings;
-import org.fcitmuk.util.Utilities;
+import org.openxdata.db.util.Settings;
+import org.openxdata.forms.GeneralSettings;
+import org.openxdata.util.Utilities;
 
 
 /**

@@ -14,22 +14,22 @@ import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.List;
 import javax.microedition.midlet.MIDlet;
 
-import org.fcitmuk.communication.TransportLayer;
-import org.fcitmuk.communication.TransportLayerListener;
-import org.fcitmuk.db.util.Persistent;
-import org.fcitmuk.epihandy.EpihandyConstants;
-import org.fcitmuk.epihandy.FormData;
-import org.fcitmuk.epihandy.FormDef;
-import org.fcitmuk.epihandy.QuestionData;
-import org.fcitmuk.epihandy.midp.forms.FormListener;
-import org.fcitmuk.epihandy.midp.forms.LogonListener;
-import org.fcitmuk.epihandy.midp.forms.UserManager;
-import org.fcitmuk.epihandy.midp.forms.UserSettings;
-import org.fcitmuk.midp.db.util.Settings;
-import org.fcitmuk.midp.db.util.StorageListener;
-import org.fcitmuk.util.AlertMessage;
-import org.fcitmuk.util.AlertMessageListener;
-import org.fcitmuk.util.DefaultCommands;
+import org.openxdata.communication.TransportLayer;
+import org.openxdata.communication.TransportLayerListener;
+import org.openxdata.db.util.Persistent;
+import org.openxdata.db.util.Settings;
+import org.openxdata.db.util.StorageListener;
+import org.openxdata.forms.FormListener;
+import org.openxdata.forms.LogonListener;
+import org.openxdata.forms.UserManager;
+import org.openxdata.forms.UserSettings;
+import org.openxdata.model.FormData;
+import org.openxdata.model.FormDef;
+import org.openxdata.model.OpenXdataConstants;
+import org.openxdata.model.QuestionData;
+import org.openxdata.util.AlertMessage;
+import org.openxdata.util.AlertMessageListener;
+import org.openxdata.util.DefaultCommands;
 
 
 /** This is the main midlet that displays the main user inteface for purcai. 
@@ -85,7 +85,7 @@ public class MainForm extends MIDlet  implements CommandListener,FormListener,St
 	 * tries to do something before logging in, and the logon mananer intervenes by requiring the
 	 * user to first login. This happens after downloading forms because a new list of users is got
 	 * which makes void the current users info. */
-	private int selectedIndex = EpihandyConstants.NO_SELECTION;
+	private int selectedIndex = OpenXdataConstants.NO_SELECTION;
 	
 		
 	private static final String KEY_LAST_SELECTED_MAIN_MENU_ITEM =  "LAST_SELECTED_MAIN_MENU_ITEM";
@@ -301,7 +301,7 @@ public class MainForm extends MIDlet  implements CommandListener,FormListener,St
 	
 	public boolean onLoggedOn(){
 		boolean displayPrevScreen = false;
-		if(selectedIndex != EpihandyConstants.NO_SELECTION)
+		if(selectedIndex != OpenXdataConstants.NO_SELECTION)
 			handleMainListSelectCommand(selectedIndex);
 		else
 			displayPrevScreen = true;
@@ -310,7 +310,7 @@ public class MainForm extends MIDlet  implements CommandListener,FormListener,St
 	}
 	
 	public void onLogonCancel(){
-		if(selectedIndex == EpihandyConstants.NO_SELECTION)
+		if(selectedIndex == OpenXdataConstants.NO_SELECTION)
 			handledExitCommand();
 		else
 			display.setCurrent(mainList);
@@ -319,7 +319,7 @@ public class MainForm extends MIDlet  implements CommandListener,FormListener,St
 	private void logout(){
 		/** If this is not reset, after loggin in, we shall wrongly execute an action that
 		 * the user did not intend to.*/
-		this.selectedIndex = EpihandyConstants.NO_SELECTION;
+		this.selectedIndex = OpenXdataConstants.NO_SELECTION;
 		
 		userMgr.logOut();
 		userMgr.logOn();

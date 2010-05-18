@@ -8,17 +8,17 @@ import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.List;
 
-import org.fcitmuk.epihandy.midp.forms.GeneralSettings;
-import org.fcitmuk.midp.db.util.Settings;
-import org.fcitmuk.midp.mvc.AbstractView;
-import org.fcitmuk.midp.mvc.Controller;
-import org.fcitmuk.midp.mvc.View;
 import org.fcitmuk.purcai.MarkSheet;
 import org.fcitmuk.purcai.StudentIdNameMark;
-import org.fcitmuk.util.AlertMessage;
-import org.fcitmuk.util.AlertMessageListener;
-import org.fcitmuk.util.DefaultCommands;
-import org.fcitmuk.util.Utilities;
+import org.openxdata.db.util.Settings;
+import org.openxdata.forms.GeneralSettings;
+import org.openxdata.mvc.AbstractView;
+import org.openxdata.mvc.Controller;
+import org.openxdata.mvc.View;
+import org.openxdata.util.AlertMessage;
+import org.openxdata.util.AlertMessageListener;
+import org.openxdata.util.DefaultCommands;
+import org.openxdata.util.Utilities;
 
 public class MarkSheetForm  extends AbstractView implements AlertMessageListener,Controller{
 

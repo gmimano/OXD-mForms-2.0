@@ -7,9 +7,9 @@ import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.List;
 
-import org.fcitmuk.midp.mvc.AbstractView;
 import org.fcitmuk.purcai.NameValue;
-import org.fcitmuk.util.DefaultCommands;
+import org.openxdata.mvc.AbstractView;
+import org.openxdata.util.DefaultCommands;
 
 
 public class ListForm extends AbstractView{

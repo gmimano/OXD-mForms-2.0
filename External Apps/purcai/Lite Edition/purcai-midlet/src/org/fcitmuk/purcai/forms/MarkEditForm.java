@@ -8,13 +8,13 @@ import javax.microedition.lcdui.Item;
 import javax.microedition.lcdui.TextField;
 import javax.microedition.lcdui.Ticker;
 
-import org.fcitmuk.midp.mvc.AbstractView;
-import org.fcitmuk.midp.mvc.Controller;
 import org.fcitmuk.purcai.StudentIdMark;
 import org.fcitmuk.purcai.StudentIdNameMark;
-import org.fcitmuk.util.AlertMessage;
-import org.fcitmuk.util.AlertMessageListener;
-import org.fcitmuk.util.DefaultCommands;
+import org.openxdata.mvc.AbstractView;
+import org.openxdata.mvc.Controller;
+import org.openxdata.util.AlertMessage;
+import org.openxdata.util.AlertMessageListener;
+import org.openxdata.util.DefaultCommands;
 
 public class MarkEditForm  extends AbstractView implements AlertMessageListener{
 

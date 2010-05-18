@@ -1,13 +1,13 @@
 package org.fcitmuk.purcai.forms;
 
-import org.fcitmuk.communication.TransportLayer;
-import org.fcitmuk.epihandy.RequestHeader;
-import org.fcitmuk.epihandy.ResponseHeader;
 import org.fcitmuk.purcai.MarkSheetData;
 import org.fcitmuk.purcai.MarkSheetDataList;
 import org.fcitmuk.purcai.MarkSheetTest;
 import org.fcitmuk.purcai.PurcaiConstants;
 import org.fcitmuk.purcai.TestDataTest;
+import org.openxdata.communication.TransportLayer;
+import org.openxdata.model.RequestHeader;
+import org.openxdata.model.ResponseHeader;
 
 public class PurcaiTransportLayer extends TransportLayer{
 	

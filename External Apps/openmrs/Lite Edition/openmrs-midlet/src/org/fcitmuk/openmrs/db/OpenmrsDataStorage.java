@@ -2,11 +2,6 @@ package org.fcitmuk.openmrs.db;
 
 import java.util.Vector;
 
-import org.fcitmuk.epihandy.EpihandyConstants;
-import org.fcitmuk.epihandy.StudyDef;
-import org.fcitmuk.midp.db.util.Storage;
-import org.fcitmuk.midp.db.util.StorageFactory;
-import org.fcitmuk.midp.db.util.StorageListener;
 import org.fcitmuk.openmrs.CohortList;
 import org.fcitmuk.openmrs.MedicalHistoryList;
 import org.fcitmuk.openmrs.Patient;
@@ -18,6 +13,11 @@ import org.fcitmuk.openmrs.PatientFieldValueList;
 import org.fcitmuk.openmrs.PatientForm;
 import org.fcitmuk.openmrs.PatientList;
 import org.fcitmuk.openmrs.PatientMedicalHistory;
+import org.openxdata.db.util.Storage;
+import org.openxdata.db.util.StorageFactory;
+import org.openxdata.db.util.StorageListener;
+import org.openxdata.model.OpenXdataConstants;
+import org.openxdata.model.StudyDef;
 
 
 /**
@@ -505,7 +505,7 @@ public class OpenmrsDataStorage {
 		PatientForm patientForm = getPatientForm(patientId,formDefId);
 		if(patientForm != null)
 			return patientForm.getFormRecordId();
-		return EpihandyConstants.NULL_ID;
+		return OpenXdataConstants.NULL_ID;
 	}
 
 	public static Vector getPatientForms(int formDefId){

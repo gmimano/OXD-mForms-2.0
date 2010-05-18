@@ -4,7 +4,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-import org.fcitmuk.epihandy.RequestHeader;
+import org.openxdata.model.RequestHeader;
 
 
 /**

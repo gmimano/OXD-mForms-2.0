@@ -2,19 +2,19 @@ package org.fcitmuk.openclinica.db;
 
 import java.util.Vector;
 
-import org.fcitmuk.db.util.Record;
-import org.fcitmuk.epihandy.EpihandyConstants;
-import org.fcitmuk.epihandy.FormDef;
-import org.fcitmuk.epihandy.StudyDef;
-import org.fcitmuk.midp.db.util.Storage;
-import org.fcitmuk.midp.db.util.StorageFactory;
-import org.fcitmuk.midp.db.util.StorageListener;
 import org.fcitmuk.openclinica.StudyEvent;
 import org.fcitmuk.openclinica.StudyEventList;
 import org.fcitmuk.openclinica.Subject;
 import org.fcitmuk.openclinica.SubjectData;
 import org.fcitmuk.openclinica.SubjectForm;
 import org.fcitmuk.openclinica.SubjectList;
+import org.openxdata.db.util.Record;
+import org.openxdata.db.util.Storage;
+import org.openxdata.db.util.StorageFactory;
+import org.openxdata.db.util.StorageListener;
+import org.openxdata.model.FormDef;
+import org.openxdata.model.OpenXdataConstants;
+import org.openxdata.model.StudyDef;
 
 
 /**
@@ -271,7 +271,7 @@ public class OpenclinicaDataStorage {
 		SubjectForm subjectForm = getSubjectForm(subjectId,formDefId,eventId);
 		if(subjectForm != null)
 			return subjectForm.getFormRecordId();
-		return EpihandyConstants.NULL_ID;
+		return OpenXdataConstants.NULL_ID;
 	}
 	
 	public static Vector getSubjectForms(int formDefId){

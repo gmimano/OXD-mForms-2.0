@@ -3,7 +3,8 @@ package org.fcitmuk.openmrs;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import org.fcitmuk.db.util.Persistent;
+
+import org.openxdata.db.util.Persistent;
 
 /**
  * This class encapsulates a patient database field

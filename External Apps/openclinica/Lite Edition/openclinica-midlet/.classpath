@@ -4,14 +4,14 @@
 	<classpathentry kind="src" path="test"/>
 	<classpathentry kind="src" path="res"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/dbutils"/>
-	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/epihandy"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/openclinica"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/transport-layer"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/bluetooth-client"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/midp-mvc"/>
-	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/epihandy-midp"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/midp-utils"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/midp-dbutils"/>
-	<classpathentry kind="con" path="org.elipse.mtj.JavaMEContainer/Sun Java(TM) Wireless Toolkit 2.5.2 for CLDC/MediaControlSkin"/>
+	<classpathentry kind="con" path="org.elipse.mtj.JavaMEContainer/Java(TM) Platform Micro Edition SDK 3.0/DefaultCldcPhone2"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/openxdata"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/openxdata-midp"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

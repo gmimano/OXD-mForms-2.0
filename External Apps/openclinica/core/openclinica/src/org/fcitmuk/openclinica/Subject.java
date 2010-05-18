@@ -6,8 +6,8 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.Vector;
 
-import org.fcitmuk.db.util.AbstractRecord;
-import org.fcitmuk.db.util.PersistentHelper;
+import org.openxdata.db.util.AbstractRecord;
+import org.openxdata.db.util.PersistentHelper;
 
 /**
  * 

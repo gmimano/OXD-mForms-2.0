@@ -4,7 +4,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-import org.fcitmuk.db.util.Persistent;
+import org.openxdata.db.util.Persistent;
 
 
 public class CrfDef implements Persistent {

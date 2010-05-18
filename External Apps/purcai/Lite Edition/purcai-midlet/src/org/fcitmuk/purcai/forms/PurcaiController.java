@@ -5,15 +5,6 @@ import java.util.Vector;
 import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Displayable;
 
-import org.fcitmuk.communication.TransportLayer;
-import org.fcitmuk.communication.TransportLayerListener;
-import org.fcitmuk.db.util.Persistent;
-import org.fcitmuk.epihandy.RequestHeader;
-import org.fcitmuk.epihandy.ResponseHeader;
-import org.fcitmuk.epihandy.midp.forms.GeneralSettings;
-import org.fcitmuk.epihandy.midp.forms.UserManager;
-import org.fcitmuk.midp.mvc.Controller;
-import org.fcitmuk.midp.mvc.View;
 import org.fcitmuk.purcai.KeyValueValue;
 import org.fcitmuk.purcai.MarkSheet;
 import org.fcitmuk.purcai.MarkSheetDataList;
@@ -24,9 +15,18 @@ import org.fcitmuk.purcai.StudentIdNameMark;
 import org.fcitmuk.purcai.TestData;
 import org.fcitmuk.purcai.ValueValue;
 import org.fcitmuk.purcai.db.PurcaiDatabase;
-import org.fcitmuk.util.AlertMessage;
-import org.fcitmuk.util.AlertMessageListener;
-import org.fcitmuk.util.DefaultCommands;
+import org.openxdata.communication.TransportLayer;
+import org.openxdata.communication.TransportLayerListener;
+import org.openxdata.db.util.Persistent;
+import org.openxdata.forms.GeneralSettings;
+import org.openxdata.forms.UserManager;
+import org.openxdata.model.RequestHeader;
+import org.openxdata.model.ResponseHeader;
+import org.openxdata.mvc.Controller;
+import org.openxdata.mvc.View;
+import org.openxdata.util.AlertMessage;
+import org.openxdata.util.AlertMessageListener;
+import org.openxdata.util.DefaultCommands;
 
 public class PurcaiController implements Controller,AlertMessageListener, TransportLayerListener{
 
@@ -602,7 +602,7 @@ public class PurcaiController implements Controller,AlertMessageListener, Transp
 		comnParam.setAction(PurcaiConstants.ACTION_DOWNLOAD_TESTDATA);
 		comnParam.setUserName(userMgr.getUserName());
 		comnParam.setPassword(userMgr.getPassword());
-		transportLayer.download(comnParam, null, new ResponseHeader(), new TestData(), this,userMgr.getUserName(),userMgr.getPassword());		
+		transportLayer.download(comnParam, null, new ResponseHeader(), new TestData(), this,userMgr.getUserName(),userMgr.getPassword(),null);		
 	}
 
 	private void startMarkSheetDownload(){
@@ -610,7 +610,7 @@ public class PurcaiController implements Controller,AlertMessageListener, Transp
 		comnParam.setAction(PurcaiConstants.ACTION_DOWNLOAD_MARKSHEET);
 		comnParam.setUserName(userMgr.getUserName());
 		comnParam.setPassword(userMgr.getPassword());
-		transportLayer.download(comnParam, new MarkSheetHeader(classStrmId,subjectPaperId,testTypeId), new ResponseHeader(), new MarkSheet(), this,userMgr.getUserName(),userMgr.getPassword());		
+		transportLayer.download(comnParam, new MarkSheetHeader(classStrmId,subjectPaperId,testTypeId), new ResponseHeader(), new MarkSheet(), this,userMgr.getUserName(),userMgr.getPassword(),null);		
 	}
 
 	private void startMarkSheetUpload(){
@@ -618,7 +618,7 @@ public class PurcaiController implements Controller,AlertMessageListener, Transp
 		comnParam.setAction(PurcaiConstants.ACTION_UPLOAD_MARKS);
 		comnParam.setUserName(userMgr.getUserName());
 		comnParam.setPassword(userMgr.getPassword());
-		transportLayer.upload(comnParam, (MarkSheetDataList)PurcaiDatabase.getMarkSheets(), new ResponseHeader(), new ResponseHeader(), this,userMgr.getUserName(),userMgr.getPassword());		
+		transportLayer.upload(comnParam, (MarkSheetDataList)PurcaiDatabase.getMarkSheets(), new ResponseHeader(), new ResponseHeader(), this,userMgr.getUserName(),userMgr.getPassword(),null);		
 	}
 
 	public void errorOccured(String errorMessage, Exception e){

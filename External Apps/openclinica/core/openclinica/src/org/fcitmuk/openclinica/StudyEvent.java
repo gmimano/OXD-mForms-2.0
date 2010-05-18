@@ -5,7 +5,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.Vector;
 
-import org.fcitmuk.db.util.Persistent;
+import org.openxdata.db.util.Persistent;
 
 
 /**

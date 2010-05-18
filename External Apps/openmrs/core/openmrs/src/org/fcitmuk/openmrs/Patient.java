@@ -3,10 +3,10 @@ package org.fcitmuk.openmrs;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.util.*;
+import java.util.Date;
 
-import org.fcitmuk.db.util.AbstractRecord;
-import org.fcitmuk.db.util.PersistentHelper;
+import org.openxdata.db.util.AbstractRecord;
+import org.openxdata.db.util.PersistentHelper;
 
 /**
  * 

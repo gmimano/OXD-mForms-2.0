@@ -3,7 +3,8 @@ package org.fcitmuk.openclinica;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import org.fcitmuk.db.util.*;
+
+import org.openxdata.db.util.AbstractRecord;
 
 
 /**
