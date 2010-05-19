@@ -121,6 +121,11 @@ public class GeneralSettings extends AbstractView{
 		return Utilities.stringToBoolean(setting);
 	}
 	
+	public static boolean isQtnNumbering() {
+		Settings settings = new Settings(GeneralSettings.STORAGE_NAME_SETTINGS,true);
+		return getQtnNumberingSetting(settings);
+	}
+	
 	public static boolean getOkOnRightSetting(Settings settings) {
 		String setting = settings.getSetting(KEY_OK_ON_RIGHT);
 		if (setting == null) {

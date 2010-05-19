@@ -236,9 +236,6 @@ public class FormView extends AbstractView implements AlertMessageListener {
 		currentPage = ((PageData)pages.elementAt(pageIndex));
 		Vector qns = currentPage.getQuestions();
 
-		Settings settings = new Settings(GeneralSettings.STORAGE_NAME_SETTINGS,true);
-		boolean numbering = Utilities.stringToBoolean(settings.getSetting(GeneralSettings.KEY_QUESTION_NUMBERING));
-
 		displayedQuestions = new Vector();
 		QuestionData qn; 
 		for(int i=0; i<qns.size(); i++){
@@ -247,7 +244,7 @@ public class FormView extends AbstractView implements AlertMessageListener {
 				String s = "";
 				if(qn.getDef().isMandatory() && !qn.isAnswered())
 					s += "? ";
-				((List)screen).append((numbering ? String.valueOf(i+1)+" " : "") + s + qn.toString(),null);
+				((List)screen).append((GeneralSettings.isQtnNumbering() ? String.valueOf(i+1)+" " : "") + s + qn.toString(),null);
 				displayedQuestions.addElement(qn);
 			}
 		}
