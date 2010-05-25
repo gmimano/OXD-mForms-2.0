@@ -1,5 +1,5 @@
 MIDlet-Jar-Size: 38739
-MIDlet-1: OpenMRS,/icons/openmrs.png ,org.fcitmuk.openmrs.forms.MainForm
+MIDlet-1: OpenMRS,/icons/openmrs.png ,org.openxdata.openmrs.forms.MainForm
 MIDlet-Jar-URL: openmrs-midlet-1.7.jar
 MicroEdition-Configuration: CLDC-1.0
 MIDlet-Version: 1.7
