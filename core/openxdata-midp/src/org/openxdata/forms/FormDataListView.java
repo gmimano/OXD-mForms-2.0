@@ -57,6 +57,7 @@ public class FormDataListView extends AbstractView implements AlertMessageListen
 			if(formDataList != null){
 				for(int i=0; i<formDataList.size(); i++){
 					FormData data = (FormData)formDataList.elementAt(i);
+					data.setDef(def);
 					data.buildDataDescription();
 					((List)screen).append(data.toString(), null);
 				}
