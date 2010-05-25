@@ -148,7 +148,7 @@ public class ConnectionSettings extends AbstractView {
 					{
 						ConnectionParameter conParam = (ConnectionParameter)connectionParameters.elementAt(i);
 						if(conParam.getConnectionType() == TransportLayer.CON_TYPE_HTTP)
-							conParam.setValue(((TextField)((Form)d).get(i+3)).getString());
+							conParam.setValue(((TextField)((Form)d).get(i+2)).getString());
 					}
 				}
 				else if(conType == TransportLayer.CON_TYPE_BLUETOOTH){
