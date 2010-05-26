@@ -73,7 +73,6 @@ public class FormDataListView extends AbstractView implements AlertMessageListen
 			screen.addCommand(DefaultCommands.cmdBack);
 			if(formDataList.size() > 0)
 				screen.addCommand(DefaultCommands.cmdDelete);
-			screen.addCommand(DefaultCommands.cmdMainMenu);
 
 			/*if((this.currentFormDataIndex != EpihandyConstants.NO_SELECTION) && (this.currentFormDataIndex < formDataList.size()))
 				mainList.setSelectedIndex(this.currentFormDataIndex, true);*/
@@ -104,8 +103,6 @@ public class FormDataListView extends AbstractView implements AlertMessageListen
 				getOpenXdataController().showForm(true,new FormData(this.formDef),false,prevScreen);
 			else if(c == DefaultCommands.cmdDelete)
 				handleDeleteCommand(d);
-			else if(c == DefaultCommands.cmdMainMenu)
-				getOpenXdataController().backToMainMenu();
 		}
 		catch(Exception e){
 			alertMsg.showError(e.getMessage());
