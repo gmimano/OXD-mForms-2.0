@@ -11,11 +11,13 @@ import org.openxdata.db.util.Persistent;
 import org.openxdata.db.util.PersistentInt;
 import org.openxdata.db.util.PersistentString;
 import org.openxdata.db.util.Settings;
-import org.openxdata.model.OpenXdataConstants;
 import org.openxdata.model.FormData;
+import org.openxdata.model.FormDataSummary;
+import org.openxdata.model.FormDataSummaryList;
 import org.openxdata.model.FormDef;
 import org.openxdata.model.LanguageList;
 import org.openxdata.model.MenuTextList;
+import org.openxdata.model.OpenXdataConstants;
 import org.openxdata.model.RequestHeader;
 import org.openxdata.model.ResponseHeader;
 import org.openxdata.model.StudyData;
@@ -90,8 +92,11 @@ public class DownloadUploadManager implements TransportLayerListener,AlertMessag
 
 	private static final String STORAGE_NAME_SETTINGS = "fcitmuk.DefaultTransportLayer";
 
-	/** Keeps trac of the current number of form data being uploaded to the server. */
+	/** Keeps track of the current number of form data being uploaded to the server. */
 	private int currentDataCount = 0;
+	
+	/** Keeps track of the current form data being uploaded to the server */
+	private FormDataSummaryList currentDataSummary = new FormDataSummaryList();
 	
 	/** The total number of forms of data that needs to be uploaded to the server. */
 	private int totalDataCount = 0;
@@ -345,7 +350,7 @@ public class DownloadUploadManager implements TransportLayerListener,AlertMessag
 		requestHeader.setLocale(LanguageSettings.getLocale());
 		requestHeader.setAction(RequestHeader.ACTION_UPLOAD_DATA);
 		setCommunicationParams();
-		transportLayer.upload(requestHeader, new StudyDataList(new StudyData(studyId,formData)), responseHeader,responseHeader, this, userName, password,"Uploading " + currentDataCount + " of " + totalDataCount);
+		transportLayer.upload(requestHeader, new StudyDataList(new StudyData(studyId,formData)), responseHeader, new FormDataSummaryList(), this, userName, password,"Uploading " + currentDataCount + " of " + totalDataCount);
 	}
 
 	/**
@@ -525,16 +530,32 @@ public class DownloadUploadManager implements TransportLayerListener,AlertMessag
 
 		if (currentAction == CA_DATA_UPLOAD) {
 			try {
-				ResponseHeader status = (ResponseHeader) dataOut;
+				ResponseHeader status = (ResponseHeader) dataOutParams;
 				if (status.isSuccess()) {
 					//if(GeneralSettings.deleteDataAfterUpload()){
 						//EpihandyDataStorage.deleteData(new StudyDefList(studyList));
 						//assert(formData != null);
 						OpenXdataDataStorage.deleteFormData(studyId, formData);
 					//}
+						
+					if (dataOut instanceof FormDataSummaryList) {
+						FormDataSummaryList thisDataSummary = (FormDataSummaryList) dataOut;
+						currentDataSummary.addFormDataSummaries(thisDataSummary.getFormDataSummaries());
+					}
 
 					if(currentDataCount == totalDataCount){
-						message = MenuText.DATA_UPLOAD_SUCCESS();
+						StringBuffer summaryMessage = new StringBuffer();
+						summaryMessage.append("\n\nSession reference(s):");
+						Vector list = currentDataSummary.getFormDataSummaries();
+						for (int i=0, n=list.size(); i<n; i++) {
+							FormDataSummary summary = (FormDataSummary)list.elementAt(i);
+							summaryMessage.append("\n'");
+							summaryMessage.append(summary.getDescription());
+							summaryMessage.append("' = ");
+							summaryMessage.append(summary.getFormDataId());
+						}
+						message = MenuText.DATA_UPLOAD_SUCCESS() + summaryMessage.toString();
+						
 						if (transportLayerListener != null)
 							transportLayerListener.uploaded(dataOutParams, dataOut);
 					}
@@ -543,9 +564,8 @@ public class DownloadUploadManager implements TransportLayerListener,AlertMessag
 						uploadFormData();
 						return;
 					}
-				} 
-				else
-;			} catch (Exception e) {
+				}
+			} catch (Exception e) {
 				//e.printStackTrace();
 				message = MenuText.PROBLEM_CLEANING_STORE();
 			}
