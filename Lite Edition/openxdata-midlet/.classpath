@@ -11,7 +11,7 @@
 	<classpathentry kind="var" path="J2MELIB/cldcapi10.jar"/>
 	<classpathentry kind="var" path="J2MELIB/midpapi20.jar"/>
 	<classpathentry kind="var" path="J2MELIB/mmapi.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/openxdata"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/openxdata-midp"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/openxdata"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/openxdata-midp"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
