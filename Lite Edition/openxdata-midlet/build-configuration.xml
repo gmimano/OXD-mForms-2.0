@@ -25,6 +25,7 @@
 			<filter token="version.minor" value="${version.minor}" />
 			<filter token="midlet.name" value="${midlet.name}" />
 			<filter token="midlet.icon" value="${midlet.icon}" />
+			<filter token="hide.studies" value="${hide.studies}" />
 		</filterset>
 			
 		<copy file="${basedir}/template/Application Descriptor" toFile="${basedir}/Application Descriptor" overwrite="true">
