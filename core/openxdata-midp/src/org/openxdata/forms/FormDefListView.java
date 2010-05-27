@@ -7,9 +7,11 @@ import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.List;
 
+import org.openxdata.db.OpenXdataDataStorage;
 import org.openxdata.db.util.Settings;
-import org.openxdata.model.OpenXdataConstants;
+import org.openxdata.model.FormData;
 import org.openxdata.model.FormDef;
+import org.openxdata.model.OpenXdataConstants;
 import org.openxdata.model.StudyDef;
 import org.openxdata.mvc.AbstractView;
 import org.openxdata.util.AlertMessage;
@@ -133,12 +135,19 @@ public class FormDefListView extends AbstractView implements AlertMessageListene
 	 */
 	private void handleOkCommand(Displayable d){
 		try{
-			lastSelectionIndex = ((List)d).getSelectedIndex();
-			getOpenXdataController().showFormDataList((FormDef)formDefList.elementAt(lastSelectionIndex)/*(FormDef)studyDef.getForms().elementAt(lastSelectionIndex)*/);
-
-			Settings settings = new Settings(OpenXdataConstants.STORAGE_NAME_EPIHANDY_SETTINGS,true);
-			settings.setSetting(KEY_LAST_SELECTED_FORMDEF, String.valueOf(lastSelectionIndex));
-			settings.saveSettings();
+			int studyId = getStudy().getId();			
+			FormDef fdef = (FormDef)formDefList.elementAt(lastSelectionIndex);
+			Vector formData = OpenXdataDataStorage.getFormData(studyId, fdef.getId());
+			if(formData != null && !formData.isEmpty()){
+				getOpenXdataController().showFormDataList((FormDef)formDefList.elementAt(lastSelectionIndex));
+				Settings settings = new Settings(OpenXdataConstants.STORAGE_NAME_EPIHANDY_SETTINGS,true);
+				settings.setSetting(KEY_LAST_SELECTED_FORMDEF, String.valueOf(lastSelectionIndex));
+				settings.saveSettings();				
+			}else{
+				FormDef fd = (FormDef)formDefList.elementAt(lastSelectionIndex);
+				getOpenXdataController().showForm(true, new FormData(fd), false, this.getPrevScreen());
+			}
+			
 		}
 		catch(Exception ex){
 			//TODO Looks like we should help the user out of this by say enabling them
