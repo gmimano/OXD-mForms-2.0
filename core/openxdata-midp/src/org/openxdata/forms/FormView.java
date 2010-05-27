@@ -5,11 +5,11 @@ import java.util.Vector;
 import javax.microedition.lcdui.Choice;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Displayable;
+import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.List;
 
-import org.openxdata.db.util.Settings;
-import org.openxdata.model.OpenXdataConstants;
 import org.openxdata.model.FormData;
+import org.openxdata.model.OpenXdataConstants;
 import org.openxdata.model.PageData;
 import org.openxdata.model.QuestionData;
 import org.openxdata.model.QuestionDef;
@@ -19,7 +19,6 @@ import org.openxdata.util.AlertMessage;
 import org.openxdata.util.AlertMessageListener;
 import org.openxdata.util.DefaultCommands;
 import org.openxdata.util.MenuText;
-import org.openxdata.util.Utilities;
 
 /**
  * Displays a form. This means displaying the list of questions on a form.
@@ -76,10 +75,6 @@ public class FormView extends AbstractView implements AlertMessageListener {
 	 */
 	private Vector displayedQuestions;
 
-	/*public FormView(){
-
-	}*/
-
 	/**
 	 * Called by the controller after an editing operation.
 	 * 
@@ -118,9 +113,7 @@ public class FormView extends AbstractView implements AlertMessageListener {
 		}
 		else
 			currentQuestion  = (QuestionData)displayedQuestions.elementAt(currentQuestionIndex);
-
-		//if(saved)
-		//	currentQuestionIndex = getNextQuestionIndex(false);
+		
 		showPage(this.currentPageIndex,new Integer(currentQuestionIndex));
 
 		if(cmd != DefaultCommands.cmdBackParent && getOpenXdataController().isSingleQuestionEdit())
@@ -218,7 +211,8 @@ public class FormView extends AbstractView implements AlertMessageListener {
 				s = e.getMessage();
 			currentAction = CA_ERROR;
 			alertMsg.showError(s);
-			//e.printStackTrace();
+			
+			e.printStackTrace();
 		}
 	}
 
@@ -235,19 +229,29 @@ public class FormView extends AbstractView implements AlertMessageListener {
 		Vector pages = formData.getPages();
 		currentPage = ((PageData)pages.elementAt(pageIndex));
 		Vector qns = currentPage.getQuestions();
-
+		
+		Vector grayQuestions = new Vector();
 		displayedQuestions = new Vector();
 		QuestionData qn; 
-		for(int i=0; i<qns.size(); i++){
-			qn = (QuestionData)qns.elementAt(i);
+		for(int index = 0; index < qns.size(); index++){
+			qn = (QuestionData)qns.elementAt(index);
 			if(qn.getDef().isVisible()){
 				String s = "";
 				if(qn.getDef().isMandatory() && !qn.isAnswered())
-					s += "? ";
-				((List)screen).append((GeneralSettings.isQtnNumbering() ? String.valueOf(i+1)+" " : "") + s + qn.toString(),null);
+					s += "* ";
+				
+				int elementNum = ((List)screen).append((GeneralSettings.isQtnNumbering() ? String.valueOf(index + 1) + " " : "") + s + qn.toString(),null);
+				
+				if(!qn.getDef().isEnabled()){
+					grayQuestions.addElement(new Integer(elementNum));
+				}
+				
 				displayedQuestions.addElement(qn);
 			}
 		}
+		
+		// Gray Skip Questions.
+		graySkipQuestions(grayQuestions);
 
 		if(pageIndex < pages.size()-1)
 			screen.addCommand(cmdNext);
@@ -259,22 +263,26 @@ public class FormView extends AbstractView implements AlertMessageListener {
 		else
 			screen.removeCommand(cmdPrev);
 
-		if(displayedQuestions.size() == 0){
-			//currentAction = CA_NO_VISIBLE_QTNS;
-			//alertMsg.show(MenuText.NO_VISIBLE_QUESTION() + " "+qns.size()+ MenuText.QUESTIONS());	
+		if(displayedQuestions.size() == 0){	
 		}
 		else{
 			selectNextQuestion(currentQuestionIndex);
-
-			//screen.setTitle(title + " {" + this.formData.getDef().getName() /* + currentPage.getDef().getName()*/ + "}");
-			//screen.setTitle(this.formData.getDef().getName() + " - "+title);	
-			/*String name = "";
-			if(formData.getDef().getPageCount() > 1)
-				name = currentPage.getDef().getName()+ " - ";*/
 			screen.setTitle((formData.getDef().getPageCount() > 1 ? currentPage.getDef().getName()+ " - " : "") + formData.getDef().getName() + " - " + title);
 		}
 	}
 
+	/**
+	 * Grays the Skip Question to make them stand out in the list.
+	 * 
+	 * @param grayQuestions Question numbers to gray out.
+	 */
+	private void graySkipQuestions(Vector grayQuestions){
+		for(int index = 0; index < grayQuestions.size(); index++){
+			Integer elementNum = (Integer)grayQuestions.elementAt(index);
+			((List)screen).setFont(elementNum.intValue(), Font.getFont(Font.FACE_SYSTEM, Font.STYLE_ITALIC, Font.SIZE_MEDIUM));			
+		}
+	}
+	
 	/**
 	 * Selects the next question to edit.
 	 * 
@@ -343,7 +351,6 @@ public class FormView extends AbstractView implements AlertMessageListener {
 	private void handleDeleteCommand(Displayable d){
 		currentAction = CA_CONFIRM_DELETE;
 		alertMsg.showConfirm(MenuText.DATA_DELETE_PROMPT());
-		//getEpihandyController().handleCancelCommand(this);
 	}
 
 	/**
@@ -358,18 +365,7 @@ public class FormView extends AbstractView implements AlertMessageListener {
 			alertMsg.showConfirm(MenuText.FORM_CLOSE_PROMPT());
 		else
 			onAlertMessage(AlertMessageListener.MSG_OK);
-		//getEpihandyController().handleCancelCommand(this);
 	}
-
-	/**
-	 * Processes the OK command event.
-	 * 
-	 * @param d - the screen object the command was issued for.
-	 */
-	/*private void handleOkCommand(Displayable d){
-		//saveData();
-		//controller.endEdit(true, this.currentQuestion);
-	}*/
 
 	/**
 	 * Processes the Save command event.
