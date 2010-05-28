@@ -20,6 +20,7 @@ public class GeneralSettings extends AbstractView{
 	public static final String KEY_OK_ON_RIGHT = "OK_ON_RIGHT";
 	//public static final String KEY_DELETE_DATA_AFTER_UPLOAD = "DELETE_DATA_AFTER_UPLOAD";
 	public static final String STORAGE_NAME_SETTINGS = "fcitmuk.GeneralSettings";
+	public static final String KEY_HIDE_STUDIES = "HIDE_STUDIES";
 	
 	private ChoiceGroup currentCtrl;
 	
@@ -38,12 +39,14 @@ public class GeneralSettings extends AbstractView{
 		currentCtrl.append(MenuText.NUMBERING(), null);
 		currentCtrl.append(MenuText.OK_ON_RIGHT(), null);
 		//currentCtrl.append(MenuText.DELETE_AFTER_UPLOAD(), null);
+		currentCtrl.append(MenuText.HIDE_STUDIES(), null);
 		
 		Settings settings = new Settings(STORAGE_NAME_SETTINGS,true);
 		
 		currentCtrl.setSelectedIndex(0,getSingleQtnEditSetting(settings));
 		currentCtrl.setSelectedIndex(1,getQtnNumberingSetting(settings));
 		currentCtrl.setSelectedIndex(2,getOkOnRightSetting(settings));
+		currentCtrl.setSelectedIndex(3,getIsHideStudiesSettings(settings));
 		//currentCtrl.setSelectedIndex(3,Utilities.stringToBoolean(settings.getSetting(KEY_DELETE_DATA_AFTER_UPLOAD),true));
 		
 		screen.setCommandListener(this);
@@ -83,6 +86,7 @@ public class GeneralSettings extends AbstractView{
 		settings.setSetting(KEY_SINGLE_QUESTION_EDIT,Utilities.booleanToString((currentCtrl.isSelected(0))));
 		settings.setSetting(KEY_QUESTION_NUMBERING,Utilities.booleanToString((currentCtrl.isSelected(1))));
 		settings.setSetting(KEY_OK_ON_RIGHT,Utilities.booleanToString((currentCtrl.isSelected(2))));
+		settings.setSetting(KEY_HIDE_STUDIES,Utilities.booleanToString((currentCtrl.isSelected(3))));
 		//settings.setSetting(KEY_DELETE_DATA_AFTER_UPLOAD,Utilities.booleanToString((currentCtrl.isSelected(3))));
 		settings.saveSettings();
 		
@@ -148,4 +152,17 @@ public class GeneralSettings extends AbstractView{
 		Settings settings = new Settings(STORAGE_NAME_SETTINGS,true);
 		settings.setSetting(KEY_DELETE_DATA_AFTER_UPLOAD,Utilities.booleanToString(delete));
 	}*/
+	
+	private static boolean getIsHideStudiesSettings(Settings settings) {
+		String setting = settings.getSetting(KEY_HIDE_STUDIES);
+		if (setting == null) {
+			setting = FormsConstants.IS_HIDE_STUDIES;
+		}
+		return Utilities.stringToBoolean(setting);
+	}	
+	
+	public static boolean isHideStudies(){
+		Settings settings = new Settings(KEY_HIDE_STUDIES,true);
+		return getIsHideStudiesSettings(settings);
+	}	
 }
