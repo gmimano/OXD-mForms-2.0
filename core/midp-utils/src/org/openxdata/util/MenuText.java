@@ -59,7 +59,7 @@ public class MenuText {
 	public static String SINGLE_QUESTION_EDIT(){return getText((short)34,"Single Question Edit");}
 	public static String NUMBERING(){return getText((short)35,"Numbering");}
 	public static String OK_ON_RIGHT(){return getText((short)36,"OK on Right");}
-	public static String DELETE_AFTER_UPLOAD(){return getText((short)37,"Delete After Upload");}
+		public static String DELETE_AFTER_UPLOAD(){return getText((short)37,"Delete After Upload");}
 	public static String DAY_FIRST(){return getText((short)38,"Day First");}
 	public static String MONTH_FIRST(){return getText((short)39,"Month First");}
 	public static String YEAR_FIRST(){return getText((short)40,"Year First");}
@@ -157,6 +157,7 @@ public class MenuText {
 	public static String REQUIRED_PROMPT(){return getText((short)125,"Please enter missing values. Those with question marks");}
 	public static String ANSWER_MINIMUM_PROMPT(){return getText((short)126,"Please answer atleast one question or choose Cancel");}
 	public static String INVALID_NAME_PASSWORD(){return getText((short)127,"Invalid User Name or Password");}
+	public static String HIDE_STUDIES(){return getText((short)128,"Hide Studies");}
 	
 	public static String SELECT_LANGUAGE(){return getText((short)-1,"Select Language");}
 	public static String NO_LANGUAGES_FOUND(){return getText((short)-2,"No languages found. Do you want to download them?");}
