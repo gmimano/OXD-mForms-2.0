@@ -15,4 +15,5 @@ public class FormsConstants  {
 	public static final String SINGLE_QUESTION_EDIT = "@single.question.edit@";
 	public static final String QUESTION_NUMBERING = "@question.numbering@";
 	public static final String OK_ON_RIGHT = "@ok.on.right@";
+	public static final String IS_HIDE_STUDIES = "@is.hide.studies@";
 }
