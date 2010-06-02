@@ -190,11 +190,15 @@ public class Condition implements Persistent{
 
 		try{			
 			if(data.getValueAnswer() == null || data.getValueAnswer().trim().length() == 0){
-				if(validation || operator == OpenXdataConstants.OPERATOR_NOT_EQUAL ||
+				if(validation && operator == OpenXdataConstants.OPERATOR_IS_NOT_NULL)
+					return false;
+				else if(validation || operator == OpenXdataConstants.OPERATOR_NOT_EQUAL ||
 						operator == OpenXdataConstants.OPERATOR_NOT_BETWEEN)
 					return true;
 				return operator == OpenXdataConstants.OPERATOR_IS_NULL;
 			}
+			else if(operator == OpenXdataConstants.OPERATOR_IS_NOT_NULL)
+				return true;
 			
 			removeDecimalPoints();
 
@@ -237,13 +241,17 @@ public class Condition implements Persistent{
 
 		if(function == OpenXdataConstants.FUNCTION_VALUE){
 			if(answer == null || answer.toString().trim().length() == 0){
-				if(validation || operator == OpenXdataConstants.OPERATOR_NOT_EQUAL ||
+				if(validation && operator == OpenXdataConstants.OPERATOR_IS_NOT_NULL)
+					return false;
+				else if(validation || operator == OpenXdataConstants.OPERATOR_NOT_EQUAL ||
 						operator == OpenXdataConstants.OPERATOR_NOT_START_WITH ||
 						operator == OpenXdataConstants.OPERATOR_NOT_CONTAIN)
 					return true;
 
 				return operator == OpenXdataConstants.OPERATOR_IS_NULL;
 			}
+			else if(operator == OpenXdataConstants.OPERATOR_IS_NOT_NULL)
+				return true;
 
 			if(operator == OpenXdataConstants.OPERATOR_EQUAL)
 				return value.equals(data.getValueAnswer());
@@ -302,11 +310,15 @@ public class Condition implements Persistent{
 
 		try{
 			if(qtn.getAnswer() == null || qtn.getAnswer().toString().trim().length() == 0){
-				if(validation || operator == OpenXdataConstants.OPERATOR_NOT_EQUAL ||
+				if(validation && operator == OpenXdataConstants.OPERATOR_IS_NOT_NULL)
+					return false;
+				else if(validation || operator == OpenXdataConstants.OPERATOR_NOT_EQUAL ||
 						operator == OpenXdataConstants.OPERATOR_NOT_BETWEEN)
 					return true;
 				return operator == OpenXdataConstants.OPERATOR_IS_NULL;
 			}
+			else if(operator == OpenXdataConstants.OPERATOR_IS_NOT_NULL)
+				return true;
 
 			if(!(qtn.getAnswer() instanceof Date) && qtn.getAnswer().equals(qtn.getDef().getDefaultValue()))
 				return (validation ? true : false);
@@ -424,11 +436,15 @@ public class Condition implements Persistent{
 
 		try{
 			if(data.getValueAnswer() == null || data.getValueAnswer().trim().length() == 0){
-				if(validation || operator == OpenXdataConstants.OPERATOR_NOT_EQUAL || 
+				if(validation && operator == OpenXdataConstants.OPERATOR_IS_NOT_NULL)
+					return false;
+				else if(validation || operator == OpenXdataConstants.OPERATOR_NOT_EQUAL || 
 						operator == OpenXdataConstants.OPERATOR_NOT_IN_LIST)
 					return true;
 				return operator == OpenXdataConstants.OPERATOR_IS_NULL;
 			}
+			else if(operator == OpenXdataConstants.OPERATOR_IS_NOT_NULL)
+				return true;
 			//return qtn.getValueAnswer().contains(value);
 
 			switch(operator){
@@ -478,11 +494,15 @@ public class Condition implements Persistent{
 		try{
 			if(data.getValueAnswer() == null || data.getValueAnswer().trim().length() == 0){
 				//return operator != PurcConstants.OPERATOR_EQUAL;
-				if(validation || operator == OpenXdataConstants.OPERATOR_NOT_EQUAL || 
+				if(validation && operator == OpenXdataConstants.OPERATOR_IS_NOT_NULL)
+					return false;
+				else if(validation || operator == OpenXdataConstants.OPERATOR_NOT_EQUAL || 
 						operator == OpenXdataConstants.OPERATOR_NOT_IN_LIST)
 					return true;
 				return operator == OpenXdataConstants.OPERATOR_IS_NULL;
 			}
+			else if(operator == OpenXdataConstants.OPERATOR_IS_NOT_NULL)
+				return true;
 
 			switch(operator){
 			case OpenXdataConstants.OPERATOR_EQUAL:
@@ -509,11 +529,15 @@ public class Condition implements Persistent{
 
 		try{
 			if(data.getValueAnswer() == null || data.getValueAnswer().trim().length() == 0){
-				if(validation || operator == OpenXdataConstants.OPERATOR_NOT_EQUAL ||
+				if(validation && operator == OpenXdataConstants.OPERATOR_IS_NOT_NULL)
+					return false;
+				else if(validation || operator == OpenXdataConstants.OPERATOR_NOT_EQUAL ||
 						operator == OpenXdataConstants.OPERATOR_NOT_BETWEEN)
 					return true;
 				return operator == OpenXdataConstants.OPERATOR_IS_NULL;
 			}
+			else if(operator == OpenXdataConstants.OPERATOR_IS_NOT_NULL)
+				return true;
 			
 			removeDecimalPoints();
 			
