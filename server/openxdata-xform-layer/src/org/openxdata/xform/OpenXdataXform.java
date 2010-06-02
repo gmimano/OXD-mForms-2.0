@@ -61,24 +61,24 @@ public class OpenXdataXform{
 	public OpenXdataXform(){
 
 	}
-	
+
 	private static byte getNextOptionId() {
 		return nextOptionId++;
 	}
-	
+
 	private static byte getNextQuestionId() {
 		return nextQuestionId++;
 	}
-	
+
 	private static void initIds(){
 		nextOptionId = -128;
 		nextQuestionId = -128;
 	}
-	
+
 	private static boolean reachedMaxOptionId(){
 		return nextOptionId > 127;
 	}
-	
+
 	private static boolean reachedMaxQuestionId(){
 		return nextQuestionId > 127;
 	}
@@ -657,7 +657,7 @@ public class OpenXdataXform{
 		}
 
 		return new String(bos.toByteArray(),"UTF-8");
-		
+
 		/*KXmlSerializer serializer = new KXmlSerializer();
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		DataOutputStream dos = new DataOutputStream(bos);
@@ -697,12 +697,12 @@ public class OpenXdataXform{
 		}
 
 		return new String(bos.toByteArray(),"UTF-8");
-		
+
 		/*byte[] byteArr = bos.toByteArray();
 		char[]charArray = new char[byteArr.length];
 		for(int i=0; i<byteArr.length; i++)
 			charArray[i] = (char)byteArr[i];
-		
+
 		try{
 			String s = new String(byteArr,"UTF-8");
 			return s;
@@ -1071,8 +1071,10 @@ public class OpenXdataXform{
 					}
 					qtn.setVariableName(child.getAttributeValue(null, "nodeset"));
 					setQuestionType(qtn,child.getAttributeValue(null, "type"),child);
-					if(child.getAttributeValue(null, "required") != null && child.getAttributeValue(null, "required").equals("true()"))
-						qtn.setMandatory(true);
+					if(child.getAttributeValue(null, "required") != null && child.getAttributeValue(null, "required").equals("true()")){
+						if(child.getAttributeValue(null,"action") == null)
+							qtn.setMandatory(true);
+					}
 					if(child.getAttributeValue(null, "readonly") != null && child.getAttributeValue(null, "readonly").equals("true()"))
 						qtn.setEnabled(false);
 					if(child.getAttributeValue(null, "locked") != null && child.getAttributeValue(null, "locked").equals("true()"))
@@ -1909,20 +1911,20 @@ public class OpenXdataXform{
 		pos = relevant.lastIndexOf('=');
 		if(pos > 0)
 			return pos;
-		
+
 		//the order of the code below should not be changed as for example 'starts with' can be taken even when conditon is 'not(starts-with'	
 		pos = relevant.lastIndexOf("not(starts-with");
 		if(pos > 0)
 			return pos;
-		
+
 		pos = relevant.lastIndexOf("starts-with");
 		if(pos > 0)
 			return pos;
-		
+
 		pos = relevant.lastIndexOf("not(contains");
 		if(pos > 0)
 			return pos;
-		
+
 		pos = relevant.lastIndexOf("contains");
 		if(pos > 0)
 			return pos;
@@ -2016,8 +2018,10 @@ public class OpenXdataXform{
 		else
 			setQuestionType(qtn,child.getAttributeValue(null, "type"),child);
 
-		if(child.getAttributeValue(null, "required") != null && child.getAttributeValue(null, "required").equals("true()"))
-			qtn.setMandatory(true);
+		if(child.getAttributeValue(null, "required") != null && child.getAttributeValue(null, "required").equals("true()")){
+			if(child.getAttributeValue(null,"action") == null)
+				qtn.setMandatory(true);
+		}
 		if(child.getAttributeValue(null, "readonly") != null && child.getAttributeValue(null, "readonly").equals("true()"))
 			qtn.setEnabled(false);
 		if(child.getAttributeValue(null, "locked") != null && child.getAttributeValue(null, "locked").equals("true()"))
