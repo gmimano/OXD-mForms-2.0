@@ -72,6 +72,8 @@ public class OpenXdataConstants {
 	
 	public static final byte OPERATOR_NOT_START_WITH = 15;
 	
+	public static final byte OPERATOR_IS_NOT_NULL = 16;
+	
 	/** Operator Less */
 	public static final byte OPERATOR_LESS = 5;
 	

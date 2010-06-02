@@ -1670,9 +1670,6 @@ public class OpenXdataXform{
 			return null; //no operator set hence making the condition invalid
 		return condition;*/
 
-		final byte OPERATOR_NULL = 0;
-		final byte OPERATOR_IS_NULL = 9;
-
 		Condition condition  = new Condition();
 		condition.setId(id);
 		condition.setOperator(getOperator(relevant,action));
@@ -1712,11 +1709,13 @@ public class OpenXdataXform{
 		if(!(value.equals("null") || value.equals(""))){
 			condition.setValue(value.trim());
 
-			if(condition.getOperator() == OPERATOR_NULL)
+			if(condition.getOperator() == OpenXdataConstants.OPERATOR_NULL)
 				return null; //no operator set hence making the condition invalid
 		}
+		else if(condition.getOperator() == OpenXdataConstants.OPERATOR_NOT_EQUAL)
+			condition.setOperator(OpenXdataConstants.OPERATOR_IS_NOT_NULL); //must be != ''
 		else
-			condition.setOperator(OPERATOR_IS_NULL);
+			condition.setOperator(OpenXdataConstants.OPERATOR_IS_NULL); //must be = ''
 
 		return condition;
 	}
