@@ -12,8 +12,9 @@ package org.openxdata.forms;
  */
 public class FormsConstants  {
 	
-	public static final String SINGLE_QUESTION_EDIT = "false";
-	public static final String QUESTION_NUMBERING = "false";
-	public static final String OK_ON_RIGHT = "false";
-	public static final String IS_HIDE_STUDIES = "@is.hide.studies@";
+	public static final boolean SINGLE_QUESTION_EDIT = false;
+	public static final boolean QUESTION_NUMBERING = false;
+	public static final boolean OK_ON_RIGHT = false;
+	public static final boolean IS_HIDE_STUDIES = false;
+	public static final boolean USE_STUDY_NUMERIC_ID = true;
 }

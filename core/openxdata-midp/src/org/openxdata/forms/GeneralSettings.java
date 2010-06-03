@@ -21,6 +21,7 @@ public class GeneralSettings extends AbstractView{
 	//public static final String KEY_DELETE_DATA_AFTER_UPLOAD = "DELETE_DATA_AFTER_UPLOAD";
 	public static final String STORAGE_NAME_SETTINGS = "fcitmuk.GeneralSettings";
 	public static final String KEY_HIDE_STUDIES = "HIDE_STUDIES";
+	public static final String KEY_USE_STUDY_NUMERIC_ID = "USE_STUDY_NUMERIC_ID";
 	
 	private ChoiceGroup currentCtrl;
 	
@@ -107,7 +108,7 @@ public class GeneralSettings extends AbstractView{
 	private static boolean getSingleQtnEditSetting(Settings settings) {
 		String setting = settings.getSetting(KEY_SINGLE_QUESTION_EDIT);
 		if (setting == null) {
-			setting = FormsConstants.SINGLE_QUESTION_EDIT;
+			return FormsConstants.SINGLE_QUESTION_EDIT;
 		}
 		return Utilities.stringToBoolean(setting);
 	}
@@ -120,7 +121,7 @@ public class GeneralSettings extends AbstractView{
 	public static boolean getQtnNumberingSetting(Settings settings) {
 		String setting = settings.getSetting(KEY_QUESTION_NUMBERING);
 		if (setting == null) {
-			setting = FormsConstants.QUESTION_NUMBERING;
+			return FormsConstants.QUESTION_NUMBERING;
 		}
 		return Utilities.stringToBoolean(setting);
 	}
@@ -133,12 +134,25 @@ public class GeneralSettings extends AbstractView{
 	public static boolean getOkOnRightSetting(Settings settings) {
 		String setting = settings.getSetting(KEY_OK_ON_RIGHT);
 		if (setting == null) {
-			setting = FormsConstants.OK_ON_RIGHT;
+			return FormsConstants.OK_ON_RIGHT;
 		}
 		return Utilities.stringToBoolean(setting);
 	}
 	
 	public static boolean isOkOnRight(){
+		Settings settings = new Settings(STORAGE_NAME_SETTINGS,true);
+		return getOkOnRightSetting(settings);
+	}
+	
+	public static boolean getUseStudyNumericIdSetting(Settings settings) {
+		String setting = settings.getSetting(KEY_USE_STUDY_NUMERIC_ID);
+		if (setting == null) {
+			return FormsConstants.OK_ON_RIGHT;
+		}
+		return Utilities.stringToBoolean(setting);
+	}
+	
+	public static boolean isUseStudyNumericId(){
 		Settings settings = new Settings(STORAGE_NAME_SETTINGS,true);
 		return getOkOnRightSetting(settings);
 	}
@@ -156,7 +170,7 @@ public class GeneralSettings extends AbstractView{
 	private static boolean getIsHideStudiesSettings(Settings settings) {
 		String setting = settings.getSetting(KEY_HIDE_STUDIES);
 		if (setting == null) {
-			setting = FormsConstants.IS_HIDE_STUDIES;
+			return FormsConstants.IS_HIDE_STUDIES;
 		}
 		return Utilities.stringToBoolean(setting);
 	}	
