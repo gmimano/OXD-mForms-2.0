@@ -226,7 +226,7 @@ public class PersistentHelper {
 		/*if(len == 0)
 			return null;*/
 
-		Vector persistentVector = new Vector();
+		Vector persistentVector = new Vector(len);
 		
 		for(byte i=0; i<len; i++ ){
 			Object obj = (Persistent)cls.newInstance();
@@ -253,7 +253,7 @@ public class PersistentHelper {
 		/*if(len == 0)
 			return null;*/
 
-		Vector persistentVector = new Vector();
+		Vector persistentVector = new Vector(len);
 		
 		for(int i=0; i<len; i++ ){
 			Object obj = (Persistent)cls.newInstance();
@@ -269,7 +269,7 @@ public class PersistentHelper {
 		/*if(len == 0)
 			return null;*/
 
-		Vector persistentVector = new Vector();
+		Vector persistentVector = new Vector(len);
 		
 		for(int i=0; i<len; i++ ){
 			Object obj = (Persistent)cls.newInstance();
@@ -286,7 +286,7 @@ public class PersistentHelper {
 		/*if(len == 0)
 			return null;*/
 		
-		Vector intVector = new Vector();
+		Vector intVector = new Vector(len);
 		
 		for(byte i=0; i<len; i++ )
 			intVector.addElement(new Integer(dis.readInt()));
@@ -309,7 +309,7 @@ public class PersistentHelper {
 		/*if(len == 0)
 			return null;*/
 		
-		Vector byteVector = new Vector();
+		Vector byteVector = new Vector(len);
 		
 		for(byte i=0; i<len; i++ )
 			byteVector.addElement(new Byte(dis.readByte()));
