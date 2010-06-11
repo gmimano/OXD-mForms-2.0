@@ -36,6 +36,7 @@ public class UserManager extends AbstractView implements AlertMessageListener {
 	private static User user;
 	private LoginForm loginForm;
 	private LogonListener logonListener;
+	public static User useLoggedIn;
 	
 	public UserManager(Display display,Displayable prevScreen,String title,LogonListener logonListener){
 		super();
@@ -63,6 +64,7 @@ public class UserManager extends AbstractView implements AlertMessageListener {
 	}
 	
 	public void logOn(){
+		
 		setLoggedOn(false);
 		
 		Settings settings = new Settings(STORAGE_NAME_SETTINGS,true);
@@ -190,6 +192,12 @@ public class UserManager extends AbstractView implements AlertMessageListener {
 				displayPrevScreen = logonListener.onLoggedOn();
 			if(displayPrevScreen)
 				display.setCurrent(prevScreen);
+			GlobalVariables.username = loginForm.getUserName();
+			GlobalVariables.password = loginForm.getPassword();
+			
+			UserManager.useLoggedIn = new User();
+			UserManager.useLoggedIn.setName(loginForm.getUserName());
+			UserManager.useLoggedIn.setPassword(loginForm.getPassword());
 		}
 		else
 			alertMsg.show(MenuText.INVALID_NAME_PASSWORD());
@@ -279,4 +287,5 @@ public class UserManager extends AbstractView implements AlertMessageListener {
     	return encodeString(Long.toString(System.currentTimeMillis()) 
     			+ Long.toString(rnd.nextLong()));
     }
+
 }

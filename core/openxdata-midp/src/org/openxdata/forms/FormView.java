@@ -197,9 +197,9 @@ public class FormView extends AbstractView implements AlertMessageListener {
 			//of current implementation.
 			if(displayedQuestions.size() > 0){
 				screen.setCommandListener(this);
+				screen.addCommand(DefaultCommands.cmdSave);				
 				if(allowDelete)
 					screen.addCommand(DefaultCommands.cmdDelete);
-				screen.addCommand(DefaultCommands.cmdSave);
 				screen.addCommand(DefaultCommands.cmdCancel);
 
 				display.setCurrent(screen);

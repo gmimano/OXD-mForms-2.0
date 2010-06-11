@@ -65,6 +65,9 @@ public class DefaultCommands {
 	/** Command to go back to the main menu. */
 	public static Command cmdMainMenu = new Command(MenuText.MAIN_MENU(),Command.BACK,1);
 
+	/** Command to upload specific forms data. */
+	public static Command cmdUploadData = new Command(MenuText.UPLOAD_DATA(),Command.OK,1);	
+	
 	/** No creation allowed. */
 	/*private DefaultCommands(){
 		

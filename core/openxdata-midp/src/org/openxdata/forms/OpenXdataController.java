@@ -276,7 +276,7 @@ public class OpenXdataController implements Controller, StorageListener, AlertMe
 	}
 
 	/** Saves the current form data. */
-	private void saveFormData(FormData formData){	
+	public void saveFormData(FormData formData){	
 		boolean isNew = formData.isNew();
 
 		formData.setDateValue("/"+formData.getDef().getVariableName()+"/endtime", new Date());
@@ -292,6 +292,8 @@ public class OpenXdataController implements Controller, StorageListener, AlertMe
 		}
 	}
 
+	
+	
 	//garisa lodge
 	public void deleteForm(FormData formData, View sender){
 		if(sender == formViewer && formDataListViewer.hasSelectedForm()){
@@ -608,6 +610,10 @@ public class OpenXdataController implements Controller, StorageListener, AlertMe
 
 	public void setDownloadManager(DownloadUploadManager downloadMgr){
 		this.downloadMgr = downloadMgr;
+	}
+	
+	public DownloadUploadManager getDownloadMgr(){
+		return downloadMgr;
 	}
 
 	public void setUserManager(UserManager userMgr){

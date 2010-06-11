@@ -7,6 +7,9 @@ import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.List;
 
+import org.openxdata.db.OpenXdataDataStorage;
+import org.openxdata.db.util.Record;
+import org.openxdata.db.util.StorageFactory;
 import org.openxdata.model.FormData;
 import org.openxdata.model.FormDef;
 import org.openxdata.mvc.AbstractView;
@@ -71,6 +74,7 @@ public class FormDataListView extends AbstractView implements AlertMessageListen
 			screen.setCommandListener(this);
 			screen.addCommand(DefaultCommands.cmdNew);
 			screen.addCommand(DefaultCommands.cmdBack);
+			screen.addCommand(DefaultCommands.cmdUploadData);			
 			if(formDataList.size() > 0)
 				screen.addCommand(DefaultCommands.cmdDelete);
 			screen.addCommand(DefaultCommands.cmdMainMenu);
@@ -106,10 +110,24 @@ public class FormDataListView extends AbstractView implements AlertMessageListen
 				handleDeleteCommand(d);
 			else if(c == DefaultCommands.cmdMainMenu)
 				getOpenXdataController().backToMainMenu();
+			else if(c == DefaultCommands.cmdUploadData){
+				Vector studyList = new Vector();
+				studyList.addElement(getOpenXdataController().getCurrentStudy());
+				getOpenXdataController().getDownloadMgr().uploadData(this.getScreen(), studyList, UserManager.useLoggedIn.getName(), UserManager.useLoggedIn.getPassword());
+				
+				//call to save form data list
+				/*
+				for(int i=0; i<this.formDataList.size(); i++){
+					FormData data = (FormData)formDataList.elementAt(i);
+					OpenXdataDataStorage.saveFormData(getOpenXdataController().getCurrentStudy().getId(), data);
+					getOpenXdataController().saveForm(data);
+				}
+				*/
+			}
 		}
 		catch(Exception e){
 			alertMsg.showError(e.getMessage());
-			//e.printStackTrace();
+			e.printStackTrace();
 		}
 	}
 
