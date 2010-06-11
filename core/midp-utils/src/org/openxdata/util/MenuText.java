@@ -113,7 +113,7 @@ public class MenuText {
 	public static String BLUETOOTH_DEVICE_NAME(){return getText((short)85,"Bluetooth Device Name:");}
 	public static String PROBLEM_HANDLING_REQUEST(){return getText((short)86,"Problem handling request:");}
 	public static String CONNECTING_TO_SERVER(){return getText((short)87,"Connecting to server.........");}
-	public static String TRANSFERING_DATA(){return getText((short)88,"Connected to server. Tranfering data........");}
+	public static String TRANSFERING_DATA(){return getText((short)88,"Connected to server. Transfering data........");}
 	public static String PROBLEM_HANDLING_STREAMS(){return getText((short)89,"Problem handling streams");}
 	public static String SERVER_PROCESS_FAILURE(){return getText((short)90,"Problems occured while processing request on server.");}
 	
