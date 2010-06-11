@@ -94,6 +94,8 @@ public class RMSStorage implements Storage{
 				return recStore.getNumRecords();
 			} catch (RecordStoreNotOpenException e) {
 				eventListener.errorOccured("Exception: ", e);
+			} finally{
+				close();
 			}
 		}
 
