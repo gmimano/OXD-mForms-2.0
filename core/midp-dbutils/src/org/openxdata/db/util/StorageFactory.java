@@ -1,5 +1,7 @@
 package org.openxdata.db.util;
 
+import javax.microedition.rms.RecordStore;
+
 
 /**
  * Factory for creating data storage instance.
@@ -29,5 +31,15 @@ public class StorageFactory {
 		return storage;*/
 		
 		return new RMSStorage(name,eventListener);
+	}
+	
+	
+	/**
+	 *  Returns all the record store names for this midlet suite.
+	 *  
+	 * @return a string array of the stores owned by this midlet suite.
+	 */
+	public static String[] getNames() {
+		return RecordStore.listRecordStores();
 	}
 }

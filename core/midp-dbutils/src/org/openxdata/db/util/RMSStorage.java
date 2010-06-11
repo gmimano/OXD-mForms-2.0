@@ -4,10 +4,7 @@ import java.util.Vector;
 
 import javax.microedition.rms.RecordEnumeration;
 import javax.microedition.rms.RecordStore;
-
-import org.openxdata.db.util.Persistent;
-import org.openxdata.db.util.Record;
-import org.openxdata.db.util.Serializer;
+import javax.microedition.rms.RecordStoreNotOpenException;
 
 //TODO Exceptions in this class should be propagated to the user in some way.
 
@@ -20,19 +17,19 @@ import org.openxdata.db.util.Serializer;
  *
  */
 public class RMSStorage implements Storage{
-	
+
 	/** A reference to the RecordStore. */
 	private RecordStore recStore;
-	
+
 	/** The name of this storage. 
 	 * This name should be unique for this type of objects throught the midlet.
 	 * For now, this is the name of the package and class of object type stored.
 	 */
 	private String name;
-	
+
 	/** Reference to the event listener. */
 	private StorageListener eventListener;
-	
+
 	/** Flag to keep track of whether data store is open or closed. */
 	//private boolean open;
 
@@ -46,7 +43,7 @@ public class RMSStorage implements Storage{
 		this.name = name;
 		this.eventListener = eventListener;
 	}
-	
+
 	/*public boolean isOpen() {
 		return open;
 	}*/
@@ -54,7 +51,7 @@ public class RMSStorage implements Storage{
 	/*private void setOpen(boolean open) {
 		this.open = open;
 	}*/
-	
+
 	/**
 	 * Opens the data storage.
 	 * 
@@ -69,10 +66,10 @@ public class RMSStorage implements Storage{
 		catch(Exception e){
 			eventListener.errorOccured("Exception: ", e);
 		}
-		
+
 		return false;
 	}
-	
+
 	/**
 	 * Closes the data storage.
 	 * 
@@ -87,10 +84,22 @@ public class RMSStorage implements Storage{
 		catch(Exception e){
 			eventListener.errorOccured("Exception: ", e);
 		}
-		
+
 		return false;
 	}
-	
+
+	public int getNumRecords() {
+		if (open()){
+			try {
+				return recStore.getNumRecords();
+			} catch (RecordStoreNotOpenException e) {
+				eventListener.errorOccured("Exception: ", e);
+			}
+		}
+
+		return 0;
+	}
+
 	/** Deletes all records from the data store. */
 	public boolean delete(){
 		try{
@@ -101,7 +110,7 @@ public class RMSStorage implements Storage{
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Deletes a record from the data store.
 	 * 
@@ -109,7 +118,7 @@ public class RMSStorage implements Storage{
 	 */
 	public boolean delete(int recId){
 		boolean ret = false;
-		
+
 		try{
 			open();
 			this.recStore.deleteRecord(recId);
@@ -121,10 +130,10 @@ public class RMSStorage implements Storage{
 		finally{
 			close();
 		}
-		
+
 		return ret;
 	}
-	
+
 	/** 
 	 * Reads a list of objects of a given class from persistent storage.
 	 * 
@@ -133,12 +142,12 @@ public class RMSStorage implements Storage{
 	 */
 	public Vector read(Class cls){
 		try{
-			
+
 			Vector list = null;
 			if(open()){	
 				if(recStore.getNumRecords() > 0)
 					list = new Vector();
-				
+
 				RecordEnumeration recEnum = recStore.enumerateRecords(null, null, true);
 				while(recEnum.hasNextElement()){
 					int id = recEnum.nextRecordId();
@@ -148,7 +157,7 @@ public class RMSStorage implements Storage{
 					list.addElement(obj);
 				}
 			}
-			
+
 			return list;
 		}
 		catch(Exception e){
@@ -157,10 +166,10 @@ public class RMSStorage implements Storage{
 		finally{
 			close();
 		}
-		
+
 		return null;
 	}
-	
+
 	/** 
 	 * Reads an object from persistent store 
 	 * using its numeric unique identifier and class.
@@ -185,7 +194,7 @@ public class RMSStorage implements Storage{
 		}
 		return null;
 	}
-	
+
 	/** 
 	 * Saves a persistent object to storage. 
 	 * A peristent object is one which implements the Persistent interface.
@@ -195,7 +204,7 @@ public class RMSStorage implements Storage{
 	 * This identifier can be used to later on retrieve this particular object form persistent storage.
 	 */
 	public int addNew(Persistent obj){
-		
+
 		try{
 			open();			
 			byte[] record = Serializer.serialize(obj);
@@ -207,10 +216,10 @@ public class RMSStorage implements Storage{
 		finally{
 			close();
 		}
-		
+
 		return 0;
 	}
-	
+
 	/** 
 	 * Updates an existing persistent object in storage. 
 	 * A peristent object is one which implements the Persistent interface.
@@ -220,7 +229,7 @@ public class RMSStorage implements Storage{
 	 */
 	public boolean update(int id, Persistent obj){
 		boolean ret = false;
-		
+
 		try{
 			open();
 			byte[] record = Serializer.serialize(obj);
@@ -233,11 +242,11 @@ public class RMSStorage implements Storage{
 		finally{
 			close();
 		}
-		
+
 		return ret;
 	}
-	
-	
+
+
 	/** 
 	 * Saves a list of persistent objects to storage. 
 	 * A peristent object is one which implements the Persistent interface.
@@ -247,14 +256,14 @@ public class RMSStorage implements Storage{
 	 * These identifiers can be used to later on retrieve these particular objects form persistent storage.
 	 */
 	public Vector addNew(Vector persistentObjects){
-		
+
 		Vector ret = new Vector();
 		for(int i=0; i<persistentObjects.size(); i++)
 			ret.addElement(new Integer(addNew((Persistent)persistentObjects.elementAt(i))));
-		
+
 		return ret;
 	}
-	
+
 	public boolean save(Record rec){
 		if(rec.isNew()){
 			int id = addNew(rec);
@@ -265,11 +274,11 @@ public class RMSStorage implements Storage{
 		else
 			return update(rec.getRecordId(), rec);
 	}
-	
+
 	public boolean delete(Record rec){
 		return delete(rec.getRecordId());
 	}
-	
+
 	public Persistent readFirst(Class cls){
 		try{
 			Persistent persistent = null;
@@ -278,7 +287,7 @@ public class RMSStorage implements Storage{
 				if(recId > 0)
 					persistent = Serializer.deserialize(recStore.getRecord(recId),cls);
 			}
-			
+
 			return persistent;
 		}
 		catch(Exception e){
@@ -287,7 +296,7 @@ public class RMSStorage implements Storage{
 		finally{
 			close();
 		}
-		
+
 		return null;
 	}
 }

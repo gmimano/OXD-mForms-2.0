@@ -47,6 +47,27 @@ public class OpenXdataDataStorage {
 	
 	public static StorageListener storageListener;
 	
+	
+	/**
+	 * Returns whether there are records related to form data.
+	 * 
+	 * @return true if there are form data records, false otherwise.
+	 */
+	public static boolean hasFormData() {
+		String[] names = StorageFactory.getNames();
+		for (int i = 0; i < names.length; i++) {
+			String name = names[i];
+			if (name.startsWith(IDENTIFIER_FORM_DATA_STORAGE)) {
+				Storage store = StorageFactory
+						.getStorage(name, storageListener);
+				if (store.getNumRecords() > 0)
+					return true;
+			}
+		}
+		return false;
+	}
+
+	
 	/**
 	 * Saves form data.
 	 * 

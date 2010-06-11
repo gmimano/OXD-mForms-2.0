@@ -177,8 +177,10 @@ public class DownloadUploadManager implements TransportLayerListener,AlertMessag
 	public boolean isThereCollectedData(String name, Vector studyList){
 		this.studyList = studyList;
 
-		StudyDataList studyDataList = getCollectedData();
-		if(!(studyDataList == null || studyDataList.getStudies() == null || studyDataList.getStudies().size() == 0)){
+		//These two lines below are replaced by a more memory efficient check as done by MoTeCH
+		//StudyDataList studyDataList = getCollectedData();
+		//if(!(studyDataList == null || studyDataList.getStudies() == null || studyDataList.getStudies().size() == 0)){
+		if(OpenXdataDataStorage.hasFormData()){
 			this.currentAction = CA_NONE;
 			this.alertMsg.show(MenuText.UN_UPLOADED_DATA_PROMPT() + " " + name + ".");
 			return true;

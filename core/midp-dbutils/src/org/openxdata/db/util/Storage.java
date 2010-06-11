@@ -1,8 +1,6 @@
 package org.openxdata.db.util;
 
-import java.util.*;
-
-import org.openxdata.db.util.*;
+import java.util.Vector;
 
 /**
  * An interface that all concrete storages should implement. This interface shields 
@@ -13,6 +11,14 @@ import org.openxdata.db.util.*;
  */
 public interface Storage {
 	
+	/**
+	 * Inspects the number of logical records in the store.
+	 * 
+	 * @return an integer specifying the number of logical records.
+	 */
+	public int getNumRecords();
+	
+
 	/** Deletes all records from the storage. */
 	public boolean delete();
 	
