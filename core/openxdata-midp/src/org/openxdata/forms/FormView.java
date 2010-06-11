@@ -230,6 +230,7 @@ public class FormView extends AbstractView implements AlertMessageListener {
 		currentPage = ((PageData)pages.elementAt(pageIndex));
 		Vector qns = currentPage.getQuestions();
 		
+		boolean useQtnNumbering = GeneralSettings.isQtnNumbering();
 		Vector grayQuestions = new Vector();
 		displayedQuestions = new Vector();
 		QuestionData qn; 
@@ -240,7 +241,7 @@ public class FormView extends AbstractView implements AlertMessageListener {
 				if(qn.getDef().isMandatory() && !qn.isAnswered())
 					s += "* ";
 				
-				int elementNum = ((List)screen).append((GeneralSettings.isQtnNumbering() ? String.valueOf(index + 1) + " " : "") + s + qn.toString(),null);
+				int elementNum = ((List)screen).append((useQtnNumbering ? String.valueOf(index + 1) + " " : "") + s + qn.toString(),null);
 				
 				if(!qn.getDef().isEnabled()){
 					grayQuestions.addElement(new Integer(elementNum));
