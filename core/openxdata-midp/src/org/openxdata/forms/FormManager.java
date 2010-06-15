@@ -49,8 +49,6 @@ public class FormManager implements TransportLayerListener{
 	TransportLayerListener transportLayerListener;
 	//private boolean downloadingForms = false;
 	
-	public static boolean useStudyNumericId = true;
-	
 	private static FormManager instance;
 	
 	

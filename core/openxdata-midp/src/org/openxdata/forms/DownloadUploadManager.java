@@ -274,7 +274,7 @@ public class DownloadUploadManager implements TransportLayerListener,AlertMessag
 
 		Persistent studyIdParam = new PersistentInt(OpenXdataConstants.NULL_ID);
 		if (this.currentStudy != null){
-			if(FormManager.useStudyNumericId)
+			if(GeneralSettings.isUseStudyNumericId())
 				studyIdParam = new PersistentInt(currentStudy.getId());
 			else
 				studyIdParam = new PersistentString(this.currentStudy.getVariableName());

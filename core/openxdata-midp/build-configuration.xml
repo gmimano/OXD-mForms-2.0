@@ -24,6 +24,8 @@
 			<filter token="single.question.edit" value="${single.question.edit}" />
 			<filter token="question.numbering" value="${question.numbering}" />
 			<filter token="ok.on.right" value="${ok.on.right}" />
+			<filter token="is.hide.studies" value="${is.hide.studies}" />
+			<filter token="use.study.numeric.id" value="${use.study.numeric.id}" />
 		</filterset>
 			
 		<copy file="${basedir}/template/FormsConstants.java" toFile="${basedir}/src/org/openxdata/forms/FormsConstants.java" overwrite="true">
