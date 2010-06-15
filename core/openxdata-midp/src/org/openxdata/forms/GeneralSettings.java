@@ -147,14 +147,14 @@ public class GeneralSettings extends AbstractView{
 	public static boolean getUseStudyNumericIdSetting(Settings settings) {
 		String setting = settings.getSetting(KEY_USE_STUDY_NUMERIC_ID);
 		if (setting == null) {
-			return FormsConstants.OK_ON_RIGHT;
+			return FormsConstants.USE_STUDY_NUMERIC_ID;
 		}
 		return Utilities.stringToBoolean(setting);
 	}
 	
 	public static boolean isUseStudyNumericId(){
 		Settings settings = new Settings(STORAGE_NAME_SETTINGS,true);
-		return getOkOnRightSetting(settings);
+		return getUseStudyNumericIdSetting(settings);
 	}
 	
 	/*public static boolean deleteDataAfterUpload(){
