@@ -29,30 +29,30 @@ public class ConnectionSettings extends AbstractView {
 	private static final int CA_NONE = 0;
 	private static final int CA_CON_TYPES = 1;
 	private static final int CA_CON_PARAMS = 2;
-	
+
 	String userName = "";
 	String password = "";
-	
+
 	/** The connection type to use. */
 	private byte conType = TransportLayer.CON_TYPE_NULL;
-	
+
 	/** The connection parameters. */
 	protected Hashtable conParams = new Hashtable();
-	
+
 	/** The connection parameters. */
 	protected Vector connectionParameters = new Vector();
-	
+
 	private SimpleOrderedHashtable conTypes;
-	
+
 	/** Reference to the parent. */
 	TransportLayer defTransLayer;
-	
+
 	private int currentAction = CA_NONE;
-	
+
 	public ConnectionSettings(){
-		
+
 	}
-	
+
 	/** 
 	 * Displays a screen for the user to select a connection type.
 	 * 
@@ -66,12 +66,19 @@ public class ConnectionSettings extends AbstractView {
 		this.conParams = conParams;
 		this.connectionParameters = connectionParameters;
 		this.defTransLayer = defTransLayer;
-		
+
+		// If there is only one option, ask for params directly
+		if (conTypes.size() == 1) {
+			this.conType = fromIndexToConType(0);
+			showConParams();
+			return;
+		}
+
 		currentAction = CA_CON_TYPES;
-		
+
 		screen = new List(MenuText.CONNECTION_TYPE(), Choice.IMPLICIT);
 		((List)screen).setFitPolicy(List.TEXT_WRAP_ON);
-		
+
 		//TODO This hashtable does not maintain the order on devices like sony erickson.
 		Enumeration keys = conTypes.keys();
 		Object key;
@@ -79,25 +86,25 @@ public class ConnectionSettings extends AbstractView {
 			key = keys.nextElement();
 			((List)screen).append(conTypes.get(key).toString(), null);
 		}
-			
+
 		screen.addCommand(DefaultCommands.cmdOk);
 		screen.addCommand(DefaultCommands.cmdCancel);
 		byte index = fromConTypeToIndex(conType);
 		if(index >= 0 && index < ((List)screen).size())
 			((List)screen).setSelectedIndex(index,true);
 		screen.setCommandListener(this);
-				
+
 		AbstractView.display.setCurrent(screen);
 	}
-	
+
 	private byte fromConTypeToIndex(byte conType){
 		return (byte)conTypes.getIndex(new Byte(conType));
 	}
-	
+
 	private byte fromIndexToConType(int index){
 		return ((Byte)conTypes.keyAt(index)).byteValue();
 	}
-		
+
 	/**
 	 * Processes the command events.
 	 * 
@@ -116,21 +123,21 @@ public class ConnectionSettings extends AbstractView {
 			//e.printStackTrace();
 		}
 	}
-	
+
 	/**
 	 * Processes the cancel command event.
 	 * 
 	 * @param d - the screen object the command was issued for.
 	 */
 	private void handleCancelCommand(Displayable d){
-		if(currentAction == CA_CON_PARAMS){
+		if(currentAction == CA_CON_PARAMS && conTypes.size() > 1){
 			currentAction = CA_CON_TYPES;
 			display.setCurrent(screen);
 		}
 		else
 			defTransLayer.onConnectionSettingsClosed(false);
 	}
-	
+
 	/**
 	 * Processes the OK command event.
 	 * 
@@ -143,7 +150,7 @@ public class ConnectionSettings extends AbstractView {
 					//conParams.put(TransportLayer.KEY_USER_DOWNLOAD_HTTP_URL, ((TextField)((Form)d).get(0)).getString());
 					conParams.put(TransportLayer.KEY_FORM_DOWNLOAD_HTTP_URL, ((TextField)((Form)d).get(0)).getString());
 					conParams.put(TransportLayer.KEY_DATA_UPLOAD_HTTP_URL, ((TextField)((Form)d).get(1)).getString());
-					
+
 					for(int i=0; i<connectionParameters.size(); i++)
 					{
 						ConnectionParameter conParam = (ConnectionParameter)connectionParameters.elementAt(i);
@@ -167,10 +174,10 @@ public class ConnectionSettings extends AbstractView {
 			showConParams();
 		}
 	}
-	
+
 	private void showConParams(){
 		currentAction = CA_CON_PARAMS;
-		
+
 		if(conType == TransportLayer.CON_TYPE_HTTP)
 			showHttpConParams();
 		else if(conType == TransportLayer.CON_TYPE_BLUETOOTH)
@@ -180,31 +187,31 @@ public class ConnectionSettings extends AbstractView {
 		else
 			handleOkCommand(null);
 	}
-	
+
 	private void showHttpConParams(){
 		Form frm = new Form(this.title);
-		
+
 		// NOTE: see build-configuration.xml to find out about class TransportConstants
-		
+
 		//This has been commented out because the users download url is never used since the users
 		//come together with the forms during forms download.
-		
+
 		/*String s = (String)conParams.get(TransportLayer.KEY_USER_DOWNLOAD_HTTP_URL);
 		if(s == null) s = TransportConstants.USERSSDOWNLOAD_URL;
 		TextField txtField = new TextField(MenuText.USER_DOWNLOAD_URL(),s,500,TextField.ANY);
 		frm.append(txtField);*/
-		
+
 		String s = (String)conParams.get(TransportLayer.KEY_FORM_DOWNLOAD_HTTP_URL);
 		if(s == null) s = TransportConstants.FORMSDOWNLOAD_URL;
 		TextField txtField = new TextField(MenuText.FORM_DOWNLOAD_URL(),s,500,TextField.ANY);
 		frm.append(txtField);
-		
+
 		s = (String)conParams.get(TransportLayer.KEY_DATA_UPLOAD_HTTP_URL);
 		if(s == null) s = TransportConstants.DATAUPLOAD_URL;
 		txtField = new TextField(MenuText.DATA_UPLOAD_URL(),s,500,TextField.ANY);
 		frm.append(txtField);
-		
-		
+
+
 		for(int i=0; i<connectionParameters.size(); i++)
 		{
 			ConnectionParameter conParam = (ConnectionParameter)connectionParameters.elementAt(i);
@@ -214,54 +221,54 @@ public class ConnectionSettings extends AbstractView {
 				frm.append(txtField);
 			}
 		}
-		
+
 		frm.addCommand(DefaultCommands.cmdCancel);
 		frm.addCommand(DefaultCommands.cmdOk);
 		frm.setCommandListener(this);
-					
+
 		display.setCurrent(frm);
 	}
-	
+
 	private void showBluetoothConParams(){
 		Form frm = new Form(this.title);
-		
+
 		TextField txtField = new TextField(MenuText.BLUETOOTH_SERVICE_ID(),(String)conParams.get(TransportLayer.KEY_BLUETOOTH_SERVER_ID),100,TextField.ANY);
 		frm.append(txtField);
-		
+
 		txtField = new TextField(MenuText.BLUETOOTH_DEVICE_NAME(),(String)conParams.get(TransportLayer.KEY_BLUETOOTH_DEVICE_NAME),100,TextField.ANY);
 		frm.append(txtField);
-		
+
 		frm.addCommand(DefaultCommands.cmdCancel);
 		frm.addCommand(DefaultCommands.cmdOk);
 		frm.setCommandListener(this);
-					
+
 		display.setCurrent(frm);
 	}
-	
+
 	/*private void showSMSConParams(){
 		Form frm = new Form(this.title);
-		
+
 		TextField txtField = new TextField("Server Address:",(String)conParams.get(TransportLayer.KEY_SMS_DESTINATION_ADDRESS),100,TextField.ANY);
 		frm.append(txtField);
-		
+
 		txtField = new TextField("Source Address:",(String)conParams.get(TransportLayer.KEY_SMS_SOURCE_ADDRESS),100,TextField.ANY);
 		frm.append(txtField);
-		
+
 		frm.addCommand(DefaultCommands.cmdCancel);
 		frm.addCommand(DefaultCommands.cmdOk);
 		frm.setCommandListener(this);
-					
+
 		display.setCurrent(frm);
 	}*/
-	
+
 	public byte getConType(){
 		return conType;
 	}
-	
+
 	public Hashtable getConParams(){
 		return conParams;
 	}
-	
+
 	public Vector getConnectionParameters(){
 		return connectionParameters;
 	}
