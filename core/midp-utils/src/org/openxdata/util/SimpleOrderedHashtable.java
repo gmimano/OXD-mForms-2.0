@@ -172,9 +172,9 @@ public class SimpleOrderedHashtable {
      *  Returns the number of components in this SimpleOrderedHashtable.
      *  @return the number of components in this vector.
      */
-   /* synchronized public int size() {
+    synchronized public int size() {
         return orderedKeys.size();
-    }*/
+    }
 
     /**
      * Recomputes the SimpleOrderedHashtable capacity.
