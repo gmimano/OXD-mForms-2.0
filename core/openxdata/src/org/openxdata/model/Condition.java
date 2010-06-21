@@ -539,6 +539,14 @@ public class Condition implements Persistent{
 			else if(operator == OpenXdataConstants.OPERATOR_IS_NOT_NULL)
 				return true;
 			
+			
+			//Since we store decimals as strings, we can almost safely do the equality comparison
+			//when still in string format. One disadvantage of of this is that for instance
+			// 07 != 7 when doing string comparison.
+			if(operator == OpenXdataConstants.OPERATOR_EQUAL)
+				return value.equals(data.getValueAnswer());
+			
+			
 			removeDecimalPoints();
 			
 			long /*float*/ answer = Long.parseLong(data.getValueAnswer()); //Float.parseFloat(data.getValueAnswer());
@@ -547,10 +555,8 @@ public class Condition implements Persistent{
 			long /*float*/ secondFloatValue = floatValue;
 			if(secondValue != null && secondValue.trim().length() > 0)
 				secondFloatValue = Long.parseLong(secondValue); //Float.parseFloat(secondValue);
-
-			if(operator == OpenXdataConstants.OPERATOR_EQUAL)
-				return floatValue == answer;
-			else if(operator == OpenXdataConstants.OPERATOR_NOT_EQUAL)
+			
+			if(operator == OpenXdataConstants.OPERATOR_NOT_EQUAL)
 				return floatValue != answer;
 			else if(operator == OpenXdataConstants.OPERATOR_LESS)
 				return answer < floatValue;
