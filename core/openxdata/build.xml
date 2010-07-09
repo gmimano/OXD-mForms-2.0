@@ -52,13 +52,23 @@
 		</exec>
 	</target>
 	
-	<target name="package" depends="preverify" description="Packages database utilities into jar file">
+	<target name="package" depends="preverify" description="Packages binary jar file">
 		<mkdir dir="dist" />
 		
 		<!-- Create distributable jar file -->
 		<jar destfile="dist/openxdata.jar">
 			<fileset dir="build/preverified" includes="**/*" />
 			<zipfileset src="..\dbutils\dist\dbutils.jar" />
+		</jar>
+	</target>
+	
+	<target name="package-source" description="Packages source into jar file">
+		<mkdir dir="dist" />
+		
+		<!-- Create distributable jar file -->
+		<jar destfile="dist/openxdata-source.jar">
+			<fileset dir="src" includes="**/*" />
+			<fileset dir="..\dbutils\src" includes="**/*"/>
 		</jar>
 	</target>
 
