@@ -32,6 +32,8 @@
 	</target>
 
 	<target name="compile" depends="init" description="Compiles the database utilities">
+		<ant antfile="../dbutils/build.xml" target="package" inheritall="false" />
+		
 		<mkdir dir="bin" />
 		
 		<!--  Compile midlet java files -->
@@ -56,6 +58,7 @@
 		<!-- Create distributable jar file -->
 		<jar destfile="dist/openxdata.jar">
 			<fileset dir="build/preverified" includes="**/*" />
+			<zipfileset src="..\dbutils\dist\dbutils.jar" />
 		</jar>
 	</target>
 

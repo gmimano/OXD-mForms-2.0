@@ -5,7 +5,6 @@
 	<property name="midp_lib" value="${midp}/lib/midpapi20.jar"/>
 	<property name="cldc_lib" value="${midp}/lib/cldcapi10.jar"/>
 	<property name="mmapi" value="${midp}/lib/mmapi.jar"/>
-	<property name="dbutils" value="../../core/dbutils/dist/dbutils.jar"/>
 	<property name="openxdata-midp" value="../../core/openxdata-midp/dist/openxdata-midp.jar"/>
 	<property name="openxdata" value="../../core/openxdata/dist/openxdata.jar"/>
 	<property name="midp-mvc" value="../../core/midp-mvc/dist/midp-mvc.jar"/>
@@ -36,11 +35,9 @@
 			</fileset>
 		</path>
 		<path id="classpath">
-			<pathelement location="${dbutils}"/>
 			<pathelement location="${midp_lib}"/>
 			<pathelement location="${openxdata}"/>
 			<pathelement location="${midp-dbutils}"/>
-			<pathelement location="${dbutils}"/>
 			<pathelement location="${openxdata-midp}"/>
 			<pathelement location="${midp-mvc}"/>
 			<pathelement location="${midp-utils}"/>
@@ -68,7 +65,6 @@
 			
 	<target name="compile" depends="init, clean">
 		<!-- call other external build files here before building -->
-		<ant antfile="../../core/dbutils/build.xml" target="package" inheritall="false" />
 		<ant antfile="../../core/openxdata/build.xml" target="package" inheritall="false"/>
 		<ant antfile="../../core/midp-mvc/build.xml" target="package" inheritall="false"/>
 		<ant antfile="../../core/midp-utils/build.xml" target="package" inheritall="false"/>

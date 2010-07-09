@@ -7,7 +7,8 @@
 <!-- ********************************************************* -->
 <project name="openxdata-midp" default="package">
 	<property file="antbuild.properties"/>
-		<property name="midp" value="${WTK-ROOT}"/>
+	<property file="../build.properties"/>
+	<property name="midp" value="${WTK-ROOT}"/>
 	<property name="midp_lib" value="${midp}/lib/midpapi20.jar"/>
 	<property name="cldc_lib" value="${midp}/lib/cldcapi10.jar" />
 	<property name="mmapi" value="${midp}/lib/mmapi.jar"/>
@@ -15,7 +16,6 @@
 	<property name="midp-mvc" value="../midp-mvc/dist/midp-mvc.jar"/>
 	<property name="midp-dbutils" value="../midp-dbutils/dist/midp-dbutils.jar"/>
 	<property name="midp-utils" value="../midp-utils/dist/midp-utils.jar"/>
-	<property name="dbutils" value="../dbutils/dist/dbutils.jar"/>
 	<property name="transport-layer" value="../transport-layer/dist/transportlayer.jar"/>
 	<property name="cldc_classes.zip" value="lib/cldc_classes.jar"/>
 	
@@ -40,7 +40,6 @@
 			<pathelement location="${mmapi}"/>
 			<pathelement location="${openxdata}"/>
 			<pathelement location="${midp-dbutils}"/>
-			<pathelement location="${dbutils}"/>
 			<pathelement location="${midp-utils}"/>
 			<pathelement location="${transport-layer}"/>
 			<pathelement location="${midp-mvc}"/>

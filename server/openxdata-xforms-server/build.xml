@@ -5,21 +5,26 @@
 <!-- ** @author Daniel Kayiwa                               ** -->
 <!-- ** @version 1.0                                        ** -->
 <!-- ********************************************************* -->
-<project name="epihandy-xforms-server" default="deploy">
-		
+<project name="epihandy-xforms-server" default="package">
+
 	<!-- *********************************************************** -->
 	<!-- **                     TARGETS                           ** -->
 	<!-- *********************************************************** -->
 	<target name="init" description="initialization">
-		
+
 		<ant antfile="../../core/dbutils/build.xml" target="package" inheritall="false"/>
-		<ant antfile="../../core/epihandy/build.xml" target="package" inheritall="false"/>
+		<ant antfile="../../core/openxdata/build.xml" target="package" inheritall="false"/>
 		<ant antfile="../minixpath/build.xml" target="package" inheritall="false"/>
-		<ant antfile="../epihandy-xform-layer/build.xml" target="package" inheritall="false"/>
-		
+
 		<path id="classpath">
-			<fileset dir="..\epihandy-xform-layer\dist">
-				<include name="**/*.jar"/>
+			<fileset dir="lib">
+				<include name="**/*.jar" />
+			</fileset>
+			<fileset dir="..\..\core\openxdata\dist">
+				<include name="**/*.jar" />
+			</fileset>
+			<fileset dir="..\minixpath\dist">
+				<include name="**/*.jar" />
 			</fileset>
 		</path>
 
@@ -32,26 +37,24 @@
 
 	<target name="compile" depends="init" description="Compiles the API">
 		<mkdir dir="bin" />
-		
+
 		<!--  Compile midlet java files -->
 		<javac destdir="bin" classpathref="classpath" debug="true" debuglevel="lines,vars,source">
 			<src path="src/" />
 			<include name="**/*.java" />
-		</javac>	
+		</javac>
 	</target>
-	
+
 	<target name="package" depends="clean,init,compile" description="Packages epihandy-xforms-server into jar file">
 		<mkdir dir="dist" />
-		
+
 		<!-- Create distributable jar file -->
 		<jar destfile="dist/epihandy-xforms-server.jar">
 			<zipfileset dir="bin" prefix="" />
-			<zipfileset src="..\epihandy-xform-layer\dist\epihandy-xform-layer.jar" />
+			<zipfileset src="..\..\core\openxdata\dist\openxdata.jar" />
+			<zipfileset src="..\minixpath\dist\minixpath.jar" />
+			<zipfileset src="..\minixpath\lib\kxml2-2.3.0.jar" />
 		</jar>
-	</target>
-	
-	<target name="deploy" depends="package" description="Deploys to the tomcat lib dirrectory.">
-		<copy tofile="D:\openxdata\Server\openxdata server\lib\epihandy-xforms-server.jar" file="dist\epihandy-xforms-server.jar"/>
 	</target>
 
 </project>
