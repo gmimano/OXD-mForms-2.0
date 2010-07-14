@@ -139,7 +139,6 @@
 			<fileset dir="res"/>
 			<zipfileset src="${openxdata}"/>
 			<zipfileset src="${midp-dbutils}"/>
-			<zipfileset src="${dbutils}"/>
 			<zipfileset src="${openxdata-midp}"/>
 			<zipfileset src="${midp-mvc}"/>
 			<zipfileset src="${midp-utils}"/>
