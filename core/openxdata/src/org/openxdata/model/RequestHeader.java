@@ -36,6 +36,9 @@ public class RequestHeader implements Persistent{
 
 	/** Status to download a list of users and forms from the server. */
 	public static final byte ACTION_DOWNLOAD_USERS_AND_FORMS = 11;
+
+	/** Status to download a list of users and studies from the server. */
+	public static final byte ACTION_DOWNLOAD_USERS_AND_ALL_FORMS = 12;
 	
 	/** Status to download a list of languages. */
 	public static final byte ACTION_DOWNLOAD_LANGUAGES = 15;

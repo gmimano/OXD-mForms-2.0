@@ -17,4 +17,5 @@ public class FormsConstants  {
 	public static final boolean OK_ON_RIGHT = false;
 	public static final boolean IS_HIDE_STUDIES = false;
 	public static final boolean USE_STUDY_NUMERIC_ID = true;
+	public static final boolean MAIN_MENU = false;
 }

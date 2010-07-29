@@ -60,7 +60,6 @@ public class EpihandyTransportLayer extends DefaultTransportLayer {
 	
 	private void dowbloadStudyForms(){
 		PersistentByte studyIdParam = (PersistentByte)dataIn;
-		//System.out.println("The id is: " + studyIdParam.getValue());
 		
 		//TODO For now, this is based on the assumption that the study index position will be its id minus one.
 		dataOut = new UserStudyDefLists(new UserList(),StudyDefListTest.getTestStudyDefList(true).getStudy((byte)(studyIdParam.getValue()-1)));

@@ -491,9 +491,10 @@ public class FormView extends AbstractView implements AlertMessageListener {
 		if(msg == AlertMessageListener.MSG_OK){
 			if(currentAction == CA_CONFIRM_CANCEL || currentAction == CA_ERROR)
 				getOpenXdataController().handleCancelCommand(this);
-			else if(currentAction == CA_CONFIRM_DELETE)
+			else if(currentAction == CA_CONFIRM_DELETE) {
 				getOpenXdataController().deleteForm(formData,this);
-			else
+				getOpenXdataController().handleCancelCommand(this);
+			} else
 				display.setCurrent(screen);
 		}
 		else

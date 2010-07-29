@@ -73,7 +73,7 @@ public class MenuText {
 	public static String AUDIO_FORMAT(){return getText((short)48,"Audio Format");}
 	public static String ENCODINGS(){return getText((short)49,"Encodings");}
 	public static String STUDY(){return getText((short)50,"Study:");}
-	public static String UPLOAD_BEFORE_DOWNLOAD_PROMPT(){return getText((short)51,"has unploaded data. Please first upload or delete this data before getting new form definitions.");}
+	public static String UPLOAD_BEFORE_DOWNLOAD_PROMPT(){return getText((short)51,"has data to upload. Please first upload or delete this data before getting new form definitions.");}
 	public static String DOWNLOAD_STUDY_FORMS_PROMPT(){return getText((short)52,"Do you really want to download forms in Study: ?");}
 	public static String DOWNLOAD_FORMS_PROMPT(){return getText((short)53,"Do you really want to download forms?");}
 	public static String UN_UPLOADED_DATA_PROMPT(){return getText((short)54,"There is data which is not yet uploaded to the server. Please first upload or delete this data before getting a new list of");}
@@ -83,6 +83,7 @@ public class MenuText {
 	public static String DOWNLOAD_LANGUAGES_PROMPT(){return getText((short)58,"Do you really want to download the list of languages?");}
 	public static String DOWNLOAD_FORMS_FIRST(){return getText((short)59,"Please first download forms.");}
 	public static String UPLOAD_DATA_PROMPT(){return getText((short)60,"Do you really want to upload the collected data?");}
+	public static String UPLOAD_FORM_DATA_PROMPT(){return getText((short)60,"Do you really want to upload the selected forms data?");}
 
 	public static String STUDY_LIST_DOWNLOAD(){return getText((short)61,"Study List Download");}
 	public static String DOWNLOADING_STUDY_LIST(){return getText((short)62,"Downloading Study List");}
@@ -142,7 +143,7 @@ public class MenuText {
 	public static String RECODING_SAVE_PROBLEM(){return getText((short)111,"Problem saving recording:");}
 	public static String DATA_LIST(){return getText((short)112,"Data List");}
 	public static String DATA_LIST_DISPLAY_PROBLEM(){return getText((short)113,"Problem showing form data list.");}
-	public static String FORM_DELETE_PROMPT(){return getText((short)114,"Do u really wanna delete form:");}
+	public static String FORM_DELETE_PROMPT(){return getText((short)114,"Do you really want to delete form:");}
 	public static String FORM_SAVE_SUCCESS(){return getText((short)115,"Form Saved Successfully.");}
 	public static String NO_SELECTED_STUDY(){return getText((short)116,"No study selected");}
 	public static String NO_STUDY_FORMS(){return getText((short)117,"No forms in current study");}
@@ -158,6 +159,8 @@ public class MenuText {
 	public static String ANSWER_MINIMUM_PROMPT(){return getText((short)126,"Please answer atleast one question or choose Cancel");}
 	public static String INVALID_NAME_PASSWORD(){return getText((short)127,"Invalid User Name or Password");}
 	public static String HIDE_STUDIES(){return getText((short)128,"Hide Studies");}
+	public static String MAIN_MENU_VIEW(){return getText((short)128,"Main Menu");}
+	
 	
 	public static String SELECT_LANGUAGE(){return getText((short)-1,"Select Language");}
 	public static String NO_LANGUAGES_FOUND(){return getText((short)-2,"No languages found. Do you want to download them?");}
@@ -170,5 +173,5 @@ public class MenuText {
 	public static String DATA_UPLOAD_URL(){return getText((short)-9,"Data upload url:");}
 	public static String DATA_DELETE_PROMPT(){return getText((short)-10,"Do you really want to delete data collected on this form?");}
 	public static String NO_MENU_TEXT(){return getText((short)-11,"The server has no Menu Text for this language");}
-	public static String MENU_TEXT_DOWNLOAD_PROMPT(){return getText((short)-12,"Do u want to download the menu for this language?");}
+	public static String MENU_TEXT_DOWNLOAD_PROMPT(){return getText((short)-12,"Do you want to download the menu for this language?");}
 }

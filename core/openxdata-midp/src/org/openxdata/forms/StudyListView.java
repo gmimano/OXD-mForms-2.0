@@ -25,15 +25,27 @@ public class StudyListView extends AbstractView implements CommandListener  {
 	private Vector studyList;
 
 	public StudyListView(){
-
+		screen = new List(MenuText.SELECT_STUDY()+" - "+title , Choice.IMPLICIT);
+		((List)screen).setFitPolicy(List.TEXT_WRAP_ON);
+		
+		screen.setCommandListener(this);
+		if (!GeneralSettings.isMainMenu()) {
+			screen.addCommand(DefaultCommands.cmdExit);
+			screen.addCommand(DefaultCommands.cmdSel);
+			screen.addCommand(DefaultCommands.cmdDownloadStudy);
+			screen.addCommand(DefaultCommands.cmdUploadData);
+			screen.addCommand(DefaultCommands.cmdSettings);
+		} else {
+			screen.addCommand(DefaultCommands.cmdSel);
+			screen.addCommand(DefaultCommands.cmdCancel);
+		}
 	}
 
 	public void showStudyList(Vector studyList){
 		this.studyList = studyList;
 
-		screen = new List(MenuText.SELECT_STUDY()+" - "+title , Choice.IMPLICIT);
-		((List)screen).setFitPolicy(List.TEXT_WRAP_ON);
-
+		screen.setTitle(MenuText.SELECT_STUDY()+" - "+title);
+		((List)screen).deleteAll();
 		StudyDef study; int selectedIndex = OpenXdataConstants.NO_SELECTION;
 		Settings settings = new Settings(OpenXdataConstants.STORAGE_NAME_EPIHANDY_SETTINGS,true);
 		String val = settings.getSetting(OpenXdataConstants.KEY_LAST_SELECTED_STUDY);
@@ -51,9 +63,6 @@ public class StudyListView extends AbstractView implements CommandListener  {
 		if(selectedIndex != OpenXdataConstants.NO_SELECTION)
 			((List)screen).setSelectedIndex(selectedIndex, true);
 
-		screen.setCommandListener(this);
-		screen.addCommand(DefaultCommands.cmdOk);
-		screen.addCommand(DefaultCommands.cmdCancel);
 		display.setCurrent(screen);
 	}
 
@@ -64,47 +73,29 @@ public class StudyListView extends AbstractView implements CommandListener  {
 	 * @param d - the screen object the command was issued for.
 	 */
 	public void commandAction(Command c, Displayable d) {
-		try{
-			//This block is commented out to have the next block from MoTeCH
-			/*if(c == List.SELECT_COMMAND || c == DefaultCommands.cmdOk)
-				getOpenXdataController().execute(this,DefaultCommands.cmdOk,(StudyDef)studyList.elementAt(((List)d).getSelectedIndex()));
-			else if(c == DefaultCommands.cmdCancel)
-				getOpenXdataController().execute(this,DefaultCommands.cmdCancel,null);*/
-
-			OpenXdataController controller = getOpenXdataController();
-			if (c == List.SELECT_COMMAND || c == DefaultCommands.cmdOk) {
-				StudyDef selectedStudy = (StudyDef) studyList.elementAt(((List) d).getSelectedIndex());
-				StudyDef currentStudy = controller.getCurrentStudy();
-				if (selectedStudy != null && selectedStudy.getId() != currentStudy.getId())
-					controller.execute(this, DefaultCommands.cmdOk, selectedStudy);
+		OpenXdataController controller = getOpenXdataController();
+		if (c == List.SELECT_COMMAND || c == DefaultCommands.cmdOk || c == DefaultCommands.cmdSel) {
+			StudyDef selectedStudy = (StudyDef) studyList.elementAt(((List) d).getSelectedIndex());
+			if (selectedStudy != null) {
+				controller.execute(this, DefaultCommands.cmdOk, selectedStudy);
 			} 
-			else if (c == DefaultCommands.cmdCancel)
-				controller.execute(this, DefaultCommands.cmdCancel, null);
 		}
-		catch(Exception e){
-			//alertMsg.showError(e.getMessage());
-			//e.printStackTrace();
+		else if (c == DefaultCommands.cmdCancel) {
+			controller.execute(this, DefaultCommands.cmdCancel, null);
+		}
+		else if (c == DefaultCommands.cmdSettings) {
+			controller.displayUserSettings(this.getScreen());
+		}
+		else if (c == DefaultCommands.cmdDownloadStudy) {
+			controller.downloadStudies();
+		}
+		else if (c == DefaultCommands.cmdUploadData) {
+			controller.uploadData(this.getScreen());
+		}
+		else if (c == DefaultCommands.cmdExit) {
+			controller.logout();
 		}
 	}
-
-	/**
-	 * Processes the cancel command event.
-	 * 
-	 * @param d - the screen object the command was issued for.
-	 */
-	/*private void handleCancelCommand(Displayable d){
-		getEpihandyController().execute(this,DefaultCommands.cmdCancel,null);
-	}
-
-	/**
-	 * Processes the OK command event.
-	 * 
-	 * @param d - the screen object the command was issued for.
-	 */
-	/*private void handleOkCommand(Displayable d){
-		StudyDef study = (StudyDef)studyList.elementAt(((List)d).getSelectedIndex());
-		getEpihandyController().execute(this,DefaultCommands.cmdOk,study);
-	}*/
 
 	public void setStudyList(Vector list){
 		studyList = list;

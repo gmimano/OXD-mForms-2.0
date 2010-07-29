@@ -64,9 +64,21 @@ public class DefaultCommands {
 	
 	/** Command to go back to the main menu. */
 	public static Command cmdMainMenu = new Command(MenuText.MAIN_MENU(),Command.BACK,1);
-
-	/** Command to upload specific forms data. */
-	public static Command cmdUploadData = new Command(MenuText.UPLOAD_DATA(),Command.OK,1);	
+	
+	/** Command to upload form data */
+	public static Command cmdUpload = new Command(MenuText.UPLOAD_DATA(), Command.SCREEN, 1);
+	
+	/** Command in the menu to download studies */
+	public static  Command cmdDownloadStudy = new Command(MenuText.DOWNLOAD_STUDIES(), MenuText.DOWNLOAD_STUDIES(), Command.SCREEN, 1);
+	
+	/** Command in the menu to download forms */
+	public static  Command cmdDownloadForm = new Command(MenuText.DOWNLOAD_FORMS(), MenuText.DOWNLOAD_FORMS(), Command.SCREEN, 1);
+	
+	/** Command in the menu to upload entered data */
+	public static  Command cmdUploadData = new Command(MenuText.UPLOAD_DATA(), MenuText.UPLOAD_DATA(), Command.SCREEN, 2);
+	
+	/** Command in the menu to configure application */
+	public static  Command cmdSettings = new Command(MenuText.SETTINGS(), MenuText.SETTINGS(), Command.SCREEN, 3);	
 	
 	/** No creation allowed. */
 	/*private DefaultCommands(){

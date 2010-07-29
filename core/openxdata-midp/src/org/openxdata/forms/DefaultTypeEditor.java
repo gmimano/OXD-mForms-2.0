@@ -194,7 +194,6 @@ public class DefaultTypeEditor extends AbstractView implements TypeEditor,AlertM
 	 * @param d - the screen object the command was issued for.
 	 */
 	public void commandAction(Command c, Displayable d) {
-		//System.out.println("saaaaaaaaaaaa");
 		try{
 			if(c == DefaultCommands.cmdOk || c == DefaultCommands.cmdNext ||
 					c == DefaultCommands.cmdPrev || c == DefaultCommands.cmdFirst || 

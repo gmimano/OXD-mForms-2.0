@@ -56,12 +56,24 @@ public class StudyDefList implements Persistent{
 	public void addStudy(StudyDef studyDef){
 		studies.addElement(studyDef);
 	}
+	
+	public void removeStudies() {
+		studies.removeAllElements();
+	}
 
 	public void addStudies(Vector studyList){
 		if(studyList != null){
 			for(byte i=0; i<studyList.size(); i++ )
 				studies.addElement(studyList.elementAt(i));
 		}
+	}
+	
+	public StudyDef getFirstStudy() {
+		StudyDef sd = null;
+		if (studies != null && studies.size() > 0) {
+			sd = (StudyDef)studies.elementAt(0);
+		}
+		return sd;
 	}
 
 	/** 

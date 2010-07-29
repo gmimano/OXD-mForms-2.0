@@ -126,8 +126,6 @@ public class StudyDef implements Persistent{
 		setName(dis.readUTF());
 		setVariableName(dis.readUTF());
 		setForms(PersistentHelper.read(dis,new FormDef().getClass()));
-		//if(name.equals("Sample Study"))
-		//	throw new IOException("testing");
 	}
 
 	/** 

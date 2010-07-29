@@ -13,6 +13,7 @@ import org.openxdata.model.FormData;
 import org.openxdata.model.FormDef;
 import org.openxdata.model.OpenXdataConstants;
 import org.openxdata.model.StudyDef;
+import org.openxdata.model.StudyDefList;
 import org.openxdata.mvc.AbstractView;
 import org.openxdata.util.AlertMessage;
 import org.openxdata.util.AlertMessageListener;
@@ -28,6 +29,7 @@ import org.openxdata.util.MenuText;
  */
 public class FormDefListView extends AbstractView implements AlertMessageListener{
 
+	private StudyDefList studyDefList;
 	private StudyDef studyDef;
 	private AlertMessage alertMsg;
 	private int lastSelectionIndex = 0;
@@ -40,13 +42,31 @@ public class FormDefListView extends AbstractView implements AlertMessageListene
 	private static final String KEY_LAST_SELECTED_FORMDEF =  "LAST_SELECTED_FORMDEF";
 	private Vector formDefList;
 
-
-	public FormDefListView(){
+	public FormDefListView() {
+		screen = new List(MenuText.SELECT_FORM() + " - "+title , Choice.IMPLICIT);
+		((List)screen).setFitPolicy(List.TEXT_WRAP_ON);
+		
+		screen.setCommandListener(this);
+		
+		if (!GeneralSettings.isMainMenu()) {
+			if (GeneralSettings.isHideStudies()) {
+				screen.addCommand(DefaultCommands.cmdExit);
+			} else {
+				screen.addCommand(DefaultCommands.cmdBack);
+			}
+			screen.addCommand(DefaultCommands.cmdSel);
+			screen.addCommand(DefaultCommands.cmdDownloadForm);
+			screen.addCommand(DefaultCommands.cmdUploadData);
+			screen.addCommand(DefaultCommands.cmdSettings);
+		} else {
+			screen.addCommand(DefaultCommands.cmdSel);
+			screen.addCommand(DefaultCommands.cmdBack);
+		}
 
 	}
 
 	public void showFormList(FormListener formListener){
-		showFormList(studyDef,formListener);
+		showFormList(null,formListener);
 	}
 
 	/**
@@ -54,19 +74,20 @@ public class FormDefListView extends AbstractView implements AlertMessageListene
 	 * 
 	 * @param studyId - the numeric unique identifier of the study.
 	 */
-	public void showFormList(StudyDef currentStudy, FormListener formListener){
-		studyDef = currentStudy;
-
-		screen = new List(MenuText.SELECT_FORM() + " - "+title , Choice.IMPLICIT);
-		((List)screen).setFitPolicy(List.TEXT_WRAP_ON);
+	public void showFormList(StudyDef currentStudy, FormListener formListener) {
+		if (currentStudy != null) {
+			studyDef = currentStudy;
+		}
 		
+		screen.setTitle(MenuText.SELECT_FORM() + " - "+title);
 		alertMsg = new AlertMessage(display, title, screen, this);
 
+		((List)screen).deleteAll();
 		try{
-			if(currentStudy == null)
+			if (!GeneralSettings.isHideStudies() && studyDef == null)
 				alertMsg.show(MenuText.NO_SELECTED_STUDY());
-			else{
-				formDefList = copyFormDefs(currentStudy.getForms());
+			else {
+				formDefList = copyFormDefs();
 				if(formDefList != null && formDefList.size() > 0){		
 					boolean showList = true;
 					if(formListener != null)
@@ -75,10 +96,6 @@ public class FormDefListView extends AbstractView implements AlertMessageListene
 					if(showList){
 						for(int i=0; i<formDefList.size(); i++)
 							((List)screen).append(((FormDef)formDefList.elementAt(i)).getName(), null);
-
-						screen.setCommandListener(this);
-						screen.addCommand(DefaultCommands.cmdSel);
-						screen.addCommand(DefaultCommands.cmdBack);
 
 						Settings settings = new Settings(OpenXdataConstants.STORAGE_NAME_EPIHANDY_SETTINGS,true);
 						String val = settings.getSetting(KEY_LAST_SELECTED_FORMDEF);
@@ -100,10 +117,23 @@ public class FormDefListView extends AbstractView implements AlertMessageListene
 		}
 	}
 
-	private Vector copyFormDefs(Vector formDefs){
+	private Vector copyFormDefs(){
 		Vector forms = new Vector();
-		for(int i=0; i<formDefs.size(); i++)
-			forms.addElement(formDefs.elementAt(i));
+		if (studyDefList != null) {
+			Vector studyList = studyDefList.getStudies();
+			for (byte i=0; i<studyList.size(); i++) {
+				StudyDef studyDef = (StudyDef)studyList.elementAt(i);
+				Vector formList = studyDef.getForms();
+				for (byte j=0; j<formList.size(); j++) {
+					forms.addElement(formList.elementAt(j));
+				}
+			}
+		} else if (studyDef != null) {
+			Vector formList = studyDef.getForms();
+			for (byte i=0; i<formList.size(); i++) {
+				forms.addElement(formList.elementAt(i));
+			}			
+		}
 		return forms;
 	}
 
@@ -114,10 +144,27 @@ public class FormDefListView extends AbstractView implements AlertMessageListene
 	 * @param d - the screen object the command was issued for.
 	 */
 	public void commandAction(Command c, Displayable d) {
+		OpenXdataController controller = getOpenXdataController();
 		if(c == DefaultCommands.cmdSel || c == List.SELECT_COMMAND)
 			handleOkCommand(d);
 		else if(c == DefaultCommands.cmdBack)
 			getOpenXdataController().handleCancelCommand(this);
+		else if (c == DefaultCommands.cmdSettings) {
+			controller.displayUserSettings(this.getScreen());
+		}
+		else if (c == DefaultCommands.cmdDownloadForm) {
+			controller.downloadStudyForms(this.getScreen());
+		}
+		else if (c == DefaultCommands.cmdUploadData) {
+			if (studyDefList != null) {
+				controller.uploadData(this.getScreen(), studyDefList.getStudies());
+			} else {
+				controller.uploadData(this.getScreen());
+			}
+		}
+		else if (c == DefaultCommands.cmdExit) {
+			controller.logout();
+		}
 	}
 
 	/**
@@ -134,18 +181,19 @@ public class FormDefListView extends AbstractView implements AlertMessageListene
 	 * @param d - the screen object the command was issued for.
 	 */
 	private void handleOkCommand(Displayable d){
-		try{
-			int studyId = getStudy().getId();			
+		try {
+			Settings settings = new Settings(OpenXdataConstants.STORAGE_NAME_EPIHANDY_SETTINGS,true);
+			settings.setSetting(KEY_LAST_SELECTED_FORMDEF, String.valueOf(lastSelectionIndex));
+			settings.saveSettings();
+			
+			lastSelectionIndex = ((List)screen).getSelectedIndex();
 			FormDef fdef = (FormDef)formDefList.elementAt(lastSelectionIndex);
-			Vector formData = OpenXdataDataStorage.getFormData(studyId, fdef.getId());
+			Vector formData = OpenXdataDataStorage.getFormData(getStudy().getId(), fdef.getId());
 			if(formData != null && !formData.isEmpty()){
+				getOpenXdataController().showFormDataList((FormDef)formDefList.elementAt(lastSelectionIndex));			
+			} else {
 				getOpenXdataController().showFormDataList((FormDef)formDefList.elementAt(lastSelectionIndex));
-				Settings settings = new Settings(OpenXdataConstants.STORAGE_NAME_EPIHANDY_SETTINGS,true);
-				settings.setSetting(KEY_LAST_SELECTED_FORMDEF, String.valueOf(lastSelectionIndex));
-				settings.saveSettings();				
-			}else{
-				FormDef fd = (FormDef)formDefList.elementAt(lastSelectionIndex);
-				getOpenXdataController().showForm(true, new FormData(fd), false, this.getPrevScreen());
+				getOpenXdataController().showForm(true, new FormData(fdef), false, getScreen());
 			}
 			
 		}
@@ -176,10 +224,44 @@ public class FormDefListView extends AbstractView implements AlertMessageListene
 
 	public void setStudy(StudyDef study){
 		studyDef = study;
+		studyDefList = null;
 	}
 
-	public StudyDef getStudy(){
-		return studyDef;
+	public StudyDef getStudy() {
+		StudyDef returnStudy = studyDef;
+		if (studyDef == null && studyDefList != null) {
+			int index = ((List)screen).getSelectedIndex();
+			FormDef fdef = null;
+			if (formDefList != null && index >= 0 && index < formDefList.size()) {
+				fdef = (FormDef)formDefList.elementAt(index);
+			}
+			returnStudy = getStudyFromForm(fdef);
+		}
+		return returnStudy;
+	}
+	
+	private StudyDef getStudyFromForm(FormDef formDef) {
+		StudyDef returnStudy = null;
+		if (formDef != null) {
+			Vector studies = studyDefList.getStudies();
+			for (byte i=0; i<studies.size(); i++) {
+				StudyDef sd = (StudyDef)studies.elementAt(i); 
+				if (sd.getForm(formDef.getId()) != null) {
+					returnStudy = sd;
+					break;
+				}
+			}
+		}
+		if (returnStudy == null) {
+			System.out.println("Could not find Study, so using first in the list");
+			returnStudy = studyDefList.getFirstStudy();
+		}
+		return returnStudy;
+	}
+	
+	public void setStudies(StudyDefList studies){
+		studyDef = null;
+		studyDefList = studies;
 	}
 
 	private OpenXdataController getOpenXdataController(){

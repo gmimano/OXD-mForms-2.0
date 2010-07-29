@@ -7,9 +7,6 @@ import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.List;
 
-import org.openxdata.db.OpenXdataDataStorage;
-import org.openxdata.db.util.Record;
-import org.openxdata.db.util.StorageFactory;
 import org.openxdata.model.FormData;
 import org.openxdata.model.FormDef;
 import org.openxdata.mvc.AbstractView;
@@ -113,16 +110,8 @@ public class FormDataListView extends AbstractView implements AlertMessageListen
 			else if(c == DefaultCommands.cmdUploadData){
 				Vector studyList = new Vector();
 				studyList.addElement(getOpenXdataController().getCurrentStudy());
-				getOpenXdataController().getDownloadMgr().uploadData(this.getScreen(), studyList, UserManager.useLoggedIn.getName(), UserManager.useLoggedIn.getPassword());
-				
-				//call to save form data list
-				/*
-				for(int i=0; i<this.formDataList.size(); i++){
-					FormData data = (FormData)formDataList.elementAt(i);
-					OpenXdataDataStorage.saveFormData(getOpenXdataController().getCurrentStudy().getId(), data);
-					getOpenXdataController().saveForm(data);
-				}
-				*/
+				getOpenXdataController().uploadData(this.getScreen(), studyList);
+				((List)screen).deleteAll(); // assuming upload was successful
 			}
 		}
 		catch(Exception e){
@@ -189,11 +178,20 @@ public class FormDataListView extends AbstractView implements AlertMessageListen
 	public void onFormSaved(FormData formData,boolean isNew){
 		formData.buildDataDescription();
 		
-		if(isNew && formData != null){
-			OpenXdataController oxdc = (OpenXdataController)this.controller;
-			oxdc.showFormDataList(formData.getDef());
+		if (formData == null) {
+			return;
 		}
-		else{
+		
+		if (isNew) {			
+			formDataList.addElement(formData);
+			((List)screen).append(formData.toString(), null);
+			if(formDataList.size() == 1)
+				screen.addCommand(DefaultCommands.cmdDelete);
+			((List)screen).setSelectedIndex(formDataList.size()-1, true);			
+			
+			//OpenXdataController oxdc = (OpenXdataController)this.controller;
+			//oxdc.showFormDataList(formData.getDef());
+		} else{
 			formDataList.setElementAt(formData, ((List)screen).getSelectedIndex());
 			((List)screen).set(((List)screen).getSelectedIndex(),formData.toString(), null);				
 		}

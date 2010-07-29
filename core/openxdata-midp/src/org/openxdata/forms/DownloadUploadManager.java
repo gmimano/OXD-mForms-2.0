@@ -24,6 +24,7 @@ import org.openxdata.model.StudyData;
 import org.openxdata.model.StudyDataList;
 import org.openxdata.model.StudyDef;
 import org.openxdata.model.StudyDefList;
+import org.openxdata.model.UserListStudyDefList;
 import org.openxdata.model.UserList;
 import org.openxdata.model.UserStudyDefLists;
 import org.openxdata.util.AlertMessage;
@@ -62,6 +63,9 @@ public class DownloadUploadManager implements TransportLayerListener,AlertMessag
 	/** Current action is for menu text download. */
 	private static final byte CA_MENU_TEXT_DOWNLOAD = 7;
 
+	/** Current alert is for form download confirmation. */
+	private static final byte CA_ALL_FORMS_DOWNLOAD = 8;
+
 	/** Reference to the commnunication layer. */
 	private TransportLayer transportLayer;
 
@@ -96,7 +100,7 @@ public class DownloadUploadManager implements TransportLayerListener,AlertMessag
 	private int currentDataCount = 0;
 	
 	/** Keeps track of the current form data being uploaded to the server */
-	private FormDataSummaryList currentDataSummary = new FormDataSummaryList();
+	private FormDataSummaryList currentDataSummary = null;
 	
 	/** The total number of forms of data that needs to be uploaded to the server. */
 	private int totalDataCount = 0;
@@ -126,14 +130,36 @@ public class DownloadUploadManager implements TransportLayerListener,AlertMessag
 	public void setTransportLayerListener(TransportLayerListener transportLayerListener){
 		this.transportLayerListener = transportLayerListener;
 	}
+	
+	public void downloadAllForms(Displayable currentScreen, String userName,String password,boolean confirm) {
+		this.userName = userName;
+		this.password = password;
+		transportLayer.setPrevScreen(currentScreen);
+		alertMsg.setPrevScreen(currentScreen);
+		currentAction = CA_ALL_FORMS_DOWNLOAD; 
+
+		if (confirm) {
+			if (OpenXdataDataStorage.hasFormData()) {
+				alertMsg.show(MenuText.UN_UPLOADED_DATA_PROMPT() + " " + MenuText.FORMS());
+				currentAction = CA_NONE;
+			}
+			else {
+				alertMsg.showConfirm(MenuText.DOWNLOAD_FORMS_PROMPT());
+			}
+		}
+		else {
+			downloadForms();
+		}
+	}
 
 	public void downloadStudyForms(Displayable currentScreen, String userName,String password,boolean confirm) {
 		this.userName = userName;
 		this.password = password;
-		//this.prevScreen = currentScreen;
+		transportLayer.setPrevScreen(currentScreen);
+		alertMsg.setPrevScreen(currentScreen);
 
 		currentStudy = controller.getCurrentStudy();
-		if (currentStudy == null) {
+		if (!GeneralSettings.isHideStudies() && currentStudy == null) {
 			currentAction = CA_NONE;
 			//alertMsg.show("Please first select a study.");
 		} 
@@ -142,14 +168,24 @@ public class DownloadUploadManager implements TransportLayerListener,AlertMessag
 
 			if(confirm){
 				if(getCollectedStudyData(controller.getCurrentStudy()) != null){
-					alertMsg.show(MenuText.STUDY() + " " + getCurrentStudyName() + " " + MenuText.UPLOAD_BEFORE_DOWNLOAD_PROMPT());
+					if (GeneralSettings.isHideStudies()) {
+						alertMsg.show(MenuText.UN_UPLOADED_DATA_PROMPT()+" " + MenuText.FORMS());
+					} else {
+						alertMsg.show(MenuText.STUDY() + " " + getCurrentStudyName() + " " + MenuText.UPLOAD_BEFORE_DOWNLOAD_PROMPT());
+					}
 					currentAction = CA_NONE;
 				}
-				else
-					alertMsg.showConfirm(MenuText.DOWNLOAD_STUDY_FORMS_PROMPT() + getCurrentStudyName());
+				else {
+					if (GeneralSettings.isHideStudies()) {
+						alertMsg.showConfirm(MenuText.DOWNLOAD_FORMS_PROMPT());
+					} else {
+						alertMsg.showConfirm(MenuText.DOWNLOAD_STUDY_FORMS_PROMPT() + getCurrentStudyName());
+					}
+				}
 			}
-			else
+			else {
 				downloadForms();
+			}
 		}
 	}
 
@@ -234,8 +270,9 @@ public class DownloadUploadManager implements TransportLayerListener,AlertMessag
 	public void uploadData(Displayable currentScreen, Vector studyList,String userName, String password) {
 		this.userName = userName;
 		this.password = password;
-		//this.prevScreen = currentScreen;
 		this.studyList = studyList;
+		this.setPrevSrceen(currentScreen);
+		alertMsg.setPrevScreen(currentScreen);
 
 		if (studyList == null || studyList.size() == 0) {
 			currentAction = CA_ERROR_MSG_DISPLAY;
@@ -263,25 +300,35 @@ public class DownloadUploadManager implements TransportLayerListener,AlertMessag
 		requestHeader.setAction(RequestHeader.ACTION_DOWNLOAD_STUDY_LIST);
 
 		setCommunicationParams();
-		transportLayer.download(requestHeader, null, responseHeader,new StudyDefList(), this, userName, password,null);
+		transportLayer.download(requestHeader, null, responseHeader, new StudyDefList(), this, userName, password, null);
 	}
 
 	private void downloadForms() {
 		alertMsg.showProgress(MenuText.FORM_DOWNLOAD(), MenuText.DOWNLOADING_FORMS());
-
-		requestHeader.setLocale(LanguageSettings.getLocale());
-		requestHeader.setAction(RequestHeader.ACTION_DOWNLOAD_USERS_AND_FORMS); // ACTION_DOWNLOAD_STUDY_FORMS
-
-		Persistent studyIdParam = new PersistentInt(OpenXdataConstants.NULL_ID);
-		if (this.currentStudy != null){
-			if(GeneralSettings.isUseStudyNumericId())
-				studyIdParam = new PersistentInt(currentStudy.getId());
-			else
-				studyIdParam = new PersistentString(this.currentStudy.getVariableName());
+		
+		Persistent dataOut = new UserStudyDefLists();
+		byte action = RequestHeader.ACTION_DOWNLOAD_USERS_AND_FORMS;
+		if (currentAction == CA_ALL_FORMS_DOWNLOAD) {
+			dataOut = new UserListStudyDefList();
+			action = RequestHeader.ACTION_DOWNLOAD_USERS_AND_ALL_FORMS;
 		}
 
+		requestHeader.setLocale(LanguageSettings.getLocale());
+		requestHeader.setAction(action); // ACTION_DOWNLOAD_STUDY_FORMS
+
+		Persistent studyIdParam = new PersistentInt(OpenXdataConstants.NULL_ID);
+
+		if (this.currentStudy != null){
+			if(GeneralSettings.isUseStudyNumericId()) {
+				studyIdParam = new PersistentInt(currentStudy.getId());
+			}
+			else {
+				studyIdParam = new PersistentString(this.currentStudy.getVariableName());
+			}
+		}
+		
 		setCommunicationParams();
-		transportLayer.download(requestHeader, studyIdParam, responseHeader,new UserStudyDefLists(), this, userName, password,null); // StudyDef
+		transportLayer.download(requestHeader, studyIdParam, responseHeader, dataOut, this, userName, password, null); // StudyDef
 	}
 
 	private void downloadUsers() {
@@ -316,20 +363,15 @@ public class DownloadUploadManager implements TransportLayerListener,AlertMessag
 		alertMsg.showProgress(MenuText.DATA_UPLOAD(), MenuText.UPLOADING_DATA());
 
 		totalDataCount = currentDataCount = 0;
-		/*StudyDataList*/ studyDataList = getCollectedData();
+		currentDataSummary = new FormDataSummaryList();
+		studyDataList = getCollectedData();
 		if (studyDataList == null || studyDataList.getStudies() == null || studyDataList.getStudies().size() == 0) {
 			this.currentAction = CA_NONE;
 			this.alertMsg.show(MenuText.NO_UPLOAD_DATA());
 		} 
 		else{
-			/*requestHeader.setLocale(LanguageSettings.getLocale());
-			requestHeader.setAction(RequestHeader.ACTION_UPLOAD_DATA);
-			setCommunicationParams();
-			transportLayer.upload(requestHeader, studyDataList, responseHeader,responseHeader, this, userName, password);*/
-
 			currentDataCount = 1;
-			
-			uploadFormData();
+			uploadFormData(); // start upload of first item
 		}
 	}
 	
@@ -347,12 +389,13 @@ public class DownloadUploadManager implements TransportLayerListener,AlertMessag
 			}
 		}
 		
-		//alertMsg.showProgress(MenuText.DATA_UPLOAD(), "Uploading " + currentDataCount + " of " + totalDataCount);
-		
 		requestHeader.setLocale(LanguageSettings.getLocale());
 		requestHeader.setAction(RequestHeader.ACTION_UPLOAD_DATA);
 		setCommunicationParams();
-		transportLayer.upload(requestHeader, new StudyDataList(new StudyData(studyId,formData)), responseHeader, new FormDataSummaryList(), this, userName, password,"Uploading " + currentDataCount + " of " + totalDataCount);
+		transportLayer.upload(requestHeader, 
+				new StudyDataList(new StudyData(studyId,formData)), 
+				responseHeader, new FormDataSummaryList(), this, userName, password,
+				"Uploading " + currentDataCount + " of " + totalDataCount);
 	}
 
 	/**
@@ -378,6 +421,9 @@ public class DownloadUploadManager implements TransportLayerListener,AlertMessag
 			break;
 		case CA_DATA_UPLOAD:
 			url = settings.getSetting(TransportLayer.KEY_DATA_UPLOAD_HTTP_URL); // "http://localhost:8080/openmrs/module/xforms/xformDataUpload.form?batchEntry=true&uname="+userName+"&pw="+password;
+			break;
+		case CA_ALL_FORMS_DOWNLOAD:
+			url = settings.getSetting(TransportLayer.KEY_FORM_DOWNLOAD_HTTP_URL); // "http://localhost:8080/openmrs/module/xforms/xformDataUpload.form?batchEntry=true&uname="+userName+"&pw="+password;
 			break;
 		}
 
@@ -459,7 +505,6 @@ public class DownloadUploadManager implements TransportLayerListener,AlertMessag
 				OpenXdataDataStorage.saveUsers(users);
 
 				StudyDef studyDef = lists.getStudyDef();
-
 				//TODO these three lines have been put from some clients like openclinica
 				//which may have a different oc study id from that of oxd study id
 				studyDef.setId(controller.getCurrentStudy().getId());
@@ -500,13 +545,34 @@ public class DownloadUploadManager implements TransportLayerListener,AlertMessag
 				else
 					message = menuTextList.size()+" " + MenuText.MENU_TEXT_DOWNLOAD_SAVED();
 			}
+			else if (currentAction == CA_ALL_FORMS_DOWNLOAD) {
+				UserListStudyDefList lists = ((UserListStudyDefList) dataOut);
+
+				UserList users = lists.getUsers();
+				OpenXdataDataStorage.saveUsers(users);
+
+				StudyDefList studyDefList = lists.getStudyDefList();
+				OpenXdataDataStorage.saveStudyList(studyDefList);
+				controller.setStudyList(studyDefList);
+				Vector studies = studyDefList.getStudies();
+				for (int i=0; i<studies.size(); i++) {
+					StudyDef studyDef = (StudyDef) studies.elementAt(i);
+					OpenXdataDataStorage.saveStudy(studyDef);
+				}
+
+				int totalForms = lists.totalForms();
+				if (totalForms == 0)
+					message = MenuText.NO_FORM_DEF();
+				else
+					message = totalForms+" " +MenuText.FORM_DOWNLOAD_SAVED();
+			}
 
 			//if (transportLayerListener != null && !wasUserDownload)
 			//	transportLayerListener.downloaded(dataOutParams, dataOut);
 
 		} catch (Exception e) {
 			errorsOccured = true;
-			//e.printStackTrace();
+			e.printStackTrace();
 			message += e.getMessage();
 		}
 
@@ -632,7 +698,6 @@ public class DownloadUploadManager implements TransportLayerListener,AlertMessag
 			StudyDef studyDef = (StudyDef) studyList.elementAt(i);
 			//Study list always has no forms, so we have to get them from the database.
 			studyDef = OpenXdataDataStorage.getStudy(studyDef.getId());
-
 			//If no forms downloaded yet, then we don't expect any data to save.
 			if(studyDef != null){
 				StudyData studyData = getCollectedStudyData(studyDef);
@@ -679,7 +744,7 @@ public class DownloadUploadManager implements TransportLayerListener,AlertMessag
 				if (formDatas != null) {
 					setFormDefs(formDatas, formDef); // These are for writing to stream but they are not persisted.
 					studyData.addForms(formDatas);
-					totalDataCount = formDatas.size();
+					totalDataCount += formDatas.size();
 				}
 			}
 			

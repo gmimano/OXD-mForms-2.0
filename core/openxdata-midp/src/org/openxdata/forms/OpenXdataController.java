@@ -66,6 +66,7 @@ public class OpenXdataController implements Controller, StorageListener, AlertMe
 
 	private DownloadUploadManager downloadMgr;
 	private UserManager userMgr;
+	private FormManager formMgr;
 
 	/** No alert is currently displayed. */
 	private static final byte CA_NONE = -1;
@@ -75,14 +76,26 @@ public class OpenXdataController implements Controller, StorageListener, AlertMe
 	private static final byte CA_DOWNLOAD_FORMS_AFTER_STUDY_SELECT = 4;
 
 	private byte currentAction = CA_NONE;
+	
+	private LogoutListener logoutListener;
 
 	public OpenXdataController(){
 
 	}
 
-	public void init(String title, Display display,FormListener formEventListener, Displayable currentScreen,TransportLayer transportLayer){
+	public void init(String title, Display display,FormListener formEventListener, Displayable currentScreen,TransportLayer transportLayer, LogoutListener logoutListener){
 		this.formEventListener = formEventListener;
-		this.prevScreen = currentScreen;
+		this.logoutListener = logoutListener;
+		if (currentScreen != null) {
+			this.prevScreen = currentScreen;
+		} else {
+			if (GeneralSettings.isHideStudies()) {
+				formDefListViewer.setStudy(null);
+				this.prevScreen = formDefListViewer.getScreen();
+			} else {
+				this.prevScreen = studyListViewer.getScreen();
+			}
+		}
 		this.display = display;
 
 		StudyDefList studyDefList = OpenXdataDataStorage.getStudyList();
@@ -131,6 +144,10 @@ public class OpenXdataController implements Controller, StorageListener, AlertMe
 	public void setPrevScreen(Displayable prevScreen){
 		this.prevScreen = prevScreen;
 	}
+	
+	public Displayable getPrevScreen() {
+		return this.prevScreen;
+	}
 
 	public void setStudyEditingMode(boolean studyEditingMode){
 		this.studyEditingMode = studyEditingMode;
@@ -154,9 +171,7 @@ public class OpenXdataController implements Controller, StorageListener, AlertMe
 				this.prevScreen = currentScreen;
 			
 			setStudyEditingMode(studyEditingMode);
-			boolean displayForm = true;
-			displayForm = formEventListener.beforeFormDisplay(formData);
-
+			boolean displayForm = formEventListener.beforeFormDisplay(formData);
 			if(displayForm){
 				FireSkipRules(formData);
 				this.formViewer.showForm(formData,formEventListener,allowDelete);
@@ -281,14 +296,15 @@ public class OpenXdataController implements Controller, StorageListener, AlertMe
 
 		formData.setDateValue("/"+formData.getDef().getVariableName()+"/endtime", new Date());
 
-		if(OpenXdataDataStorage.saveFormData(formDefListViewer.getStudy().getId(),formData)){
+		if (OpenXdataDataStorage.saveFormData(formDefListViewer.getStudy().getId(),formData)) {
 			currentView = (View)transitionTable.get(formViewer);
 			transitionTable.remove(formViewer);
 
-			if(this.studyEditingMode)
+			if(this.studyEditingMode) {
 				formDataListViewer.onFormSaved(formData, isNew);
-			else
+			} else {
 				display.setCurrent(this.prevScreen);
+			}
 		}
 	}
 
@@ -298,7 +314,7 @@ public class OpenXdataController implements Controller, StorageListener, AlertMe
 	public void deleteForm(FormData formData, View sender){
 		if(sender == formViewer && formDataListViewer.hasSelectedForm()){
 			formDataListViewer.deleteCurrentForm();
-			handleCancelCommand(sender);
+			//handleCancelCommand(sender);
 		}
 		else{
 			boolean delete = true;
@@ -307,7 +323,7 @@ public class OpenXdataController implements Controller, StorageListener, AlertMe
 			if(delete){
 				OpenXdataDataStorage.deleteFormData(formDefListViewer.getStudy().getId(),formData);
 				formEventListener.afterFormDelete(formData);
-				handleCancelCommand(sender);
+				//handleCancelCommand(sender);
 			}
 		}
 	}
@@ -321,10 +337,11 @@ public class OpenXdataController implements Controller, StorageListener, AlertMe
 		for(byte i=0; i<list.size(); i++){
 			StudyDef studyDef = (StudyDef)list.elementAt(i);
 
-			if(studyDef.getForms() == null || studyDef.getForms().size() == 0){
+			if (studyDef.getForms() == null || studyDef.getForms().size() == 0) {
 				StudyDef retStudyDef = OpenXdataDataStorage.getStudy(studyDef.getId());
-				if(retStudyDef != null) //This can be null for studies whose forms have not yet been downloaded.
+				if (retStudyDef != null) { //This can be null for studies whose forms have not yet been downloaded.
 					studyDef.setForms(retStudyDef.getForms());
+				}
 			}
 		}
 		return studyListViewer.getStudyList();
@@ -341,17 +358,20 @@ public class OpenXdataController implements Controller, StorageListener, AlertMe
 		StudyDef study;
 		Settings settings = new Settings(OpenXdataConstants.STORAGE_NAME_EPIHANDY_SETTINGS,true);
 		String val = settings.getSetting(OpenXdataConstants.KEY_LAST_SELECTED_STUDY);
-		if(val != null){
-			for(int i=0; i<list.size(); i++){
-				study = (StudyDef)list.elementAt(i);
-				if(study.getId() == Integer.parseInt(val)){
-					formDefListViewer.setStudy(getStudyWithForms(null,study));
-					return;
+		
+		if (!GeneralSettings.isHideStudies()) {
+			if(val != null){
+				for(int i=0; i<list.size(); i++){
+					study = (StudyDef)list.elementAt(i);
+					if(study.getId() == Integer.parseInt(val)){
+						formDefListViewer.setStudy(getStudyWithForms(null,study));
+						return;
+					}
 				}
 			}
+	
+			formDefListViewer.setStudy(getStudyWithForms(list,(StudyDef)list.elementAt(0))); //should have atleast one study.
 		}
-
-		formDefListViewer.setStudy(getStudyWithForms(list,(StudyDef)list.elementAt(0))); //should have atleast one study.
 	}
 
 	public void setStudy(StudyDef studyDef){
@@ -360,8 +380,13 @@ public class OpenXdataController implements Controller, StorageListener, AlertMe
 			vect.addElement(studyDef);
 			setStudyList(vect);
 		}
-		else
+		else {
 			formDefListViewer.setStudy(studyDef);
+		}
+	}
+	
+	public void setStudyList(StudyDefList studyDefList) {
+		formDefListViewer.setStudies(studyDefList);
 	}
 
 	public void showFormDefList(StudyDef studyDef){
@@ -396,32 +421,63 @@ public class OpenXdataController implements Controller, StorageListener, AlertMe
 			//saveCurrentView(studyListViewer);
 		}
 	}
+	
+	public void downloadStudies() {
+		downloadMgr.downloadStudies(prevScreen, getStudyList(), userMgr.getUserName(), userMgr.getPassword(), true);
+	}
+	
+	public void downloadForms() {
+		downloadMgr.downloadForms(prevScreen, getStudyList(), userMgr.getUserName(), userMgr.getPassword(), true);
+	}
+	
+	public void downloadStudyForms(Displayable currentScreen) {
+		downloadMgr.downloadStudyForms(currentScreen, userMgr.getUserName(), userMgr.getPassword(), true);
+	}
+	
+	public void displayUserSettings(Displayable currentScreen) {
+		formMgr.displayUserSettings(display, currentScreen);
+	}
+	
+	public void logout() {
+		logoutListener.onLogout();
+	}
+	
+	public void uploadData(Displayable currentScreen, Vector studyList) {
+		System.out.println("upload form data only in specified studyList");
+		downloadMgr.uploadData(currentScreen, studyList, userMgr.getUserName(), userMgr.getPassword());
+	}
+	
+	public void uploadData(Displayable currentScreen) {
+		System.out.println("upload all form data");
+		downloadMgr.uploadData(currentScreen, getStudyList(), userMgr.getUserName(), userMgr.getPassword());
+	}
 
-	public void closeStudyList(boolean save, StudyDef studyDef){
-		studyDef = getStudyWithForms(null,studyDef);
+	public void closeStudyList(boolean save, StudyDef studyDef) {
+		StudyDef currentStudy = getCurrentStudy();
 
-		if(save){
-			//Save settings for next run
-			Settings settings = new Settings(OpenXdataConstants.STORAGE_NAME_EPIHANDY_SETTINGS,true);
-			settings.setSetting(OpenXdataConstants.KEY_LAST_SELECTED_STUDY,String.valueOf(studyDef.getId()));
-			settings.saveSettings();
-
-			formDefListViewer.setStudy(studyDef);
-
-			if(studyEditingMode)
-				showFormDefList(studyDef);
-			/*else{
-				formDefListViewer.setStudy(studyDef); //setStudy(studyDef);
-				if(currentAction == CA_SELECT_FORM_AFTER_STUDY_DOWNLOAD){
-
-				}
-			}*/
-
-			prevScreen.setTitle(alertMsg.getTitle() + " - " + studyDef.getName());
+		if (studyDef.getId() != currentStudy.getId()) {
+			// only open selected study if a different/new study is selected
+			studyDef = getStudyWithForms(null,studyDef);
+	
+			if (save) {
+				//Save settings for next run (i think this is always set??)
+				Settings settings = new Settings(OpenXdataConstants.STORAGE_NAME_EPIHANDY_SETTINGS,true);
+				settings.setSetting(OpenXdataConstants.KEY_LAST_SELECTED_STUDY,String.valueOf(studyDef.getId()));
+				settings.saveSettings();
+	
+				formDefListViewer.setStudy(studyDef);
+	
+				prevScreen.setTitle(alertMsg.getTitle() + " - " + studyDef.getName());
+			}
+		} else {
+			studyDef = currentStudy; // currentStudy could contain forms
 		}
-
-		if(!studyEditingMode)
-			display.setCurrent(prevScreen);	
+		
+		if (studyEditingMode || !GeneralSettings.isMainMenu()) {
+			showFormDefList(studyDef);
+		} else {
+			display.setCurrent(prevScreen);
+		}
 	}
 
 	/**
@@ -484,7 +540,7 @@ public class OpenXdataController implements Controller, StorageListener, AlertMe
 		View view = (View)transitionTable.get(viewer);
 		if(view != null){
 			transitionTable.remove(viewer);
-			view.show(); //AbstractView.getDisplay().setCurrent(view.getScreen());
+			view.show();
 			currentView = view;
 		}
 		else{
@@ -500,8 +556,9 @@ public class OpenXdataController implements Controller, StorageListener, AlertMe
 	 * @param newView - the view which is to be displayed.
 	 */
 	private void saveCurrentView(View newView){
-		if(currentView != null) // && !(view.equals(currentView))
+		if(currentView != null) { // && !(view.equals(currentView))
 			transitionTable.put(newView, currentView);
+		}
 
 		currentView = newView;
 	}
@@ -513,7 +570,7 @@ public class OpenXdataController implements Controller, StorageListener, AlertMe
 		setStudyEditingMode(editingMode);
 		setPrevScreen(currentScreen);
 
-		if(formDefListViewer.getStudy() == null){
+		if(!GeneralSettings.isHideStudies() && formDefListViewer.getStudy() == null){
 			currentAction  = CA_SELECT_FORM_AFTER_STUDY_SELECT;
 			this.selectStudy(editingMode);
 		}
@@ -536,16 +593,21 @@ public class OpenXdataController implements Controller, StorageListener, AlertMe
 			showErrorMessage("Please first download forms"+studyName,null);
 		else
 			bReturn = true;*/
-
-		if(formDefListViewer.getStudy() == null || formDefListViewer.getStudy().getForms() == null || formDefListViewer.getStudy().getForms().size() == 0){
-			currentAction  = CA_SELECT_FORM_AFTER_FORMS_DOWNLOAD;
-			downloadMgr.setTransportLayerListener(this);
-			downloadMgr.downloadStudyForms(prevScreen,userMgr.getUserName(), userMgr.getPassword(),false);
-			//downloadMgr.downloadForms(prevScreen,userMgr.getUserName(), userMgr.getPassword(),false);
-		}
-		else
+		
+		if(formDefListViewer.getStudy() == null || formDefListViewer.getStudy().getForms() == null || formDefListViewer.getStudy().getForms().size() == 0) {
+			if (GeneralSettings.isHideStudies()) {
+				currentAction  = CA_SELECT_FORM_AFTER_FORMS_DOWNLOAD;
+				downloadMgr.setTransportLayerListener(this);
+				downloadMgr.downloadAllForms(prevScreen,userMgr.getUserName(), userMgr.getPassword(),false);
+			} else {
+				currentAction  = CA_SELECT_FORM_AFTER_FORMS_DOWNLOAD;
+				downloadMgr.setTransportLayerListener(this);
+				downloadMgr.downloadStudyForms(prevScreen,userMgr.getUserName(), userMgr.getPassword(),false);
+				//downloadMgr.downloadForms(prevScreen,userMgr.getUserName(), userMgr.getPassword(),false);
+			}
+		} else {
 			bReturn = true;
-
+		}
 
 		return bReturn;
 	}
@@ -568,7 +630,7 @@ public class OpenXdataController implements Controller, StorageListener, AlertMe
 	public StudyDef getCurrentStudy(){
 		StudyDef study = formDefListViewer.getStudy();
 
-		if(study == null){
+		if(study == null && !GeneralSettings.isHideStudies()){
 			currentAction = CA_DOWNLOAD_FORMS_AFTER_STUDY_SELECT;
 			this.selectStudy(this.studyEditingMode);
 		}
@@ -611,13 +673,13 @@ public class OpenXdataController implements Controller, StorageListener, AlertMe
 	public void setDownloadManager(DownloadUploadManager downloadMgr){
 		this.downloadMgr = downloadMgr;
 	}
-	
-	public DownloadUploadManager getDownloadMgr(){
-		return downloadMgr;
-	}
 
 	public void setUserManager(UserManager userMgr){
 		this.userMgr = userMgr;
+	}
+	
+	public void setFormManager(FormManager formMgr) {
+		this.formMgr = formMgr;
 	}
 
 	public void downloaded(Persistent dataOutParams, Persistent dataOut) {

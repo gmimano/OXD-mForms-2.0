@@ -19,9 +19,11 @@ public class GeneralSettings extends AbstractView{
 	public static final String KEY_QUESTION_NUMBERING = "QUESTION_NUMBERING";
 	public static final String KEY_OK_ON_RIGHT = "OK_ON_RIGHT";
 	//public static final String KEY_DELETE_DATA_AFTER_UPLOAD = "DELETE_DATA_AFTER_UPLOAD";
-	public static final String STORAGE_NAME_SETTINGS = "fcitmuk.GeneralSettings";
 	public static final String KEY_HIDE_STUDIES = "HIDE_STUDIES";
 	public static final String KEY_USE_STUDY_NUMERIC_ID = "USE_STUDY_NUMERIC_ID";
+	public static final String KEY_MAIN_MENU = "MAIN_MENU";
+	
+	public static final String STORAGE_NAME_SETTINGS = "fcitmuk.GeneralSettings";
 	
 	private ChoiceGroup currentCtrl;
 	
@@ -41,6 +43,7 @@ public class GeneralSettings extends AbstractView{
 		currentCtrl.append(MenuText.OK_ON_RIGHT(), null);
 		//currentCtrl.append(MenuText.DELETE_AFTER_UPLOAD(), null);
 		currentCtrl.append(MenuText.HIDE_STUDIES(), null);
+		//currentCtrl.append(MenuText.MAIN_MENU_VIEW(), null);
 		
 		Settings settings = new Settings(STORAGE_NAME_SETTINGS,true);
 		
@@ -48,6 +51,7 @@ public class GeneralSettings extends AbstractView{
 		currentCtrl.setSelectedIndex(1,getQtnNumberingSetting(settings));
 		currentCtrl.setSelectedIndex(2,getOkOnRightSetting(settings));
 		currentCtrl.setSelectedIndex(3,getIsHideStudiesSettings(settings));
+		//currentCtrl.setSelectedIndex(4,getIsMainMenuSettings(settings));
 		//currentCtrl.setSelectedIndex(3,Utilities.stringToBoolean(settings.getSetting(KEY_DELETE_DATA_AFTER_UPLOAD),true));
 		
 		screen.setCommandListener(this);
@@ -88,6 +92,7 @@ public class GeneralSettings extends AbstractView{
 		settings.setSetting(KEY_QUESTION_NUMBERING,Utilities.booleanToString((currentCtrl.isSelected(1))));
 		settings.setSetting(KEY_OK_ON_RIGHT,Utilities.booleanToString((currentCtrl.isSelected(2))));
 		settings.setSetting(KEY_HIDE_STUDIES,Utilities.booleanToString((currentCtrl.isSelected(3))));
+		//settings.setSetting(KEY_MAIN_MENU,Utilities.booleanToString((currentCtrl.isSelected(4))));
 		//settings.setSetting(KEY_DELETE_DATA_AFTER_UPLOAD,Utilities.booleanToString((currentCtrl.isSelected(3))));
 		settings.saveSettings();
 		
@@ -176,7 +181,20 @@ public class GeneralSettings extends AbstractView{
 	}	
 	
 	public static boolean isHideStudies(){
-		Settings settings = new Settings(KEY_HIDE_STUDIES,true);
+		Settings settings = new Settings(STORAGE_NAME_SETTINGS,true);
 		return getIsHideStudiesSettings(settings);
+	}
+	
+	private static boolean getIsMainMenuSettings(Settings settings) {
+		String setting = settings.getSetting(KEY_MAIN_MENU);
+		if (setting == null) {
+			return FormsConstants.MAIN_MENU;
+		}
+		return Utilities.stringToBoolean(setting);
+	}	
+	
+	public static boolean isMainMenu(){
+		Settings settings = new Settings(STORAGE_NAME_SETTINGS,true);
+		return getIsMainMenuSettings(settings);
 	}	
 }

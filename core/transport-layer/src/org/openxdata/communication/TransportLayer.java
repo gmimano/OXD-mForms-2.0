@@ -346,11 +346,13 @@ public class TransportLayer implements Runnable, BluetoothClientListener, AlertM
 	 * @param dataOut - Data received.
 	 * @param eventListener - Reference to listener for communication events.
 	 */
-	public void download(Persistent dataInParams, Persistent dataIn, Persistent dataOutParams, Persistent dataOut,TransportLayerListener eventListener, String userName, String password, String progressMessage){
-		saveParameters(dataInParams,dataIn,dataOutParams,dataOut,eventListener,true,userName, password,progressMessage);
+	public synchronized void download(Persistent dataInParams, Persistent dataIn, Persistent dataOutParams, Persistent dataOut,TransportLayerListener eventListener, String userName, String password, String progressMessage){
 
-		if(thread != null)
+		if (thread != null) {
 			thread = null;
+		}
+
+		saveParameters(dataInParams,dataIn,dataOutParams,dataOut,eventListener,true,userName, password,progressMessage);
 
 		thread = new Thread(this);
 		thread.start();
@@ -398,7 +400,6 @@ public class TransportLayer implements Runnable, BluetoothClientListener, AlertM
 	 *
 	 */
 	protected void handleRequest() {
-
 		cancelled = false;
 		btClient = null;
 
@@ -480,8 +481,7 @@ public class TransportLayer implements Runnable, BluetoothClientListener, AlertM
 	private void readResponseData(DataInputStream dis) throws Exception{
 		dis = getDecompressedStream(dis);
 
-		//This should never be null
-		dataOutParams.read(dis);
+		dataOutParams.read(dis); //This should never be null
 		byte status = ((ResponseHeader)dataOutParams).getStatus();
 		if(status == ResponseHeader.STATUS_SUCCESS){
 			if(dataOut != null) //FO cases where we are not getting any data back.
@@ -599,7 +599,7 @@ public class TransportLayer implements Runnable, BluetoothClientListener, AlertM
 		}*/
 		catch(Exception e){
 			this.eventListener.errorOccured(MenuText.PROBLEM_HANDLING_REQUEST(),e);
-			//e.printStackTrace();
+			e.printStackTrace();
 		}
 		finally{
 			if(con != null)
@@ -988,6 +988,9 @@ public class TransportLayer implements Runnable, BluetoothClientListener, AlertM
 
 	public void setPrevScreen(Displayable prevScreen) {
 		this.prevScreen = prevScreen;
+		if (alertMsg != null) {
+			alertMsg.setPrevScreen(prevScreen);
+		}
 	}
 
 	public Alert getCurrentAlert() {

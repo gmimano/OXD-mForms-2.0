@@ -71,7 +71,7 @@ public class FormManager implements TransportLayerListener{
 	 * @param transportLayer - a reference to the transportLayer object.
 	 * @param transportLayerListener - a reference to the listener to transport layer events.
 	 */
-	public FormManager(String title,Display display, FormListener formEventListener, Displayable currentScreen,TransportLayer transportLayer,TransportLayerListener transportLayerListener){
+	public FormManager(String title,Display display, FormListener formEventListener, Displayable currentScreen,TransportLayer transportLayer,TransportLayerListener transportLayerListener, LogoutListener logoutListener){
 		//this.display = display;
 		this.title = title;		
 		this.prevScreen = currentScreen;
@@ -80,7 +80,13 @@ public class FormManager implements TransportLayerListener{
 		AbstractView.display = display;
 				
 		controller = new OpenXdataController();
-		controller.init( title, display, formEventListener, currentScreen, transportLayer);
+		controller.init(title, display, formEventListener, currentScreen, transportLayer, logoutListener);
+		
+		if (currentScreen == null) {
+			// it will be initialised by the controller if it was null
+			this.prevScreen = controller.getPrevScreen();
+			transportLayer.setPrevScreen(this.prevScreen);
+		}
 		
 		//Just testing type editor extension;
 		RepeatTypeEditor rptEditor = new RepeatTypeEditor();
@@ -98,6 +104,7 @@ public class FormManager implements TransportLayerListener{
 		
 		((OpenXdataController)controller).setDownloadManager(downloadMgr);
 		((OpenXdataController)controller).setUserManager(userMgr);
+		((OpenXdataController)controller).setFormManager(this);
 		
 		if(GeneralSettings.isOkOnRight()){
 			DefaultCommands.cmdOk = new Command(MenuText.OK(), Command.CANCEL, 1);
@@ -300,5 +307,9 @@ public class FormManager implements TransportLayerListener{
 	
 	public void restorePrevScreen(){
 		downloadMgr.setPrevSrceen(transportLayer.getPrevScreen());
+	}
+	
+	public Displayable getPrevScreen() {
+		return this.prevScreen;
 	}
 }
