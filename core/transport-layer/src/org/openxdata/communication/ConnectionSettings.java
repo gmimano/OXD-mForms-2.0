@@ -148,8 +148,8 @@ public class ConnectionSettings extends AbstractView {
 			if(d != null){
 				if(conType == TransportLayer.CON_TYPE_HTTP){
 					//conParams.put(TransportLayer.KEY_USER_DOWNLOAD_HTTP_URL, ((TextField)((Form)d).get(0)).getString());
-					conParams.put(TransportLayer.KEY_FORM_DOWNLOAD_HTTP_URL, ((TextField)((Form)d).get(0)).getString());
-					conParams.put(TransportLayer.KEY_DATA_UPLOAD_HTTP_URL, ((TextField)((Form)d).get(1)).getString());
+					conParams.put(TransportLayer.KEY_FORM_DOWNLOAD_HTTP_URL, ((TextField)((Form)d).get(0)).getString().trim());
+					conParams.put(TransportLayer.KEY_DATA_UPLOAD_HTTP_URL, ((TextField)((Form)d).get(1)).getString().trim());
 
 					for(int i=0; i<connectionParameters.size(); i++)
 					{
@@ -203,12 +203,12 @@ public class ConnectionSettings extends AbstractView {
 
 		String s = (String)conParams.get(TransportLayer.KEY_FORM_DOWNLOAD_HTTP_URL);
 		if(s == null) s = TransportConstants.FORMSDOWNLOAD_URL;
-		TextField txtField = new TextField(MenuText.FORM_DOWNLOAD_URL(),s,500,TextField.ANY);
+		TextField txtField = new TextField(MenuText.FORM_DOWNLOAD_URL(),s.trim(),500,TextField.ANY);
 		frm.append(txtField);
 
 		s = (String)conParams.get(TransportLayer.KEY_DATA_UPLOAD_HTTP_URL);
 		if(s == null) s = TransportConstants.DATAUPLOAD_URL;
-		txtField = new TextField(MenuText.DATA_UPLOAD_URL(),s,500,TextField.ANY);
+		txtField = new TextField(MenuText.DATA_UPLOAD_URL(),s.trim(),500,TextField.ANY);
 		frm.append(txtField);
 
 
