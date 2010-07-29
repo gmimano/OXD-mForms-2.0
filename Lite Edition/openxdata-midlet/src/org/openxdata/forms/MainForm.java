@@ -3,29 +3,18 @@ package org.openxdata.forms;
 
 import java.util.Vector;
 
-import javax.microedition.lcdui.Choice;
-import javax.microedition.lcdui.Command;
-import javax.microedition.lcdui.CommandListener;
 import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Displayable;
-import javax.microedition.lcdui.List;
 import javax.microedition.midlet.MIDlet;
 
 import org.openxdata.communication.TransportLayer;
 import org.openxdata.db.OpenXdataDataStorage;
-import org.openxdata.db.util.Settings;
 import org.openxdata.db.util.StorageListener;
-import org.openxdata.forms.FormListener;
-import org.openxdata.forms.FormManager;
-import org.openxdata.forms.LogonListener;
-import org.openxdata.forms.UserManager;
-import org.openxdata.model.OpenXdataConstants;
 import org.openxdata.model.FormData;
 import org.openxdata.model.FormDef;
 import org.openxdata.model.QuestionData;
 import org.openxdata.util.AlertMessage;
 import org.openxdata.util.AlertMessageListener;
-import org.openxdata.util.DefaultCommands;
 import org.openxdata.util.MenuText;
 
 
@@ -34,34 +23,37 @@ import org.openxdata.util.MenuText;
  * @author Daniel Kayiwa
  *
  */
-public class MainForm extends MIDlet  implements CommandListener,FormListener,StorageListener,AlertMessageListener,LogonListener{
+public class MainForm extends MIDlet implements FormListener,StorageListener,AlertMessageListener,LogonListener, LogoutListener {
 	
 	/** Reference to the current display. */
 	private Display display;
 	
 	/** The main menu screen. */
-	private List mainList;
+	//private List mainList;
+	
+	/** The main screen - either list of studies or forms. */
+	private Displayable mainScreen;
 	
 	/** Index for selecting a study menu item. */
-	private static final int INDEX_SELECT_STUDY = 0;
+	//private static final int INDEX_SELECT_STUDY = 0;
 	
 	/** Index for selecting an encounter form menu item. */
-	private static final int INDEX_SELECT_FORM = 1;
+	//private static final int INDEX_SELECT_FORM = 1;
 	
 	/** Index for downloading study list menu item. */
-	private static final int INDEX_DOWNLOAD_STUDY_LIST = 2;
+	//private static final int INDEX_DOWNLOAD_STUDY_LIST = 2;
 	
 	/** Index for downloading forms menu item. */
-	private static final int INDEX_DOWNLOAD_FORMS = 3;
+	//private static final int INDEX_DOWNLOAD_FORMS = 3;
 	
 	/** Index for uploading data menu item. */
-	private static final int INDEX_UPLOAD_DATA = 4;
+	//private static final int INDEX_UPLOAD_DATA = 4;
 	
 	/** Index for specifying settings like server connection parameters. */
-	private static final int INDEX_SETTINGS = 5;
+	//private static final int INDEX_SETTINGS = 5;
 	
 	/** Index for selecting a study menu item. */
-	private static final int INDEX_LOGOUT = 6;
+	//private static final int INDEX_LOGOUT = 6;
 	
 	/** Reference to epihandy form manager. */
 	private FormManager formMgr;
@@ -79,9 +71,9 @@ public class MainForm extends MIDlet  implements CommandListener,FormListener,St
 	 * tries to do something before logging in, and the logon mananer intervenes by requiring the
 	 * user to first login. This happens after downloading forms because a new list of users is got
 	 * which makes void the current users info. */
-	private int selectedIndex = OpenXdataConstants.NO_SELECTION;
+	//private int selectedIndex = OpenXdataConstants.NO_SELECTION;
 		
-	private static final String KEY_LAST_SELECTED_MAIN_MENU_ITEM =  "LAST_SELECTED_MAIN_MENU_ITEM";
+	//private static final String KEY_LAST_SELECTED_MAIN_MENU_ITEM =  "LAST_SELECTED_MAIN_MENU_ITEM";
 	
 	private boolean exitConfirmMode = false;
 
@@ -92,26 +84,30 @@ public class MainForm extends MIDlet  implements CommandListener,FormListener,St
 		display = Display.getDisplay(this);
 		
 		MenuText.setMenuTextList(OpenXdataDataStorage.getMenuText());
-		
-		initMainList();
-		
-		alertMsg = new AlertMessage(this.display, MidletConstants.TITLE, this.mainList,this);
 
-		transportLayer = new TransportLayer(/*new EpihandyTransportLayer().getClass()*/);
+		transportLayer = new TransportLayer();
 		transportLayer.setDisplay(display);
-		transportLayer.setPrevScreen(mainList);
+		// FIXME: these shouldn't be hardcoded
 		transportLayer.setDefaultCommnucationParameter(TransportLayer.KEY_BLUETOOTH_SERVER_ID, /*"F0E0D0C0B0A000908070605040302010"*/ "F0E0D0C0B0A000908070605040301116");
 		transportLayer.setDefaultCommnucationParameter(TransportLayer.KEY_HTTP_URL, "");
 		transportLayer.setDefaultCommnucationParameter(TransportLayer.KEY_SMS_DESTINATION_ADDRESS,"sms://+256712330386"); //256782380638 "sms://+256782380638:1234"
 		transportLayer.setDefaultCommnucationParameter(TransportLayer.KEY_SMS_SOURCE_ADDRESS,"sms://:1234"); 
 	
-		formMgr = new FormManager(MidletConstants.TITLE,display,this, mainList,transportLayer,null);
+		formMgr = new FormManager(MidletConstants.TITLE, display, this, null, transportLayer, null, this);
 		FormManager.setGlobalInstance(formMgr);
+		
+		//if (GeneralSettings.isMainMenu()) {
+		//	initMainList();
+		//	alertMsg = new AlertMessage(this.display, MidletConstants.TITLE, mainList, this);
+		//} else {
+			mainScreen = formMgr.getPrevScreen(); // this was initialised for us
+			alertMsg = new AlertMessage(this.display, MidletConstants.TITLE, mainScreen, this);
+		//}
 		
 		OpenXdataDataStorage.storageListener = this;
 	}
 	
-	private void initMainList(){
+	/*private void initMainList(){
 		mainList = new List(MidletConstants.TITLE, Choice.IMPLICIT);
 		((List)mainList).setFitPolicy(List.TEXT_WRAP_ON);
 		
@@ -134,7 +130,7 @@ public class MainForm extends MIDlet  implements CommandListener,FormListener,St
 			mainList.setSelectedIndex(INDEX_SELECT_FORM,true); //make select form the default
 		
 		mainList.setCommandListener(this);
-	}
+	}*/
 
 	protected void destroyApp(boolean arg0) {
 	}
@@ -143,7 +139,7 @@ public class MainForm extends MIDlet  implements CommandListener,FormListener,St
 	}
 
 	protected void startApp() {
-		userMgr = new UserManager(display,mainList,MidletConstants.TITLE,this);
+		userMgr = new UserManager(display,mainScreen,MidletConstants.TITLE,this);
 		userMgr.logOn();
 		formMgr.setUserManager(userMgr);
 	}
@@ -154,7 +150,7 @@ public class MainForm extends MIDlet  implements CommandListener,FormListener,St
 	 * @param c - the issued command.
 	 * @param d - the screen object the command was issued for.
 	 */
-	public void commandAction(Command c, Displayable d) {
+	/*public void commandAction(Command c, Displayable d) {
 		try{
 	        if (c == DefaultCommands.cmdExit)
 	        	handledExitCommand();
@@ -170,53 +166,53 @@ public class MainForm extends MIDlet  implements CommandListener,FormListener,St
 		catch(Exception e){
 			alertMsg.showError(e.getMessage());
 		}
-    }
+    }*/
 	
 	/**
 	 * Handles the back command.
 	 * 
 	 * @param d - the screen object the command was issued for.
 	 */
-	private void handledBackCommand(Displayable d){
+	/*private void handledBackCommand(Displayable d){
 		handledCancelCommand(d);
-	}
+	}*/
 	
 	/**
 	 * Handles the cancel command.
 	 * 
 	 * @param d - the screen object the command was issued for.
 	 */
-	private void handledCancelCommand(Displayable d){
+	/*private void handledCancelCommand(Displayable d){
     	this.display.setCurrent(mainList);
-	}
+	}*/
 	
 	/**
 	 * Handles the exit command.
 	 *
 	 */
-	private void handledExitCommand(){
+	/*private void c(){
 		exitConfirmMode = true;
 		alertMsg.showConfirm(MenuText.EXIT_PROMPT());
-	}
+	}*/
 	
 	/**
 	 * Handles the list selection command.
 	 * 
 	 * @param selectedIndex - the index of the selected item.
 	 */
-	private void handleListSelectCommand(int selectedIndex){
+	/*private void handleListSelectCommand(int selectedIndex){
 		Displayable currentScreen = display.getCurrent();
 		
 		if(currentScreen == mainList)
 			handleMainListSelectCommand(selectedIndex);
-	}
+	}*/
 	
 	/**
 	 * Handles the main list selection command.
 	 * 
 	 * @param selectedIndex - the index of the selected item.
 	 */
-	private void handleMainListSelectCommand(int selectedIndex){
+	/*private void handleMainListSelectCommand(int selectedIndex){
 		
 		this.selectedIndex = selectedIndex;
 		
@@ -252,16 +248,16 @@ public class MainForm extends MIDlet  implements CommandListener,FormListener,St
 		Settings settings = new Settings(OpenXdataConstants.STORAGE_NAME_EPIHANDY_SETTINGS,true);
 		settings.setSetting(KEY_LAST_SELECTED_MAIN_MENU_ITEM, String.valueOf(selectedIndex));
 		settings.saveSettings();
-	}
+	}*/
 	
 	/**
 	 * Handles the ok command.
 	 * 
 	 * @param d - the screen object the command was issued for.
 	 */
-	private void handleOkCommand(Displayable d){
+	/*private void handleOkCommand(Displayable d){
 		handleListSelectCommand(mainList.getSelectedIndex());
-	}
+	}*/
 	
 		
 	/**
@@ -296,9 +292,9 @@ public class MainForm extends MIDlet  implements CommandListener,FormListener,St
 	 * @param data the data contained in the form about to be displayed.
 	 * @param save a flag whose value determines whether we go ahead and display the form or not.
 	 */
-	/*public void afterFormDisplay(FormData data, boolean save){
+	public void afterFormDisplay(FormData data, boolean save){
 		
-	}*/
+	}
 	
 	/**
 	 * Called just before a question is displayed.
@@ -363,9 +359,9 @@ public class MainForm extends MIDlet  implements CommandListener,FormListener,St
 		alertMsg.showError(errorMessage);
 	}
 	
-	public void cancelled(){
+	/*public void cancelled(){
 		display.setCurrent(mainList);
-	}
+	}*/
 	
 	public void onAlertMessage(byte msg){
 		if(exitConfirmMode){
@@ -385,34 +381,46 @@ public class MainForm extends MIDlet  implements CommandListener,FormListener,St
         notifyDestroyed();
 	}
 	
-	public boolean onLoggedOn(){
-		boolean displayPrevScreen = false;
+	public boolean onLoggedOn() {
+		if (GeneralSettings.isHideStudies()) {
+			formMgr.selectForm(true, display.getCurrent());
+		} else {
+			formMgr.selectStudy(false);
+		}
+		/*boolean displayPrevScreen = false;
 		if(selectedIndex != OpenXdataConstants.NO_SELECTION)
 			handleMainListSelectCommand(selectedIndex);
 		else
 			displayPrevScreen = true;
 		
-		return displayPrevScreen;
+		return displayPrevScreen;*/
+		return false;
 	}
 	
 	public void onLogonCancel(){
-		if(selectedIndex == OpenXdataConstants.NO_SELECTION)
+		/*if(selectedIndex == OpenXdataConstants.NO_SELECTION)
 			exit();
 		else
-			display.setCurrent(mainList);
+			display.setCurrent(mainList);*/
+		exit();
 	}
 	
-	private void logout(){
-		/** If this is not reset, after loggin in, we shall wrongly execute an action that
-		 * the user did not intend to.*/
-		this.selectedIndex = OpenXdataConstants.NO_SELECTION;
+	
+	/*private void logout(){
+		// If this is not reset, after loggin in, we shall wrongly execute an action that the user did not intend to.
+		//this.selectedIndex = OpenXdataConstants.NO_SELECTION;
 		
 		userMgr.logOut();
 		userMgr.logOn();
-	}
+	}*/
 	
 	public boolean beforeFormDefListDisplay(Vector formDefList){
 		return true;
+	}
+
+	public void onLogout() {
+		exitConfirmMode = true;
+		alertMsg.showConfirm(MenuText.EXIT_PROMPT());
 	}
 }
 
