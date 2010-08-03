@@ -227,48 +227,53 @@ public class FormView extends AbstractView implements AlertMessageListener {
 		((List)screen).deleteAll();
 
 		Vector pages = formData.getPages();
-		currentPage = ((PageData)pages.elementAt(pageIndex));
-		Vector qns = currentPage.getQuestions();
 		
-		boolean useQtnNumbering = GeneralSettings.isQtnNumbering();
-		Vector grayQuestions = new Vector();
-		displayedQuestions = new Vector();
-		QuestionData qn; 
-		for(int index = 0; index < qns.size(); index++){
-			qn = (QuestionData)qns.elementAt(index);
-			if(qn.getDef().isVisible()){
-				String s = "";
-				if(qn.getDef().isMandatory() && !qn.isAnswered())
-					s += "* ";
-				
-				int elementNum = ((List)screen).append((useQtnNumbering ? String.valueOf(index + 1) + " " : "") + s + qn.toString(),null);
-				
-				if(!qn.getDef().isEnabled()){
-					grayQuestions.addElement(new Integer(elementNum));
+		if (pageIndex >= 0 && pageIndex < pages.size()) {
+			currentPage = ((PageData)pages.elementAt(pageIndex));
+			Vector qns = currentPage.getQuestions();
+			
+			boolean useQtnNumbering = GeneralSettings.isQtnNumbering();
+			Vector grayQuestions = new Vector();
+			displayedQuestions = new Vector();
+			QuestionData qn; 
+			for(int index = 0; index < qns.size(); index++){
+				qn = (QuestionData)qns.elementAt(index);
+				if(qn.getDef().isVisible()){
+					String s = "";
+					if(qn.getDef().isMandatory() && !qn.isAnswered())
+						s += "* ";
+					
+					int elementNum = ((List)screen).append((useQtnNumbering ? String.valueOf(index + 1) + " " : "") + s + qn.toString(),null);
+					
+					if(!qn.getDef().isEnabled()){
+						grayQuestions.addElement(new Integer(elementNum));
+					}
+					
+					displayedQuestions.addElement(qn);
 				}
-				
-				displayedQuestions.addElement(qn);
 			}
-		}
-		
-		// Gray Skip Questions.
-		graySkipQuestions(grayQuestions);
-
-		if(pageIndex < pages.size()-1)
-			screen.addCommand(cmdNext);
-		else
-			screen.removeCommand(cmdNext);
-
-		if(pageIndex > 0)
-			screen.addCommand(cmdPrev);
-		else
-			screen.removeCommand(cmdPrev);
-
-		if(displayedQuestions.size() == 0){	
-		}
-		else{
-			selectNextQuestion(currentQuestionIndex);
-			screen.setTitle((formData.getDef().getPageCount() > 1 ? currentPage.getDef().getName()+ " - " : "") + formData.getDef().getName() + " - " + title);
+			
+			// Gray Skip Questions.
+			graySkipQuestions(grayQuestions);
+	
+			if(pageIndex < pages.size()-1)
+				screen.addCommand(cmdNext);
+			else
+				screen.removeCommand(cmdNext);
+	
+			if(pageIndex > 0)
+				screen.addCommand(cmdPrev);
+			else
+				screen.removeCommand(cmdPrev);
+	
+			if(displayedQuestions.size() == 0){	
+			}
+			else{
+				selectNextQuestion(currentQuestionIndex);
+				screen.setTitle((formData.getDef().getPageCount() > 1 ? currentPage.getDef().getName()+ " - " : "") + formData.getDef().getName() + " - " + title);
+			}
+		} else {
+			alertMsg.showError(MenuText.FORM_DISPLAY_PROBLEM());
 		}
 	}
 
