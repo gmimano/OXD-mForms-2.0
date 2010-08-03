@@ -382,9 +382,10 @@ public class DownloadUploadManager implements TransportLayerListener,AlertMessag
 			studyId = studyData.getId();
 			
 			Vector forms = studyData.getForms();
-			for(int i = 0; i < forms.size(); i++){
-				formData = (FormData)forms.elementAt(i);
-				forms.removeElementAt(i);
+			if (forms.size() > 0) {
+				formData = (FormData)forms.elementAt(0);
+				forms.removeElementAt(0);
+				// note: one formData uploaded at a time
 				break;
 			}
 		}
