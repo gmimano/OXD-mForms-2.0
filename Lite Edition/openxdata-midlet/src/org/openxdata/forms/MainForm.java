@@ -88,10 +88,10 @@ public class MainForm extends MIDlet implements FormListener,StorageListener,Ale
 		transportLayer = new TransportLayer();
 		transportLayer.setDisplay(display);
 		// FIXME: these shouldn't be hardcoded
-		transportLayer.setDefaultCommnucationParameter(TransportLayer.KEY_BLUETOOTH_SERVER_ID, /*"F0E0D0C0B0A000908070605040302010"*/ "F0E0D0C0B0A000908070605040301116");
-		transportLayer.setDefaultCommnucationParameter(TransportLayer.KEY_HTTP_URL, "");
-		transportLayer.setDefaultCommnucationParameter(TransportLayer.KEY_SMS_DESTINATION_ADDRESS,"sms://+256712330386"); //256782380638 "sms://+256782380638:1234"
-		transportLayer.setDefaultCommnucationParameter(TransportLayer.KEY_SMS_SOURCE_ADDRESS,"sms://:1234"); 
+		transportLayer.setDefaultCommunicationParameter(TransportLayer.KEY_BLUETOOTH_SERVER_ID, /*"F0E0D0C0B0A000908070605040302010"*/ "F0E0D0C0B0A000908070605040301116");
+		transportLayer.setDefaultCommunicationParameter(TransportLayer.KEY_HTTP_URL, "");
+		transportLayer.setDefaultCommunicationParameter(TransportLayer.KEY_SMS_DESTINATION_ADDRESS,"sms://+256712330386"); //256782380638 "sms://+256782380638:1234"
+		transportLayer.setDefaultCommunicationParameter(TransportLayer.KEY_SMS_SOURCE_ADDRESS,"sms://:1234"); 
 	
 		formMgr = new FormManager(MidletConstants.TITLE, display, this, null, transportLayer, null, this);
 		FormManager.setGlobalInstance(formMgr);
