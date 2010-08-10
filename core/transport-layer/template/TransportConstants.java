@@ -12,8 +12,7 @@ package org.openxdata.communication;
  */
 public class TransportConstants  {
 	
-	public static final String FORMSDOWNLOAD_URL = "@formsdownload.url@";
-	public static final String DATAUPLOAD_URL = "@dataupload.url@";
-	public static final String USERSSDOWNLOAD_URL = "@usersdownload.url@";
+	public static final String SERVER_URL = "@server.url@";
+	public static final String SERVLET_URL = "@servlet.url@";
 
 }

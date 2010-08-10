@@ -169,7 +169,7 @@ public class MenuText {
 	public static String DOWNLOADING_MENU_TEXT(){return getText((short)-5,"Downloading Menu Text");}
 	public static String MENU_TEXT_DOWNLOAD_SAVED(){return getText((short)-6,"Menu text downloaded and saved successfully");}
 	public static String USER_DOWNLOAD_URL(){return getText((short)-7,"Users download url:");}
-	public static String FORM_DOWNLOAD_URL(){return getText((short)-8,"Forms download url:");}
+	public static String SERVER_URL(){return getText((short)-8,"Server url:");}
 	public static String DATA_UPLOAD_URL(){return getText((short)-9,"Data upload url:");}
 	public static String DATA_DELETE_PROMPT(){return getText((short)-10,"Do you really want to delete data collected on this form?");}
 	public static String NO_MENU_TEXT(){return getText((short)-11,"The server has no Menu Text for this language");}

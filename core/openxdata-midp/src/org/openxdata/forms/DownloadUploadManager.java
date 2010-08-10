@@ -4,13 +4,13 @@ import java.util.Vector;
 
 import javax.microedition.lcdui.Displayable;
 
+import org.openxdata.communication.ConnectionSettings;
 import org.openxdata.communication.TransportLayer;
 import org.openxdata.communication.TransportLayerListener;
 import org.openxdata.db.OpenXdataDataStorage;
 import org.openxdata.db.util.Persistent;
 import org.openxdata.db.util.PersistentInt;
 import org.openxdata.db.util.PersistentString;
-import org.openxdata.db.util.Settings;
 import org.openxdata.model.FormData;
 import org.openxdata.model.FormDataSummary;
 import org.openxdata.model.FormDataSummaryList;
@@ -24,8 +24,8 @@ import org.openxdata.model.StudyData;
 import org.openxdata.model.StudyDataList;
 import org.openxdata.model.StudyDef;
 import org.openxdata.model.StudyDefList;
-import org.openxdata.model.UserListStudyDefList;
 import org.openxdata.model.UserList;
+import org.openxdata.model.UserListStudyDefList;
 import org.openxdata.model.UserStudyDefLists;
 import org.openxdata.util.AlertMessage;
 import org.openxdata.util.AlertMessageListener;
@@ -93,8 +93,6 @@ public class DownloadUploadManager implements TransportLayerListener,AlertMessag
 	private String password;
 
 	private TransportLayerListener transportLayerListener;
-
-	private static final String STORAGE_NAME_SETTINGS = "fcitmuk.DefaultTransportLayer";
 
 	/** Keeps track of the current number of form data being uploaded to the server. */
 	private int currentDataCount = 0;
@@ -405,40 +403,10 @@ public class DownloadUploadManager implements TransportLayerListener,AlertMessag
 	 * 
 	 */
 	public void setCommunicationParams() {
-		Settings settings = new Settings(STORAGE_NAME_SETTINGS,true);
-		String url = "";
-
-		switch (currentAction) {
-		case CA_LANGUAGES_DOWNLOAD:
-		case CA_MENU_TEXT_DOWNLOAD:
-		case CA_FORMS_DOWNLOAD: // 72.249.82.103 //192.168.23.3
-			url = settings.getSetting(TransportLayer.KEY_FORM_DOWNLOAD_HTTP_URL); // "http://localhost:8080/openmrs/moduleServlet/xforms/xformDownload?target=xforms&uname="+userName+"&pw="+password;
-			break;
-		case CA_USERS_DOWNLOAD: // 72.249.82.103
-			url = settings.getSetting(TransportLayer.KEY_USER_DOWNLOAD_HTTP_URL); // "http://localhost:8080/openmrs/moduleServlet/xforms/userDownload?uname="+userName+"&pw="+password;
-			break;
-		case CA_STUDY_LIST_DOWNLOAD:
-			url = settings.getSetting(TransportLayer.KEY_FORM_DOWNLOAD_HTTP_URL); // "";
-			break;
-		case CA_DATA_UPLOAD:
-			url = settings.getSetting(TransportLayer.KEY_DATA_UPLOAD_HTTP_URL); // "http://localhost:8080/openmrs/module/xforms/xformDataUpload.form?batchEntry=true&uname="+userName+"&pw="+password;
-			break;
-		case CA_ALL_FORMS_DOWNLOAD:
-			url = settings.getSetting(TransportLayer.KEY_FORM_DOWNLOAD_HTTP_URL); // "http://localhost:8080/openmrs/module/xforms/xformDataUpload.form?batchEntry=true&uname="+userName+"&pw="+password;
-			break;
-		}
-
+		String url = ConnectionSettings.getHttpUrl();
 		if (url != null) {
-			/*if (url.indexOf('?') > 0)
-				url += "&";
-			else
-				url += "?";
-
-			url += "uname=" + userName + "&pw=" + password;*/
-
-			transportLayer.setCommnucationParameter(TransportLayer.KEY_HTTP_URL, url);
+			transportLayer.setCommunicationParameter(TransportLayer.KEY_HTTP_URL, url);
 		}
-
 		requestHeader.setUserName(userName);
 		requestHeader.setPassword(password);
 	}

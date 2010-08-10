@@ -12,6 +12,7 @@ import javax.microedition.lcdui.Form;
 import javax.microedition.lcdui.List;
 import javax.microedition.lcdui.TextField;
 
+import org.openxdata.db.util.Settings;
 import org.openxdata.mvc.AbstractView;
 import org.openxdata.util.DefaultCommands;
 import org.openxdata.util.MenuText;
@@ -29,6 +30,8 @@ public class ConnectionSettings extends AbstractView {
 	private static final int CA_NONE = 0;
 	private static final int CA_CON_TYPES = 1;
 	private static final int CA_CON_PARAMS = 2;
+	
+	private static final String STORAGE_NAME_SETTINGS = "fcitmuk.DefaultTransportLayer";
 
 	String userName = "";
 	String password = "";
@@ -147,9 +150,7 @@ public class ConnectionSettings extends AbstractView {
 		if(currentAction == CA_CON_PARAMS){
 			if(d != null){
 				if(conType == TransportLayer.CON_TYPE_HTTP){
-					//conParams.put(TransportLayer.KEY_USER_DOWNLOAD_HTTP_URL, ((TextField)((Form)d).get(0)).getString());
-					conParams.put(TransportLayer.KEY_FORM_DOWNLOAD_HTTP_URL, ((TextField)((Form)d).get(0)).getString().trim());
-					conParams.put(TransportLayer.KEY_DATA_UPLOAD_HTTP_URL, ((TextField)((Form)d).get(1)).getString().trim());
+					conParams.put(TransportLayer.KEY_SERVER_HTTP_URL, ((TextField)((Form)d).get(0)).getString().trim());
 
 					for(int i=0; i<connectionParameters.size(); i++)
 					{
@@ -193,24 +194,10 @@ public class ConnectionSettings extends AbstractView {
 
 		// NOTE: see build-configuration.xml to find out about class TransportConstants
 
-		//This has been commented out because the users download url is never used since the users
-		//come together with the forms during forms download.
-
-		/*String s = (String)conParams.get(TransportLayer.KEY_USER_DOWNLOAD_HTTP_URL);
-		if(s == null) s = TransportConstants.USERSSDOWNLOAD_URL;
-		TextField txtField = new TextField(MenuText.USER_DOWNLOAD_URL(),s,500,TextField.ANY);
-		frm.append(txtField);*/
-
-		String s = (String)conParams.get(TransportLayer.KEY_FORM_DOWNLOAD_HTTP_URL);
-		if(s == null) s = TransportConstants.FORMSDOWNLOAD_URL;
-		TextField txtField = new TextField(MenuText.FORM_DOWNLOAD_URL(),s.trim(),500,TextField.ANY);
+		String s = (String)conParams.get(TransportLayer.KEY_SERVER_HTTP_URL);
+		if (s == null) s = TransportConstants.SERVER_URL;
+		TextField txtField = new TextField(MenuText.SERVER_URL(),s.trim(),500,TextField.ANY);
 		frm.append(txtField);
-
-		s = (String)conParams.get(TransportLayer.KEY_DATA_UPLOAD_HTTP_URL);
-		if(s == null) s = TransportConstants.DATAUPLOAD_URL;
-		txtField = new TextField(MenuText.DATA_UPLOAD_URL(),s.trim(),500,TextField.ANY);
-		frm.append(txtField);
-
 
 		for(int i=0; i<connectionParameters.size(); i++)
 		{
@@ -271,5 +258,11 @@ public class ConnectionSettings extends AbstractView {
 
 	public Vector getConnectionParameters(){
 		return connectionParameters;
+	}
+	
+	public static String getHttpUrl() {
+		Settings settings = new Settings(STORAGE_NAME_SETTINGS,true);
+		String serverUrl = settings.getSetting(TransportLayer.KEY_SERVER_HTTP_URL);
+		return serverUrl + "/" + TransportConstants.SERVLET_URL;
 	}
 }

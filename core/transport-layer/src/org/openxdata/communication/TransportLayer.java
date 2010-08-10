@@ -65,15 +65,8 @@ public class TransportLayer implements Runnable, BluetoothClientListener, AlertM
 
 	public static final String KEY_HTTP_URL = "HTTP_URL";
 
-	public static final String KEY_USER_DOWNLOAD_HTTP_URL = "USER_DOWNLOAD_HTTP_URL";
-
-	// public static final String KEY_PATIENT_DOWNLOAD_HTTP_URL =
-	// "PATIENT_DOWNLOAD_HTTP_URL";
-	public static final String KEY_FORM_DOWNLOAD_HTTP_URL = "FORM_DOWNLOAD_HTTP_URL";
-
-	public static final String KEY_DATA_UPLOAD_HTTP_URL = "DATA_UPLOAD_HTTP_URL";
-
-	//public static final String KEY_LANGUAGE_DOWNLOAD_HTTP_URL = KEY_FORM_DOWNLOAD_HTTP_URL;
+	public static final String KEY_SERVER_HTTP_URL = "SERVER_HTTP_URL";
+	public static final String KEY_SERVLET_HTTP_URL = "SERVLET_HTTP_URL";
 
 	public static final String KEY_POST_DATA = "POST_DATA";
 
@@ -318,7 +311,7 @@ public class TransportLayer implements Runnable, BluetoothClientListener, AlertM
 	 * @param key
 	 * @param value
 	 */
-	public void setCommnucationParameter(String key, String value){
+	public void setCommunicationParameter(String key, String value){
 		conParams.put(key, value);
 	}
 
@@ -328,7 +321,7 @@ public class TransportLayer implements Runnable, BluetoothClientListener, AlertM
 	 * @param key
 	 * @param value
 	 */
-	public void setDefaultCommnucationParameter(String key, String value){
+	public void setDefaultCommunicationParameter(String key, String value){
 		if(!conParams.containsKey(key))
 			conParams.put(key, value);
 	}

@@ -21,9 +21,8 @@
 	<target name="init" depends="" description="initialization">
 	
 		<filterset id="variables.to.replace">
-			<filter token="formsdownload.url" value="${formsdownload.url}" />
-			<filter token="dataupload.url" value="${dataupload.url}" />
-			<filter token="usersdownload.url" value="${usersdownload.url}" />
+			<filter token="server.url" value="${server.url}" />
+			<filter token="servlet.url" value="${servlet.url}" />
 		</filterset>
 			
 		<copy file="${basedir}/template/TransportConstants.java" toFile="${basedir}/src/org/openxdata/communication/TransportConstants.java" overwrite="true">
