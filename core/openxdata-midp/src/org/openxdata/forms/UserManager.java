@@ -118,15 +118,20 @@ public class UserManager extends AbstractView implements AlertMessageListener {
 	}
 	
 	private boolean authenticate(User user, String password) throws Exception {
-		String hashedPassword = encodeString(password + user.getSalt());
-		return (hashedPassword != null && hashedPassword.equals(user.getPassword()));
+		String hashedPassword = encodeString(password + user.getSalt(), false);
+		boolean result = (hashedPassword.equals(user.getPassword()));
+		if (!result) {
+			String hashedPassword2 = encodeString(password + user.getSalt(), true);
+			result = (hashedPassword2.equals(user.getPassword()));
+		}
+		return result;
 	}
 	
 	 /**
      * @param string to encode
      * @return the SHA-1 encryption of a given string
      */
-    public static String encodeString(String strToEncode) throws Exception {
+    public static String encodeString(String strToEncode, boolean hexString2) throws Exception {
     	//SHA512Digest digEng = new SHA512Digest();
     	SHA1Digest digEng = new SHA1Digest();
     	
@@ -137,16 +142,12 @@ public class UserManager extends AbstractView implements AlertMessageListener {
   		byte[] digest = new byte[digEng.getDigestSize()];
   		digEng.doFinal(digest, 0);
    		
-		return hexString(digest);
+  		if (!hexString2) {
+  			return hexString(digest);
+  		} else {
+  			return hexString2(digest);
+  		}
     }
-	
-	/* public static String encodeString(String strToEncode) {
-		 byte[] input = strToEncode.getBytes();
-		 MD5 md5 = new MD5(input);
-		 md5.update(input);
-		 byte[] digest = md5.doFinal();
-		return hexString(md5.toHex(digest).getBytes());
-	 }*/
     
     /**
      * @param Byte array to convert to HexString
@@ -161,8 +162,10 @@ public class UserManager extends AbstractView implements AlertMessageListener {
 			s.append(Integer.toHexString(b[i] & 0xFF));
 		}
 		return new String(s);
-		
-		/*StringBuffer buf = new StringBuffer();
+	}
+	
+	private static String hexString2(byte[] b) {
+		StringBuffer buf = new StringBuffer();
 		char[] hexChars = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
 		int len = b.length;
 		int high = 0;
@@ -174,7 +177,7 @@ public class UserManager extends AbstractView implements AlertMessageListener {
 			buf.append(hexChars[low]);
 		}
 		
-		return buf.toString();*/
+		return buf.toString();
 	}
 	
 	/**
@@ -280,7 +283,7 @@ public class UserManager extends AbstractView implements AlertMessageListener {
     public static String getRandomToken() throws Exception {
     	Random rnd = new Random();
     	return encodeString(Long.toString(System.currentTimeMillis()) 
-    			+ Long.toString(rnd.nextLong()));
+    			+ Long.toString(rnd.nextLong()), false);
     }
 
 }
