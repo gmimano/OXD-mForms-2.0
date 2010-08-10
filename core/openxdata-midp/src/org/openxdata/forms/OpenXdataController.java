@@ -372,6 +372,10 @@ public class OpenXdataController implements Controller, StorageListener, AlertMe
 	
 			formDefListViewer.setStudy(getStudyWithForms(list,(StudyDef)list.elementAt(0))); //should have atleast one study.
 		}
+		
+		if (!GeneralSettings.isMainMenu()) {
+			studyListViewer.showStudyList(list);
+		}
 	}
 
 	public void setStudy(StudyDef studyDef){
@@ -383,10 +387,16 @@ public class OpenXdataController implements Controller, StorageListener, AlertMe
 		else {
 			formDefListViewer.setStudy(studyDef);
 		}
+		if (!GeneralSettings.isMainMenu()) {
+			formDefListViewer.showFormList(studyDef, formEventListener);
+		}
 	}
 	
 	public void setStudyList(StudyDefList studyDefList) {
 		formDefListViewer.setStudies(studyDefList);
+		if (!GeneralSettings.isMainMenu()) {
+			formDefListViewer.showFormList(formEventListener);
+		}
 	}
 
 	public void showFormDefList(StudyDef studyDef){
