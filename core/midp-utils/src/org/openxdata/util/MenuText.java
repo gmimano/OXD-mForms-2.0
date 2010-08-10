@@ -118,6 +118,7 @@ public class MenuText {
 	public static String PROBLEM_HANDLING_STREAMS(){return getText((short)89,"Problem handling streams");}
 	public static String SERVER_PROCESS_FAILURE(){return getText((short)90,"Problems occured while processing request on server.");}
 	
+	public static String SERVER_INVALID_URL(){return getText((short)91,"Please check your Server URL under Http Connection Settings.");}
 	public static String ACCESS_DENIED(){return getText((short)91,"Access denied");}
 	public static String RESPONSE_CODE_FAIL(){return getText((short)92,"Response code not OK=");}
 	public static String DEVICE_PERMISSION_DENIED(){return getText((short)93,"Permission denied");}

@@ -403,8 +403,7 @@ public class TransportLayer implements Runnable, BluetoothClientListener, AlertM
 
 		streamRetries = 0;
 
-		try{
-			switch(conType){
+		switch(conType){
 			case CON_TYPE_HTTP:
 				connectHttp();
 				break;
@@ -426,13 +425,6 @@ public class TransportLayer implements Runnable, BluetoothClientListener, AlertM
 				break;
 			default:
 				break;
-			}
-			/*}catch(IOException e){//TODO This text needs to be in a resource file for localisation support.
-			this.eventListener.errorOccured("Problem handling IOException request",e);
-			//e.printStackTrace();*/
-		}catch(Exception e){
-			this.eventListener.errorOccured(MenuText.PROBLEM_HANDLING_REQUEST(),e);
-			//e.printStackTrace();
 		}
 	}
 
@@ -544,15 +536,9 @@ public class TransportLayer implements Runnable, BluetoothClientListener, AlertM
 
 	/**
 	 * Handles HTTP communications. eg GPRS.
-	 * 
-	 * @throws IOException - Thrown when there is a problem reading from or writting
-	 * 						 to the connection stream.
 	 */
-	protected void connectHttp() throws IOException{
-
-		//HttpConnection  con = null;
-
-		try{
+	protected void connectHttp() {
+		try {
 			String HTTP_URL = (String)conParams.get(TransportLayer.KEY_HTTP_URL);  
 			con = (HttpConnection)Connector.open(HTTP_URL);
 			showConnectionProgress(progressMessage != null ? progressMessage : MenuText.TRANSFERING_DATA());
@@ -572,8 +558,10 @@ public class TransportLayer implements Runnable, BluetoothClientListener, AlertM
 			}
 
 			int status  = ((HttpConnection)con).getResponseCode();
-			if(status != HttpConnection.HTTP_OK)
-				this.eventListener.errorOccured(MenuText.RESPONSE_CODE_FAIL()+status, null);
+			if (status != HttpConnection.HTTP_OK) {
+				this.eventListener.errorOccured(MenuText.RESPONSE_CODE_FAIL() + status 
+						+ ". " + MenuText.SERVER_INVALID_URL(), null);
+			}
 			else {//TODO May need some more specific failure codes
 				//For HTTP, we get only data back. Status is via HTTP status code. So no need of readin the data in param.				
 				//if(dataOut != null) //There are cases where we are not getting any data back apart fomr the HTTP status code.					
@@ -582,21 +570,19 @@ public class TransportLayer implements Runnable, BluetoothClientListener, AlertM
 				readResponseData(((HttpConnection)con).openDataInputStream());
 			}
 		}
-		catch(SecurityException e){
+		catch (SecurityException e) {
 			this.eventListener.errorOccured(MenuText.DEVICE_PERMISSION_DENIED(),e);
-			//e.printStackTrace();
 		}
-		/*catch(DataReadException e){
-			this.eventListener.errorOccured(null,e);
-			e.printStackTrace();
-		}*/
-		catch(Exception e){
-			this.eventListener.errorOccured(MenuText.PROBLEM_HANDLING_REQUEST(),e);
+		catch (Exception e) {
+			this.eventListener.errorOccured(
+					MenuText.PROBLEM_HANDLING_REQUEST() + e.getMessage()
+					+ ". " + MenuText.SERVER_INVALID_URL(), null);
 			e.printStackTrace();
 		}
-		finally{
-			if(con != null)
+		finally {
+			try {
 				con.close();
+			} catch (Exception e) {}
 		}
 	}
 
@@ -840,7 +826,7 @@ public class TransportLayer implements Runnable, BluetoothClientListener, AlertM
 	 * Handles bluetooth communications.
 	 *
 	 */
-	protected void connectBluetooth() throws IOException{
+	protected void connectBluetooth() {
 		try{
 			streamRetries++;
 
