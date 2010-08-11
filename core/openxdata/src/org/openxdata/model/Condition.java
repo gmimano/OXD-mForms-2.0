@@ -177,12 +177,27 @@ public class Condition implements Persistent{
 		return ret;
 	}
 
-	private void removeDecimalPoints(){
-		if(value != null && value.indexOf('.') > 0)
+	private void truncateDecimalPoints() {
+		if (value != null && value.indexOf('.') > 0)
 			value = value.substring(0,value.indexOf('.'));
 		
-		if(secondValue != null && secondValue.indexOf('.') > 0)
+		if (secondValue != null && secondValue.indexOf('.') > 0)
 			secondValue = secondValue.substring(0,secondValue.indexOf('.'));
+	}
+	
+	private String removeDecimalPoints(String value) {
+		String newValue = null;
+		if (value != null) {
+			int indexOfDecimal = value.indexOf('.');
+			if (indexOfDecimal > 0)
+				newValue = value.substring(0, indexOfDecimal);
+			if (indexOfDecimal < value.length())
+				newValue = newValue + value.substring(indexOfDecimal+1);
+			while (newValue.length() != 10) {
+				newValue = newValue + "0"; // pad the values so they are comparable - i.e. 99.09 to 99.8
+			}
+		}
+		return newValue;
 	}
 	
 	private boolean isNumericTrue(QuestionData data, boolean validation){
@@ -200,7 +215,7 @@ public class Condition implements Persistent{
 			else if(operator == OpenXdataConstants.OPERATOR_IS_NOT_NULL)
 				return true;
 			
-			removeDecimalPoints();
+			truncateDecimalPoints();
 
 			long answer = Long.parseLong(data.getValueAnswer());
 			long longValue = Long.parseLong(value);
@@ -546,15 +561,12 @@ public class Condition implements Persistent{
 			if(operator == OpenXdataConstants.OPERATOR_EQUAL)
 				return value.equals(data.getValueAnswer());
 			
-			
-			removeDecimalPoints();
-			
-			long /*float*/ answer = Long.parseLong(data.getValueAnswer()); //Float.parseFloat(data.getValueAnswer());
-			long /*float*/ floatValue = Long.parseLong(value); //Float.parseFloat(value);
+			long /*float*/ answer = Long.parseLong(removeDecimalPoints(data.getValueAnswer())); //Float.parseFloat(data.getValueAnswer());
+			long /*float*/ floatValue = Long.parseLong(removeDecimalPoints(value)); //Float.parseFloat(value);
 
 			long /*float*/ secondFloatValue = floatValue;
 			if(secondValue != null && secondValue.trim().length() > 0)
-				secondFloatValue = Long.parseLong(secondValue); //Float.parseFloat(secondValue);
+				secondFloatValue = Long.parseLong(removeDecimalPoints(secondValue)); //Float.parseFloat(secondValue);
 			
 			if(operator == OpenXdataConstants.OPERATOR_NOT_EQUAL)
 				return floatValue != answer;
