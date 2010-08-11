@@ -355,26 +355,28 @@ public class OpenXdataController implements Controller, StorageListener, AlertMe
 		studyListViewer.setStudyList(list);
 
 		//Get last selected study, if any, and set it as the default one.
-		StudyDef study;
+		StudyDef study = null;
 		Settings settings = new Settings(OpenXdataConstants.STORAGE_NAME_EPIHANDY_SETTINGS,true);
 		String val = settings.getSetting(OpenXdataConstants.KEY_LAST_SELECTED_STUDY);
 		
 		if (!GeneralSettings.isHideStudies()) {
-			if(val != null){
+			if (val != null) {
 				for(int i=0; i<list.size(); i++){
 					study = (StudyDef)list.elementAt(i);
 					if(study.getId() == Integer.parseInt(val)){
 						formDefListViewer.setStudy(getStudyWithForms(null,study));
-						return;
+						break;
 					}
 				}
 			}
 	
-			formDefListViewer.setStudy(getStudyWithForms(list,(StudyDef)list.elementAt(0))); //should have atleast one study.
-		}
-		
-		if (!GeneralSettings.isMainMenu()) {
-			studyListViewer.showStudyList(list);
+			if (study == null) {
+				formDefListViewer.setStudy(getStudyWithForms(list,(StudyDef)list.elementAt(0))); //should have at least one study.
+			}
+			
+			if (!GeneralSettings.isMainMenu()) {
+				studyListViewer.showStudyList(list);
+			}
 		}
 	}
 
