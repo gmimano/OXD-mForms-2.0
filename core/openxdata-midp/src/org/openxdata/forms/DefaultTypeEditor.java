@@ -302,8 +302,7 @@ public class DefaultTypeEditor extends AbstractView implements TypeEditor,AlertM
 	}
 
 
-	public void itemStateChanged(Item src)
-	{
+	public void itemStateChanged(Item src){
 		byte type = currentQuestion.getDef().getType();
 		if(src == currentCtrl && 
 				(type == QuestionDef.QTN_TYPE_LIST_EXCLUSIVE || type == QuestionDef.QTN_TYPE_BOOLEAN
@@ -312,8 +311,4 @@ public class DefaultTypeEditor extends AbstractView implements TypeEditor,AlertM
 			commandAction(DefaultCommands.cmdOk,(Displayable)null);
 		}
 	}
-	
-	 /*public void commandAction(Command cmd, Item item){
-		 commandAction(cmd,(Displayable)null);
-	 }*/
 }

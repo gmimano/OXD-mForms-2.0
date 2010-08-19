@@ -207,7 +207,6 @@ public class OpenXdataController implements Controller, StorageListener, AlertMe
 			showFormDataList(def);
 	}
 
-
 	public void startEdit(QuestionData currentQuestion,int pos, int count){		
 		//Inform the user that we are about to start editing.
 		boolean edit = true;
@@ -260,11 +259,6 @@ public class OpenXdataController implements Controller, StorageListener, AlertMe
 		//no saving of current view since it was type editor displayed.
 	}
 
-	/** Stops editing of a question. */
-	/*public void endEdit(boolean save, Object data, Object cmd){
-		endEdit(save,(QuestionData)data,(Command)cmd);
-	}*/
-
 	/** Fires rules in the form. */
 	private void FireSkipRules(FormData formData){		
 		Vector rules = formData.getDef().getSkipRules();
@@ -308,8 +302,6 @@ public class OpenXdataController implements Controller, StorageListener, AlertMe
 		}
 	}
 
-	
-	
 	//garisa lodge
 	public void deleteForm(FormData formData, View sender){
 		if(sender == formViewer && formDataListViewer.hasSelectedForm()){

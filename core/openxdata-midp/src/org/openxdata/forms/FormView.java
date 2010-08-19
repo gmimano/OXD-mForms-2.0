@@ -89,15 +89,15 @@ public class FormView extends AbstractView implements AlertMessageListener {
 
 		if(cmd == DefaultCommands.cmdBackParent){
 			if(currentQuestionIndex > 0)
-				currentQuestionIndex-=1;
+				currentQuestionIndex -= 1;
 			else
 				currentQuestionIndex = displayedQuestions.size() - 1;
 		}
 		else if(cmd == DefaultCommands.cmdPrev){
 			if(currentQuestionIndex > 1)
-				currentQuestionIndex-=2;
+				currentQuestionIndex -= 2;
 			else{
-				currentQuestionIndex -=1; // displayedQuestions.size() - 1;	
+				currentQuestionIndex -= 1; // displayedQuestions.size() - 1;	
 				cmd = DefaultCommands.cmdFirst;
 			}
 		}
@@ -234,8 +234,9 @@ public class FormView extends AbstractView implements AlertMessageListener {
 			boolean useQtnNumbering = GeneralSettings.isQtnNumbering();
 			int qtnNumberCount = (useQtnNumbering ? previousQuestionCount(pages, pageIndex) : 0);
 			
-			Vector grayQuestions = new Vector();
 			displayedQuestions = new Vector();
+			Vector grayQuestions = new Vector();
+
 			QuestionData qn; 
 			for(int index = 0; index < qns.size(); index++){
 				qn = (QuestionData)qns.elementAt(index);
@@ -250,8 +251,8 @@ public class FormView extends AbstractView implements AlertMessageListener {
 						grayQuestions.addElement(new Integer(elementNum));
 					}
 					
-					displayedQuestions.addElement(qn);
 				}
+				displayedQuestions.addElement(qn);
 			}
 			
 			// Gray Skip Questions.
