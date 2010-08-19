@@ -156,7 +156,7 @@ public class MenuText {
 	//public static String NO_VISIBLE_QUESTION(){return getText((short)122,"No visible question found among the");}
 	public static String QUESTIONS(){return getText((short)123,"questions");}
 	public static String FORM_CLOSE_PROMPT(){return getText((short)124,"Do you want to close this form without saving any changes you may have made?");}
-	public static String REQUIRED_PROMPT(){return getText((short)125,"Please enter missing values. Those with question marks");}
+	public static String REQUIRED_PROMPT(){return getText((short)125,"Please enter missing values. Questions marked with *");}
 	public static String ANSWER_MINIMUM_PROMPT(){return getText((short)126,"Please answer atleast one question or choose Cancel");}
 	public static String INVALID_NAME_PASSWORD(){return getText((short)127,"Invalid User Name or Password");}
 	public static String HIDE_STUDIES(){return getText((short)128,"Hide Studies");}
