@@ -220,7 +220,7 @@ public class DefaultTypeEditor extends AbstractView implements TypeEditor,AlertM
 		}
 		catch(Exception e){
 			alertMsg.showError(e.getMessage());
-			//e.printStackTrace();
+			e.printStackTrace();
 		}
 	}
 
