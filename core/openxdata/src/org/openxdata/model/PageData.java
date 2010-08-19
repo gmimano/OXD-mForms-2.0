@@ -60,6 +60,10 @@ public class PageData  implements Persistent{
 	public void setPageNo(byte pageNo) {
 		this.pageNo = pageNo;
 	}
+	
+	public int getNumberOfQuestions() {
+		return questions.size();
+	}
 
 	public PageDef getDef() {
 		return def;

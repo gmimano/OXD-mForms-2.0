@@ -227,12 +227,13 @@ public class FormView extends AbstractView implements AlertMessageListener {
 		((List)screen).deleteAll();
 
 		Vector pages = formData.getPages();
-		
 		if (pageIndex >= 0 && pageIndex < pages.size()) {
 			currentPage = ((PageData)pages.elementAt(pageIndex));
 			Vector qns = currentPage.getQuestions();
 			
 			boolean useQtnNumbering = GeneralSettings.isQtnNumbering();
+			int qtnNumberCount = (useQtnNumbering ? previousQuestionCount(pages, pageIndex) : 0);
+			
 			Vector grayQuestions = new Vector();
 			displayedQuestions = new Vector();
 			QuestionData qn; 
@@ -243,7 +244,7 @@ public class FormView extends AbstractView implements AlertMessageListener {
 					if(qn.getDef().isMandatory() && !qn.isAnswered())
 						s += "* ";
 					
-					int elementNum = ((List)screen).append((useQtnNumbering ? String.valueOf(index + 1) + " " : "") + s + qn.toString(),null);
+					int elementNum = ((List)screen).append((useQtnNumbering ? String.valueOf(qtnNumberCount+index+1) + " " : "") + s + qn.toString(),null);
 					
 					if(!qn.getDef().isEnabled()){
 						grayQuestions.addElement(new Integer(elementNum));
@@ -275,6 +276,15 @@ public class FormView extends AbstractView implements AlertMessageListener {
 		} else {
 			alertMsg.showError(MenuText.FORM_DISPLAY_PROBLEM());
 		}
+	}
+	
+	private int previousQuestionCount(Vector pages, int pageIndex) {
+		int qtnNumberCount = 0;
+		for (int i=0; i<pageIndex; i++) {
+			PageData pd = (PageData)pages.elementAt(i);
+			qtnNumberCount+=pd.getNumberOfQuestions();
+		}
+		return qtnNumberCount;
 	}
 
 	/**
