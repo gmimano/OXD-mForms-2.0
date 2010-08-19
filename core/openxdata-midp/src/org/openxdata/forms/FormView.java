@@ -245,12 +245,11 @@ public class FormView extends AbstractView implements AlertMessageListener {
 					if(qn.getDef().isMandatory() && !qn.isAnswered())
 						s += "* ";
 					
-					int elementNum = ((List)screen).append((useQtnNumbering ? String.valueOf(qtnNumberCount+index+1) + " " : "") + s + qn.toString(),null);
+					int elementNum = ((List)screen).append((useQtnNumbering ? String.valueOf(qtnNumberCount+index+1) + " " : "") + s + qn.toString(), null);
 					
 					if(!qn.getDef().isEnabled()){
 						grayQuestions.addElement(new Integer(elementNum));
 					}
-					
 				}
 				displayedQuestions.addElement(qn);
 			}
