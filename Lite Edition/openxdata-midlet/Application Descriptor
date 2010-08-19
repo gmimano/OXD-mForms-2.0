@@ -5,7 +5,7 @@ MicroEdition-Configuration: CLDC-1.0
 MIDlet-Version: 1.7
 MIDlet-Name: openXdata
 MIDlet-Icon: /icons/openxdata.png
-MIDlet-Description: This midlet does data collection for OpenXData.
+MIDlet-Description: This midlet does data collection for openXdata.
 MIDlet-Vendor: openXdata
 MicroEdition-Profile: MIDP-2.0
 MIDlet-Permissions: javax.microedition.media.control.VideoControl.getSnapshot

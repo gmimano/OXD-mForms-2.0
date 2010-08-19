@@ -96,42 +96,12 @@ public class MainForm extends MIDlet implements FormListener,StorageListener,Ale
 		formMgr = new FormManager(MidletConstants.TITLE, display, this, null, transportLayer, null, this);
 		FormManager.setGlobalInstance(formMgr);
 		
-		//if (GeneralSettings.isMainMenu()) {
-		//	initMainList();
-		//	alertMsg = new AlertMessage(this.display, MidletConstants.TITLE, mainList, this);
-		//} else {
-			mainScreen = formMgr.getPrevScreen(); // this was initialised for us
-			alertMsg = new AlertMessage(this.display, MidletConstants.TITLE, mainScreen, this);
-		//}
+		mainScreen = formMgr.getPrevScreen(); // this was initialised for us
+		alertMsg = new AlertMessage(this.display, MidletConstants.TITLE, mainScreen, this);
 		
 		OpenXdataDataStorage.storageListener = this;
 	}
 	
-	/*private void initMainList(){
-		mainList = new List(MidletConstants.TITLE, Choice.IMPLICIT);
-		((List)mainList).setFitPolicy(List.TEXT_WRAP_ON);
-		
-		mainList.insert(INDEX_SELECT_STUDY, MenuText.SELECT_STUDY(), null);
-		mainList.insert(INDEX_SELECT_FORM, MenuText.SELECT_FORM(), null);
-		mainList.insert(INDEX_DOWNLOAD_STUDY_LIST, MenuText.DOWNLOAD_STUDIES(), null);
-		mainList.insert(INDEX_DOWNLOAD_FORMS, MenuText.DOWNLOAD_FORMS(), null);
-		mainList.insert(INDEX_UPLOAD_DATA, MenuText.UPLOAD_DATA(), null);
-		mainList.insert(INDEX_SETTINGS, MenuText.SETTINGS(), null);
-		mainList.insert(INDEX_LOGOUT, MenuText.LOGOUT(), null);
-
-		mainList.addCommand(DefaultCommands.cmdSel);
-		mainList.addCommand(DefaultCommands.cmdExit);
-		
-		Settings settings = new Settings(OpenXdataConstants.STORAGE_NAME_EPIHANDY_SETTINGS,true);
-		String val = settings.getSetting(KEY_LAST_SELECTED_MAIN_MENU_ITEM);
-		if(val != null)
-			mainList.setSelectedIndex(Integer.parseInt(val),true);
-		else
-			mainList.setSelectedIndex(INDEX_SELECT_FORM,true); //make select form the default
-		
-		mainList.setCommandListener(this);
-	}*/
-
 	protected void destroyApp(boolean arg0) {
 	}
 
@@ -144,122 +114,6 @@ public class MainForm extends MIDlet implements FormListener,StorageListener,Ale
 		formMgr.setUserManager(userMgr);
 	}
 
-	/**
-	 * Processes the command events.
-	 * 
-	 * @param c - the issued command.
-	 * @param d - the screen object the command was issued for.
-	 */
-	/*public void commandAction(Command c, Displayable d) {
-		try{
-	        if (c == DefaultCommands.cmdExit)
-	        	handledExitCommand();
-	        else if(c == List.SELECT_COMMAND)
-	        	handleListSelectCommand(((List)d).getSelectedIndex());
-	        else if(c == DefaultCommands.cmdCancel)
-	        	handledCancelCommand(d);
-	        else if(c == DefaultCommands.cmdSel)
-	        	handleOkCommand(d);
-	        else if(c == DefaultCommands.cmdBack)
-	        	handledBackCommand(d);
-		}
-		catch(Exception e){
-			alertMsg.showError(e.getMessage());
-		}
-    }*/
-	
-	/**
-	 * Handles the back command.
-	 * 
-	 * @param d - the screen object the command was issued for.
-	 */
-	/*private void handledBackCommand(Displayable d){
-		handledCancelCommand(d);
-	}*/
-	
-	/**
-	 * Handles the cancel command.
-	 * 
-	 * @param d - the screen object the command was issued for.
-	 */
-	/*private void handledCancelCommand(Displayable d){
-    	this.display.setCurrent(mainList);
-	}*/
-	
-	/**
-	 * Handles the exit command.
-	 *
-	 */
-	/*private void c(){
-		exitConfirmMode = true;
-		alertMsg.showConfirm(MenuText.EXIT_PROMPT());
-	}*/
-	
-	/**
-	 * Handles the list selection command.
-	 * 
-	 * @param selectedIndex - the index of the selected item.
-	 */
-	/*private void handleListSelectCommand(int selectedIndex){
-		Displayable currentScreen = display.getCurrent();
-		
-		if(currentScreen == mainList)
-			handleMainListSelectCommand(selectedIndex);
-	}*/
-	
-	/**
-	 * Handles the main list selection command.
-	 * 
-	 * @param selectedIndex - the index of the selected item.
-	 */
-	/*private void handleMainListSelectCommand(int selectedIndex){
-		
-		this.selectedIndex = selectedIndex;
-		
-		if(!userMgr.isLoggedOn()){
-			userMgr.logOn();
-			return;
-		}
-		
-		switch(selectedIndex){
-			case INDEX_SELECT_STUDY:
-				this.formMgr.selectStudy(false);
-				break;
-	 		case INDEX_DOWNLOAD_STUDY_LIST:
-				this.formMgr.downloadStudies(mainList);
-				break;
-			case INDEX_DOWNLOAD_FORMS:
-				this.formMgr.downloadStudyForms(mainList,true);
-				break;
-			case INDEX_UPLOAD_DATA:
-				this.formMgr.uploadData(mainList);
-				break;
-			case INDEX_SELECT_FORM:
-				formMgr.selectForm(true, display.getCurrent());
-				break;
-			case INDEX_LOGOUT:
-				logout();
-				break;
-			case INDEX_SETTINGS:
-				formMgr.displayUserSettings(display, mainList);
-				break;
-		}
-		
-		Settings settings = new Settings(OpenXdataConstants.STORAGE_NAME_EPIHANDY_SETTINGS,true);
-		settings.setSetting(KEY_LAST_SELECTED_MAIN_MENU_ITEM, String.valueOf(selectedIndex));
-		settings.saveSettings();
-	}*/
-	
-	/**
-	 * Handles the ok command.
-	 * 
-	 * @param d - the screen object the command was issued for.
-	 */
-	/*private void handleOkCommand(Displayable d){
-		handleListSelectCommand(mainList.getSelectedIndex());
-	}*/
-	
-		
 	/**
 	 * Called by the epihandy form manager when a form has been closed without saving.
 	 * 
@@ -299,8 +153,6 @@ public class MainForm extends MIDlet implements FormListener,StorageListener,Ale
 	/**
 	 * Called just before a question is displayed.
 	 * 
-	 * @param data
-	 * @param edit
 	 */
 	public boolean beforeQuestionEdit(QuestionData data){
 		return true;
@@ -309,8 +161,7 @@ public class MainForm extends MIDlet implements FormListener,StorageListener,Ale
 	/**
 	 * @see org.fcitmuk.epihandy.midp.forms.FormListener#afterFormSaved(org.fcitmuk.epihandy.FormData,java.lang.boolean)
 	 */
-	public void afterFormSaved(FormData formData, boolean isNew){		
-		//alertMsg.show("Form Saved Successfully.");
+	public void afterFormSaved(FormData formData, boolean isNew){
 	}
 
 	/**
@@ -358,11 +209,7 @@ public class MainForm extends MIDlet implements FormListener,StorageListener,Ale
 			errorMessage += " : "+ e.getMessage();
 		alertMsg.showError(errorMessage);
 	}
-	
-	/*public void cancelled(){
-		display.setCurrent(mainList);
-	}*/
-	
+
 	public void onAlertMessage(byte msg){
 		if(exitConfirmMode){
 			if(msg == AlertMessageListener.MSG_OK)
@@ -387,32 +234,13 @@ public class MainForm extends MIDlet implements FormListener,StorageListener,Ale
 		} else {
 			formMgr.selectStudy(false);
 		}
-		/*boolean displayPrevScreen = false;
-		if(selectedIndex != OpenXdataConstants.NO_SELECTION)
-			handleMainListSelectCommand(selectedIndex);
-		else
-			displayPrevScreen = true;
-		
-		return displayPrevScreen;*/
+
 		return false;
 	}
 	
 	public void onLogonCancel(){
-		/*if(selectedIndex == OpenXdataConstants.NO_SELECTION)
-			exit();
-		else
-			display.setCurrent(mainList);*/
 		exit();
 	}
-	
-	
-	/*private void logout(){
-		// If this is not reset, after loggin in, we shall wrongly execute an action that the user did not intend to.
-		//this.selectedIndex = OpenXdataConstants.NO_SELECTION;
-		
-		userMgr.logOut();
-		userMgr.logOn();
-	}*/
 	
 	public boolean beforeFormDefListDisplay(Vector formDefList){
 		return true;
@@ -423,57 +251,3 @@ public class MainForm extends MIDlet implements FormListener,StorageListener,Ale
 		alertMsg.showConfirm(MenuText.EXIT_PROMPT());
 	}
 }
-
-/*private String test(){
-
-//First Set criteria for selecting a location provider:
-Criteria cr= new Criteria();
-cr.setHorizontalAccuracy(500);  // accurate to 500 meters horizontally
-
-try {
-	// Now get an instance of the provider
-	LocationProvider lp= LocationProvider.getInstance(cr);
-	
-	// Request the location, setting a one-minute timeout
-	Location l = lp.getLocation(60);
-	Coordinates c = l.getQualifiedCoordinates();
-	
-	if(c != null ) {
-		// Get coordinate information
-		double lat = c.getLatitude();
-		double lon = c.getLongitude();
-
-		// Now recenter map to given location, zoom to street level
-		mapItem.setMiddlePoint(new WgsPoint(lon,lat), 12);
-	}	
-	    
-} catch (Exception e) {
-}
-
-String s = "NULL";
-try {
-
-   // Create a Criteria object for defining desired selection criteria
-   Criteria cr = new Criteria();
-   // Specify horizontal accuracy of 500 meters, leave other parameters 
-   // at default values.
-   cr.setHorizontalAccuracy(500);
-  
-   LocationProvider lp = LocationProvider.getInstance(cr);
-
-   // get the location, one minute timeout
-   Location l = lp.getLocation(60);
-
-   Coordinates c = l.getQualifiedCoordinates();
-   
-   if (c != null) {
-      //s = "ALT="+c.getAltitude();
-      //s = " LAT="+c.getLatitude();
-      //s = " LONG="+c.getLongitude();
-   }
-} catch (Exception e) {
-  s = e.getMessage();
-} 
-
-return s;
-}*/
