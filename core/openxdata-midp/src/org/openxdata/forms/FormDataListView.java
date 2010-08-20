@@ -178,19 +178,12 @@ public class FormDataListView extends AbstractView implements AlertMessageListen
 	public void onFormSaved(FormData formData,boolean isNew){
 		formData.buildDataDescription();
 		
-		if (formData == null) {
-			return;
-		}
-		
 		if (isNew) {			
 			formDataList.addElement(formData);
 			((List)screen).append(formData.toString(), null);
 			if(formDataList.size() == 1)
 				screen.addCommand(DefaultCommands.cmdDelete);
-			((List)screen).setSelectedIndex(formDataList.size()-1, true);			
-			
-			//OpenXdataController oxdc = (OpenXdataController)this.controller;
-			//oxdc.showFormDataList(formData.getDef());
+			((List)screen).setSelectedIndex(formDataList.size()-1, true);	
 		} else{
 			formDataList.setElementAt(formData, ((List)screen).getSelectedIndex());
 			((List)screen).set(((List)screen).getSelectedIndex(),formData.toString(), null);				

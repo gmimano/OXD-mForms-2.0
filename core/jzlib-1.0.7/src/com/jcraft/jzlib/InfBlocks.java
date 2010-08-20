@@ -52,14 +52,9 @@ final class InfBlocks{
 
   static final private int Z_OK=0;
   static final private int Z_STREAM_END=1;
-  static final private int Z_NEED_DICT=2;
-  static final private int Z_ERRNO=-1;
   static final private int Z_STREAM_ERROR=-2;
   static final private int Z_DATA_ERROR=-3;
-  static final private int Z_MEM_ERROR=-4;
   static final private int Z_BUF_ERROR=-5;
-  static final private int Z_VERSION_ERROR=-6;
-
   static final private int TYPE=0;  // get type bits (3, including end bit)
   static final private int LENS=1;  // get lengths for stored
   static final private int STORED=2;// processing stored block
@@ -365,7 +360,6 @@ final class InfBlocks{
 	    break;
 	  }
 
-	  int[] h;
 	  int i, j, c;
 
 	  t = bb[0];

@@ -3,7 +3,7 @@
 	<classpathentry excluding="**/.svn/|**/CVS/" kind="src" path="src"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/dbutils"/>
 	<classpathentry kind="lib" path="lib/bluecove-2.1.0.jar"/>
-	<classpathentry kind="con" path="org.elipse.mtj.JavaMEContainer/Java(TM) Platform Micro Edition SDK 3.0/DefaultCldcPhone2"/>
+	<classpathentry kind="con" path="org.elipse.mtj.JavaMEContainer/Sun Java(TM) Wireless Toolkit 2.5.2 for CLDC/MediaControlSkin"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/openxdata"/>
 	<classpathentry kind="var" path="J2MELIB/cldcapi10.jar"/>
 	<classpathentry kind="var" path="J2MELIB/midpapi20.jar"/>

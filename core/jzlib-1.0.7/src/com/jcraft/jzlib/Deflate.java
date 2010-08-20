@@ -114,20 +114,15 @@ final class Deflate{
 
   static final private int Z_NO_FLUSH=0;
   static final private int Z_PARTIAL_FLUSH=1;
-  static final private int Z_SYNC_FLUSH=2;
   static final private int Z_FULL_FLUSH=3;
   static final private int Z_FINISH=4;
 
   static final private int Z_OK=0;
   static final private int Z_STREAM_END=1;
   static final private int Z_NEED_DICT=2;
-  static final private int Z_ERRNO=-1;
   static final private int Z_STREAM_ERROR=-2;
   static final private int Z_DATA_ERROR=-3;
-  static final private int Z_MEM_ERROR=-4;
   static final private int Z_BUF_ERROR=-5;
-  static final private int Z_VERSION_ERROR=-6;
-
   static final private int INIT_STATE=42;
   static final private int BUSY_STATE=113;
   static final private int FINISH_STATE=666;
@@ -752,7 +747,6 @@ final class Deflate{
 		  int len,         // its length
 		  boolean header   // true if block header must be written
 		  ){
-    int index=0;
     bi_windup();      // align on byte boundary
     last_eob_len = 8; // enough lookahead for inflate
 
