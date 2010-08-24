@@ -5,7 +5,6 @@ import java.util.Vector;
 import javax.microedition.lcdui.Choice;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Displayable;
-import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.List;
 
 import org.openxdata.model.FormData;
@@ -223,14 +222,8 @@ public class FormView extends AbstractView implements AlertMessageListener {
 	 * @param currentQuestionIndex - the index of the question to preselect.
 	 */
 	private void showPage(int pageIndex,Integer currentQuestionIndex){
-		System.out.println("show page index="+currentQuestionIndex);
 		currentPageIndex = pageIndex;
-		
-		for (int i=0, j=((List)screen).size(); i<j; i++) {
-			((List)screen).setFont(0, Font.getFont(Font.FACE_SYSTEM, Font.STYLE_PLAIN, Font.SIZE_MEDIUM));
-			((List)screen).delete(0);
-		}
-		//((List)screen).deleteAll();
+		((List)screen).deleteAll();
 
 		Vector pages = formData.getPages();
 		if (pageIndex >= 0 && pageIndex < pages.size()) {
@@ -239,26 +232,24 @@ public class FormView extends AbstractView implements AlertMessageListener {
 			
 			boolean useQtnNumbering = GeneralSettings.isQtnNumbering();
 			int qtnNumberCount = (useQtnNumbering ? previousQuestionCount(pages, pageIndex) : 0);
-
+			
 			Vector qns = currentPage.getQuestions();
-			QuestionData qn = null; 
-			for(int index = 0; index < qns.size(); index++){
+			QuestionData qn; 
+			for (int index = 0; index < qns.size(); index++) {
 				qn = (QuestionData)qns.elementAt(index);
 				if (qn.getDef().isVisible()) {
 					String questionText = 
 						(useQtnNumbering ? String.valueOf(qtnNumberCount+index+1) + " " : "") 
 						+ (qn.getDef().isMandatory() && !qn.isAnswered() ? "* " : "")
-						+ (!qn.getDef().isEnabled() ? "- " : "")
+						+ (!qn.getDef().isEnabled() ? "-- " : "")
 						+ (!qn.getDef().isEnabled() ? "[" : "")
 						+ qn.toString()
 					    + (!qn.getDef().isEnabled() ? "]" : "");
-
+					
 					((List)screen).append(questionText, null);
-					displayedQuestions.addElement(qn);
 				}
 				displayedQuestions.addElement(qn);
 			}
-			
 	
 			if(pageIndex < pages.size()-1)
 				screen.addCommand(cmdNext);
@@ -270,7 +261,7 @@ public class FormView extends AbstractView implements AlertMessageListener {
 			else
 				screen.removeCommand(cmdPrev);
 	
-			if (displayedQuestions.size() > 0) {
+			if (displayedQuestions.size() > 0) {	
 				selectNextQuestion(currentQuestionIndex);
 				screen.setTitle((formData.getDef().getPageCount() > 1 ? currentPage.getDef().getName()+ " - " : "") + formData.getDef().getName() + " - " + title);
 			}
@@ -287,6 +278,7 @@ public class FormView extends AbstractView implements AlertMessageListener {
 		}
 		return qtnNumberCount;
 	}
+
 	
 	/**
 	 * Selects the next question to edit.
@@ -344,7 +336,7 @@ public class FormView extends AbstractView implements AlertMessageListener {
 		}
 		catch(Exception e){
 			alertMsg.showError(e.getMessage());
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 	}
 
@@ -470,21 +462,17 @@ public class FormView extends AbstractView implements AlertMessageListener {
 	 * @param d - the screen object the command was issued for.
 	 */
 	public void handleListSelectCommand(Displayable d){
-		System.out.println("select command");
 		//handleOkCommand(d);
 		//save the user state for more friendliness
 		currentQuestionIndex = ((List)d).getSelectedIndex();
 		currentQuestion = (QuestionData)displayedQuestions.elementAt(currentQuestionIndex);
 		if(currentQuestion.getDef().isEnabled()){
-			System.out.println(currentQuestion.toString()+" -> enabled");
 			boolean edit = true;
 			if(listener != null)
 				edit = listener.beforeQuestionEdit(currentQuestion); //give the API user a chance to override this editing.
 
 			if(edit)
 				getOpenXdataController().startEdit(currentQuestion,(currentQuestionIndex+1),displayedQuestions.size());
-		} else {
-			System.out.println(currentQuestion.toString()+" -> disabled");
 		}
 	}
 
