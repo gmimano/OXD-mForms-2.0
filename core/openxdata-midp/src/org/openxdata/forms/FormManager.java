@@ -175,8 +175,6 @@ public class FormManager implements TransportLayerListener{
 	public void showForm(boolean studyEditingMode,String formVarName,boolean showNew,Display display,Displayable currentScreen,FormListener formEventListener){	
 		//this.display = display;
 		this.prevScreen = currentScreen;
-	
-		setSingleQuestionEdit();
 		if(isUserLoggedOn())
 			this.controller.showForm(studyEditingMode,formVarName,showNew,currentScreen);
 	}
@@ -188,13 +186,11 @@ public class FormManager implements TransportLayerListener{
 	 */
 	public void showForm(boolean studyEditingMode,FormData data, boolean allowDelete,Displayable currentScreen){
 		this.prevScreen = currentScreen;
-		setSingleQuestionEdit();
 		if(isUserLoggedOn())
 			this.controller.showForm(studyEditingMode,data,allowDelete,currentScreen);
 	}
 	
 	public void showForm(boolean studyEditingMode,int studyId,FormDef formDef, int formDataRecordId,boolean allowDelete,Displayable currentScreen){
-		setSingleQuestionEdit();
 		if(isUserLoggedOn())
 			this.controller.showForm(studyEditingMode,studyId, formDef,formDataRecordId, allowDelete,currentScreen);
 	}
@@ -246,7 +242,6 @@ public class FormManager implements TransportLayerListener{
 	}
 	
 	public void selectForm(boolean studyEditingMode,Displayable currentScreen){
-		setSingleQuestionEdit();
 		if(isUserLoggedOn())
 			this.controller.selectForm(studyEditingMode,currentScreen);
 	}
@@ -284,21 +279,9 @@ public class FormManager implements TransportLayerListener{
 			transportLayerListener.cancelled();
 	}
 	
-	public void setSingleQtnEdit(boolean singleQtnEdit){
-		controller.setSingleQtnEdit(singleQtnEdit);
-	}
-	
-	public boolean isSingleQuestionEdit(){
-		return controller.isSingleQuestionEdit();
-	}
-	
 	public void displayUserSettings(Display display, Displayable prevScreen){
 		UserSettings userSettings = new UserSettings();
 		userSettings.display(display, prevScreen, transportLayer,userMgr.getUserName(),userMgr.getPassword());
-	}
-	
-	private void setSingleQuestionEdit(){
-		setSingleQtnEdit(GeneralSettings.isSingleQtnEdit());
 	}
 	
 	public void updateCommunicationParams(){

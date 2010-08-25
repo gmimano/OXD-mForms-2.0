@@ -52,7 +52,6 @@ public class OpenXdataController implements Controller, StorageListener, AlertMe
 	private Hashtable transitionTable;
 	private View currentView;
 	private Display display;
-	private boolean singleQtnEdit = GeneralSettings.isSingleQtnEdit();
 
 	/** A list of user defined data type editors. */
 	private Hashtable typeEditors = new Hashtable(); //TODO This need to be implemmted such that we allow flexibilty of user defined type editors for those who dont want to subclass the default type editor.
@@ -226,7 +225,7 @@ public class OpenXdataController implements Controller, StorageListener, AlertMe
 		if(rule != null)
 			rule.setFormData(formData);
 		editor.setTitle(formData.getDef().getName()+ " - " + formViewer.getTitle());
-		editor.startEdit(currentQuestion,rule, singleQtnEdit,pos,count,this);
+		editor.startEdit(currentQuestion,rule, GeneralSettings.isSingleQtnEdit() ,pos,count,this);
 		//no need to save the current view since its managed by the form viewer.
 	}
 
@@ -639,14 +638,6 @@ public class OpenXdataController implements Controller, StorageListener, AlertMe
 			this.selectStudy(this.studyEditingMode);
 		}
 		return study;
-	}
-
-	public void setSingleQtnEdit(boolean singleQtnEdit){
-		this.singleQtnEdit = singleQtnEdit;
-	}
-
-	public boolean isSingleQuestionEdit(){
-		return singleQtnEdit;
 	}
 
 	public void showRepeatQtnsDataList(RepeatQtnsDef repeatQtnsDef){

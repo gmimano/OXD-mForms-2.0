@@ -115,7 +115,7 @@ public class FormView extends AbstractView implements AlertMessageListener {
 		
 		showPage(this.currentPageIndex,new Integer(currentQuestionIndex));
 
-		if(cmd != DefaultCommands.cmdBackParent && getOpenXdataController().isSingleQuestionEdit())
+		if(cmd != DefaultCommands.cmdBackParent && GeneralSettings.isSingleQtnEdit())
 		{
 			//if we are on the last question.
 			if(currentQuestionIndex == displayedQuestions.size()){
@@ -148,23 +148,27 @@ public class FormView extends AbstractView implements AlertMessageListener {
 		while(index < displayedQuestions.size()){
 			QuestionData qtn = (QuestionData)displayedQuestions.elementAt(index);
 			QuestionDef def = qtn.getDef();
-			if(def.isVisible() && def.isEnabled()){
+			if (def.isVisible() && def.isEnabled()) {
 				if(notAnswered){
-					if(!qtn.isAnswered()){
+					if (!qtn.isAnswered()){
 						currentQuestionIndex = index;
 						break;
 					}
 				}
-				else{
-					if(currentQuestion == null){
+				else {
+					if (currentQuestion == null) {
 						currentQuestion = qtn;
 						currentQuestionIndex = index;
 						break;
-					}
-					else if(currentQuestion.getId() == qtn.getId()){
-						currentQuestionIndex = ++index;
-						if(currentQuestionIndex < displayedQuestions.size())
-							currentQuestion = (QuestionData)displayedQuestions.elementAt(currentQuestionIndex);
+					} else if(currentQuestion.getId() == qtn.getId()) {
+						do {
+							currentQuestionIndex = ++index;
+							if (currentQuestionIndex < displayedQuestions.size()) {
+								currentQuestion = (QuestionData)displayedQuestions.elementAt(currentQuestionIndex);
+							} else {
+								break; // if we are at the end, stop looking
+							}
+						} while (!currentQuestion.getDef().isEnabled()); 
 						break;
 					}
 				}
@@ -237,18 +241,21 @@ public class FormView extends AbstractView implements AlertMessageListener {
 			QuestionData qn; 
 			for (int index = 0; index < qns.size(); index++) {
 				qn = (QuestionData)qns.elementAt(index);
+				boolean qtnRequired = qn.getDef().isMandatory() && !qn.isAnswered();
+				boolean qtnDisabled = !qn.getDef().isEnabled(); 
 				if (qn.getDef().isVisible()) {
 					String questionText = 
 						(useQtnNumbering ? String.valueOf(qtnNumberCount+index+1) + " " : "") 
-						+ (qn.getDef().isMandatory() && !qn.isAnswered() ? "* " : "")
-						+ (!qn.getDef().isEnabled() ? "-- " : "")
-						+ (!qn.getDef().isEnabled() ? "[" : "")
+						+ (qtnRequired ? "* " : "")
+						+ (qtnDisabled ? "- " : "")
+						+ (!qtnRequired && !qtnDisabled ? "  " : "")
+						+ (qtnDisabled ? "[" : "")
 						+ qn.toString()
-					    + (!qn.getDef().isEnabled() ? "]" : "");
+					    + (qtnDisabled ? "]" : "");
 					
 					((List)screen).append(questionText, null);
+					displayedQuestions.addElement(qn);
 				}
-				displayedQuestions.addElement(qn);
 			}
 	
 			if(pageIndex < pages.size()-1)
