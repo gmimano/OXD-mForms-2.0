@@ -9,6 +9,7 @@ import javax.microedition.lcdui.List;
 
 import org.openxdata.model.FormData;
 import org.openxdata.model.FormDef;
+import org.openxdata.model.StudyDef;
 import org.openxdata.mvc.AbstractView;
 import org.openxdata.util.AlertMessage;
 import org.openxdata.util.AlertMessageListener;
@@ -108,16 +109,28 @@ public class FormDataListView extends AbstractView implements AlertMessageListen
 			else if(c == DefaultCommands.cmdMainMenu)
 				getOpenXdataController().backToMainMenu();
 			else if(c == DefaultCommands.cmdUploadData){
+				int currentFormId = formDef.getId();//current form
 				Vector studyList = new Vector();
-				studyList.addElement(getOpenXdataController().getCurrentStudy());
+				FormDef fd = getOpenXdataController().getCurrentStudy().getForm(currentFormId);
+				Vector forms = new Vector();
+				forms.addElement(fd);
+				StudyDef sd = new StudyDef(); //StudyDef sd = getOpenXdataController().getCurrentStudy();
+				sd.setId(getOpenXdataController().getCurrentStudy().getId());
+				sd.setForms(forms);		
+				studyList.addElement(sd);
+				
 				getOpenXdataController().uploadData(this.getScreen(), studyList);
-				((List)screen).deleteAll(); // assuming upload was successful
+				//((List)screen).deleteAll();// assuming upload was successful
 			}
 		}
 		catch(Exception e){
 			alertMsg.showError(e.getMessage());
 			e.printStackTrace();
 		}
+	}
+	
+	public void clearFormDataList(){
+		((List)screen).deleteAll(); // assuming upload was successful		
 	}
 
 	/**

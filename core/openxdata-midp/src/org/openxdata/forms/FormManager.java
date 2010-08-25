@@ -278,6 +278,7 @@ public class FormManager implements TransportLayerListener{
 		if(transportLayerListener != null)
 			transportLayerListener.cancelled();
 	}
+
 	
 	public void displayUserSettings(Display display, Displayable prevScreen){
 		UserSettings userSettings = new UserSettings();

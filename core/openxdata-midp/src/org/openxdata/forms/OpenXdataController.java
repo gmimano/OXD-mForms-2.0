@@ -14,9 +14,9 @@ import org.openxdata.db.OpenXdataDataStorage;
 import org.openxdata.db.util.Persistent;
 import org.openxdata.db.util.Settings;
 import org.openxdata.db.util.StorageListener;
-import org.openxdata.model.OpenXdataConstants;
 import org.openxdata.model.FormData;
 import org.openxdata.model.FormDef;
+import org.openxdata.model.OpenXdataConstants;
 import org.openxdata.model.QuestionData;
 import org.openxdata.model.QuestionDef;
 import org.openxdata.model.RepeatQtnsData;
@@ -158,6 +158,10 @@ public class OpenXdataController implements Controller, StorageListener, AlertMe
 		alertMsg.showError(text);
 	}
 
+	public void clearFormDataList(){
+		formDataListViewer.clearFormDataList(); // assuming upload was successful		
+	}	
+	
 	/**
 	 * Shows a form given its data.
 	 */
@@ -174,7 +178,7 @@ public class OpenXdataController implements Controller, StorageListener, AlertMe
 			if(displayForm){
 				FireSkipRules(formData);
 				this.formViewer.showForm(formData,formEventListener,allowDelete);
-				saveCurrentView(formViewer);
+				//saveCurrentView(formViewer);
 			}
 		}
 		catch(Exception e){

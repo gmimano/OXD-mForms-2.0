@@ -65,7 +65,7 @@ public class DownloadUploadManager implements TransportLayerListener,AlertMessag
 
 	/** Current alert is for form download confirmation. */
 	private static final byte CA_ALL_FORMS_DOWNLOAD = 8;
-
+	
 	/** Reference to the commnunication layer. */
 	private TransportLayer transportLayer;
 
@@ -111,7 +111,6 @@ public class DownloadUploadManager implements TransportLayerListener,AlertMessag
 
 	/** The list of form data that has not yet been uploaded to the server. */
 	private StudyDataList studyDataList = null;
-
 
 	public DownloadUploadManager(TransportLayer transportLayer,OpenXdataController controller, String title,TransportLayerListener transportLayerListener) {
 		this.transportLayer = transportLayer;
@@ -165,7 +164,8 @@ public class DownloadUploadManager implements TransportLayerListener,AlertMessag
 			currentAction = CA_FORMS_DOWNLOAD; // CA_USERS_DOWNLOAD; CA_FORMS_DOWNLOAD; First dowload the list of users.
 
 			if(confirm){
-				if(getCollectedStudyData(controller.getCurrentStudy()) != null){
+				StudyDef sd = controller.getCurrentStudy();
+				if(getCollectedStudyData(sd.getId(),sd.getForms()) != null){
 					if (GeneralSettings.isHideStudies()) {
 						alertMsg.show(MenuText.UN_UPLOADED_DATA_PROMPT()+" " + MenuText.FORMS());
 					} else {
@@ -581,6 +581,7 @@ public class DownloadUploadManager implements TransportLayerListener,AlertMessag
 					}
 
 					if(currentDataCount == totalDataCount){
+						//This builds up the text mesage of session id's to the mobile display
 						StringBuffer summaryMessage = new StringBuffer();
 						summaryMessage.append("\n\nSession reference(s):");
 						Vector list = currentDataSummary.getFormDataSummaries();
@@ -599,8 +600,8 @@ public class DownloadUploadManager implements TransportLayerListener,AlertMessag
 					else{
 						currentDataCount++;
 						uploadFormData();
-						return;
 					}
+					controller.clearFormDataList();					
 				}
 			} catch (Exception e) {
 				//e.printStackTrace();
@@ -665,11 +666,14 @@ public class DownloadUploadManager implements TransportLayerListener,AlertMessag
 		StudyDataList studyDatalist = new StudyDataList();
 		for (int i = 0; i < studyList.size(); i++){
 			StudyDef studyDef = (StudyDef) studyList.elementAt(i);
-			//Study list always has no forms, so we have to get them from the database.
-			studyDef = OpenXdataDataStorage.getStudy(studyDef.getId());
+			if(studyDef.getForms() == null || studyDef.getForms().isEmpty()){
+				//Study list always has no forms, so we have to get them from the database.
+				studyDef = OpenXdataDataStorage.getStudy(studyDef.getId());				
+			}
+
 			//If no forms downloaded yet, then we don't expect any data to save.
 			if(studyDef != null){
-				StudyData studyData = getCollectedStudyData(studyDef);
+				StudyData studyData = getCollectedStudyData(studyDef.getId(),studyDef.getForms());
 				if(studyData != null)
 					studyDatalist.addStudy(studyData);
 			}
@@ -702,13 +706,12 @@ public class DownloadUploadManager implements TransportLayerListener,AlertMessag
 		}
 	}*/
 
-	public StudyData getCollectedStudyData(StudyDef studyDef) {
-		StudyData studyData = new StudyData(studyDef.getId());
-		Vector formDefs = studyDef.getForms();
+	public StudyData getCollectedStudyData(int id, Vector formDefs) {
+		StudyData studyData = new StudyData(id);
 		if (formDefs != null && formDefs.size() > 0) {
 			for (int i = 0; i < formDefs.size(); i++) {
 				FormDef formDef = ((FormDef) formDefs.elementAt(i));
-				Vector formDatas = OpenXdataDataStorage.getFormData(studyDef.getId(), formDef.getId());
+				Vector formDatas = OpenXdataDataStorage.getFormData(id, formDef.getId());
 				
 				if (formDatas != null) {
 					setFormDefs(formDatas, formDef); // These are for writing to stream but they are not persisted.
