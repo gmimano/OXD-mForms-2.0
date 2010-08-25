@@ -129,8 +129,9 @@ public class FormDataListView extends AbstractView implements AlertMessageListen
 		}
 	}
 	
-	public void clearFormDataList(){
-		((List)screen).deleteAll(); // assuming upload was successful		
+	public void clearFormDataList() {
+		formDataList = new Vector();
+		((List)screen).deleteAll();
 	}
 
 	/**

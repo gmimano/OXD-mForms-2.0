@@ -596,12 +596,14 @@ public class DownloadUploadManager implements TransportLayerListener,AlertMessag
 						
 						if (transportLayerListener != null)
 							transportLayerListener.uploaded(dataOutParams, dataOut);
+						
+						controller.clearFormDataList();
 					}
 					else{
 						currentDataCount++;
 						uploadFormData();
+						return;
 					}
-					controller.clearFormDataList();					
 				}
 			} catch (Exception e) {
 				//e.printStackTrace();
