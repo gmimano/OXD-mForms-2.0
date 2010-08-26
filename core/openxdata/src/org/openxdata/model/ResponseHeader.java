@@ -20,8 +20,11 @@ public class ResponseHeader implements Persistent{
 	/** Request completed successfully. */
 	public static final byte STATUS_SUCCESS = 1;
 	
-	/** Not permitted to carry out the requested operation. */
+	/** User login failed */
 	public static final byte STATUS_ACCESS_DENIED = 2;
+	
+	/** Not permitted to carry out the requested operation. */
+	public static final byte STATUS_PERMISSION_DENIED = 3;
 	
 	private byte status = STATUS_ERROR;
 	

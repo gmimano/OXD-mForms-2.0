@@ -400,7 +400,7 @@ public class MenuText {
 	}
 	
 	public static String DEVICE_PERMISSION_DENIED(){
-		return getText((short)93,"Permission denied");
+		return getText((short)93,"You do not have sufficient privileges to perform this operation. Please contact your administrator.");
 	}
 	
 	public static String GETTING_BLUETOOTH_URL(){

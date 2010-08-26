@@ -479,8 +479,10 @@ public class TransportLayer implements Runnable, BluetoothClientListener, AlertM
 		}
 		else{
 			String s = MenuText.SERVER_PROCESS_FAILURE();
-			if(status == ResponseHeader.STATUS_ACCESS_DENIED)
+			if (status == ResponseHeader.STATUS_ACCESS_DENIED)
 				s = MenuText.ACCESS_DENIED();
+			else if (status == ResponseHeader.STATUS_PERMISSION_DENIED)
+				s = MenuText.DEVICE_PERMISSION_DENIED();
 			this.eventListener.errorOccured(s, null);
 		}
 	}
