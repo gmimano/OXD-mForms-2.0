@@ -158,8 +158,8 @@ public class OpenXdataController implements Controller, StorageListener, AlertMe
 		alertMsg.showError(text);
 	}
 
-	public void clearFormDataList() {
-		formDataListViewer.clearFormDataList();		
+	public void clearFormDataList(FormData formData, boolean deleteAll) {
+		formDataListViewer.clearFormDataList(formData,deleteAll);		
 	}	
 	
 	/**
@@ -450,11 +450,15 @@ public class OpenXdataController implements Controller, StorageListener, AlertMe
 	}
 	
 	public void uploadData(Displayable currentScreen, Vector studyList) {
-		downloadMgr.uploadData(currentScreen, studyList, userMgr.getUserName(), userMgr.getPassword());
+		downloadMgr.uploadData(currentScreen, studyList, null, userMgr.getUserName(), userMgr.getPassword());
+	}
+	
+	public void uploadData(Displayable currentScreen, FormData formData) {
+		downloadMgr.uploadData(currentScreen, null, formData, userMgr.getUserName(), userMgr.getPassword());
 	}
 	
 	public void uploadData(Displayable currentScreen) {
-		downloadMgr.uploadData(currentScreen, getStudyList(), userMgr.getUserName(), userMgr.getPassword());
+		downloadMgr.uploadData(currentScreen, getStudyList(), null, userMgr.getUserName(), userMgr.getPassword());
 	}
 
 	public void closeStudyList(boolean save, StudyDef studyDef) {

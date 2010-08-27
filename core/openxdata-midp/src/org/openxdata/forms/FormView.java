@@ -7,11 +7,14 @@ import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.List;
 
+import org.openxdata.db.util.Settings;
 import org.openxdata.model.FormData;
+import org.openxdata.model.FormDef;
 import org.openxdata.model.OpenXdataConstants;
 import org.openxdata.model.PageData;
 import org.openxdata.model.QuestionData;
 import org.openxdata.model.QuestionDef;
+import org.openxdata.model.StudyDef;
 import org.openxdata.model.ValidationRule;
 import org.openxdata.mvc.AbstractView;
 import org.openxdata.util.AlertMessage;
@@ -201,7 +204,6 @@ public class FormView extends AbstractView implements AlertMessageListener {
 			if(displayedQuestions.size() > 0){
 				screen.setCommandListener(this);
 				screen.addCommand(DefaultCommands.cmdSave);
-				screen.addCommand(DefaultCommands.cmdUpload);
 				if(allowDelete)
 					screen.addCommand(DefaultCommands.cmdDelete);
 				screen.addCommand(DefaultCommands.cmdCancel);
@@ -333,7 +335,6 @@ public class FormView extends AbstractView implements AlertMessageListener {
 				handleSaveCommand(d);
 			/*else if(c == DefaultCommands.cmdOk)
 				handleOkCommand(d);*/
-			/*upload command*/
 			else if(c == DefaultCommands.cmdCancel)
 				handleCancelCommand(d);
 			else if(c == cmdNext)
@@ -342,6 +343,8 @@ public class FormView extends AbstractView implements AlertMessageListener {
 				prevPage();
 			else if(c == DefaultCommands.cmdDelete)
 				handleDeleteCommand(d);
+			else if(c == DefaultCommands.cmdMainMenu)
+				getOpenXdataController().backToMainMenu();			
 		}
 		catch(Exception e){
 			alertMsg.showError(e.getMessage());
@@ -406,6 +409,61 @@ public class FormView extends AbstractView implements AlertMessageListener {
 		}
 	}
 
+	private void handleUploadData(Displayable d){
+
+		//Check if user entered data correctly.
+		if(!formData.isRequiredAnswered()){
+			alertMsg.show(MenuText.REQUIRED_PROMPT());
+			selectMissingValueQtn();
+		}else if(!formData.isFormAnswered()){
+			alertMsg.show(MenuText.ANSWER_MINIMUM_PROMPT());
+			return;		
+		}else{
+			String errMsg = selectInvalidQtn();			
+			if(errMsg != null){
+				alertMsg.show(errMsg);
+				return;				
+			}
+			getOpenXdataController().saveForm(formData);
+		}
+
+		//Select the current form definition
+		int currentFormId = formData.getDef().getId();//current form
+		Vector studyList = new Vector();
+		FormDef fd = getOpenXdataController().getCurrentStudy().getForm(currentFormId);
+		Vector forms = new Vector();
+		forms.addElement(fd);
+		StudyDef sd = new StudyDef(); //StudyDef sd = getOpenXdataController().getCurrentStudy();
+		sd.setId(getOpenXdataController().getCurrentStudy().getId());
+		sd.setForms(forms);		
+		studyList.addElement(sd);
+		
+		//Clear the screen
+		getOpenXdataController().uploadData(this.getScreen(), studyList);
+		
+		//Re populate the screen with all the formdef's for the current studydef
+		((List)screen).deleteAll();
+		
+		//Repopulate the screen with all the formdef's for the current studydef
+		//When done this seems to make the upload generate duplicates
+		/*Vector formList = getOpenXdataController().getCurrentStudy().getForms();
+		for (byte i=0; i<formList.size(); i++) {
+			forms.addElement(formList.elementAt(i));
+			((List)screen).append(((FormDef)formList.elementAt(i)).getName(), null);
+		}*/
+		
+		//Set the appropriate command menu options
+		screen.setTitle("Form data uploaded");
+		screen.removeCommand(DefaultCommands.cmdSave);
+		screen.removeCommand(DefaultCommands.cmdUploadData);
+		screen.removeCommand(DefaultCommands.cmdDelete);
+		screen.addCommand(DefaultCommands.cmdExit);
+		screen.addCommand(DefaultCommands.cmdMainMenu);
+		display.setCurrent(screen);
+		//getOpenXdataController().showFormDataList(formData.getDef());
+
+	}
+	
 	private boolean selectMissingValueQtn(byte pageNo){	
 
 		if(pageNo != currentPageIndex)

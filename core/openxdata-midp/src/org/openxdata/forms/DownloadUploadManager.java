@@ -265,27 +265,19 @@ public class DownloadUploadManager implements TransportLayerListener,AlertMessag
 		downloadMenuText();
 	}
 
-	public void uploadData(Displayable currentScreen, Vector studyList,String userName, String password) {
+	public void uploadData(Displayable currentScreen, Vector studyList, FormData formData, String userName, String password) {
 		this.userName = userName;
 		this.password = password;
 		this.studyList = studyList;
+		this.formData = formData;
 		this.setPrevSrceen(currentScreen);
 		alertMsg.setPrevScreen(currentScreen);
 
-		if (studyList == null || studyList.size() == 0) {
+		if (formData == null && (studyList == null || studyList.size() == 0)) {
 			currentAction = CA_ERROR_MSG_DISPLAY;
 			alertMsg.show(MenuText.DOWNLOAD_FORMS_FIRST());
 		} 
 		else {
-			/*for(byte i=0; i<studyList.size(); i++){
-				StudyDef studyDef = (StudyDef)studyList.elementAt(i);
-				if(studyDef == null || studyDef.getForms() == null){
-					currentAction = CA_ERROR_MSG_DISPLAY;
-					alertMsg.show("Problem looking for forms in study."+studyDef.getName());
-					return;
-				}
-			}*/
-
 			currentAction = CA_DATA_UPLOAD;
 			alertMsg.showConfirm(MenuText.UPLOAD_DATA_PROMPT());
 		}
@@ -573,6 +565,13 @@ public class DownloadUploadManager implements TransportLayerListener,AlertMessag
 						//EpihandyDataStorage.deleteData(new StudyDefList(studyList));
 						//assert(formData != null);
 						OpenXdataDataStorage.deleteFormData(studyId, formData);
+						if(OpenXdataDataStorage.getFormData(studyId, formData.getDefId()) != null){
+							int size = OpenXdataDataStorage.getFormData(studyId, formData.getDefId()).size();
+							controller.clearFormDataList(formData,false);							
+						}else{
+							controller.clearFormDataList(formData,true);
+						}
+						
 					//}
 						
 					if (dataOut instanceof FormDataSummaryList) {
@@ -596,8 +595,6 @@ public class DownloadUploadManager implements TransportLayerListener,AlertMessag
 						
 						if (transportLayerListener != null)
 							transportLayerListener.uploaded(dataOutParams, dataOut);
-						
-						controller.clearFormDataList();
 					}
 					else{
 						currentDataCount++;
@@ -662,22 +659,30 @@ public class DownloadUploadManager implements TransportLayerListener,AlertMessag
 	}
 
 	private StudyDataList getCollectedData() {
-		if(studyList == null)
-			return null;
-
 		StudyDataList studyDatalist = new StudyDataList();
-		for (int i = 0; i < studyList.size(); i++){
-			StudyDef studyDef = (StudyDef) studyList.elementAt(i);
-			if(studyDef.getForms() == null || studyDef.getForms().isEmpty()){
-				//Study list always has no forms, so we have to get them from the database.
-				studyDef = OpenXdataDataStorage.getStudy(studyDef.getId());				
-			}
-
-			//If no forms downloaded yet, then we don't expect any data to save.
-			if(studyDef != null){
-				StudyData studyData = getCollectedStudyData(studyDef.getId(),studyDef.getForms());
-				if(studyData != null)
-					studyDatalist.addStudy(studyData);
+		
+		if (formData != null) {
+			StudyData studyData = new StudyData(controller.getCurrentStudy().getId());
+			studyData.addForm(formData);
+			studyDatalist.addStudy(studyData);
+			totalDataCount = 1;
+		} else {
+			if(studyList == null)
+				return null;
+			
+			for (int i = 0; i < studyList.size(); i++){
+				StudyDef studyDef = (StudyDef) studyList.elementAt(i);
+				if(studyDef.getForms() == null || studyDef.getForms().isEmpty()){
+					//Study list always has no forms, so we have to get them from the database.
+					studyDef = OpenXdataDataStorage.getStudy(studyDef.getId());				
+				}
+		
+				//If no forms downloaded yet, then we don't expect any data to save.
+				if(studyDef != null){
+					StudyData studyData = getCollectedStudyData(studyDef.getId(),studyDef.getForms());
+					if(studyData != null)
+						studyDatalist.addStudy(studyData);
+				}
 			}
 		}
 

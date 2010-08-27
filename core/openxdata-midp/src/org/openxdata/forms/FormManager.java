@@ -238,7 +238,7 @@ public class FormManager implements TransportLayerListener{
 	 */
 	public void uploadData(Displayable currentScreen){
 		if(isUserLoggedOn())
-			downloadMgr.uploadData(prevScreen, controller.getStudyList(),userMgr.getUserName(), userMgr.getPassword());
+			downloadMgr.uploadData(prevScreen, controller.getStudyList(), null, userMgr.getUserName(), userMgr.getPassword());
 	}
 	
 	public void selectForm(boolean studyEditingMode,Displayable currentScreen){
