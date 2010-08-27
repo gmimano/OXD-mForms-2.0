@@ -7,6 +7,7 @@ import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.List;
 
+import org.openxdata.db.OpenXdataDataStorage;
 import org.openxdata.model.FormData;
 import org.openxdata.model.FormDef;
 import org.openxdata.model.StudyDef;
@@ -72,7 +73,8 @@ public class FormDataListView extends AbstractView implements AlertMessageListen
 			screen.setCommandListener(this);
 			screen.addCommand(DefaultCommands.cmdNew);
 			screen.addCommand(DefaultCommands.cmdBack);
-			screen.addCommand(DefaultCommands.cmdUploadData);			
+			screen.addCommand(DefaultCommands.cmdUploadData);
+			screen.addCommand(DefaultCommands.cmdUploadAllFormData);			
 			if(formDataList.size() > 0)
 				screen.addCommand(DefaultCommands.cmdDelete);
 			screen.addCommand(DefaultCommands.cmdMainMenu);
@@ -108,7 +110,7 @@ public class FormDataListView extends AbstractView implements AlertMessageListen
 				handleDeleteCommand(d);
 			else if(c == DefaultCommands.cmdMainMenu)
 				getOpenXdataController().backToMainMenu();
-			else if(c == DefaultCommands.cmdUploadData){
+			else if(c == DefaultCommands.cmdUploadAllFormData){
 				int currentFormId = formDef.getId();//current form
 				Vector studyList = new Vector();
 				FormDef fd = getOpenXdataController().getCurrentStudy().getForm(currentFormId);
@@ -118,9 +120,11 @@ public class FormDataListView extends AbstractView implements AlertMessageListen
 				sd.setId(getOpenXdataController().getCurrentStudy().getId());
 				sd.setForms(forms);		
 				studyList.addElement(sd);
-				
 				getOpenXdataController().uploadData(this.getScreen(), studyList);
-				//((List)screen).deleteAll();// assuming upload was successful
+
+			}else if(c == DefaultCommands.cmdUploadData){
+				FormData formData = (FormData)this.formDataList.elementAt(((List)screen).getSelectedIndex());		
+				getOpenXdataController().uploadData(this.getScreen(), formData);
 			}
 		}
 		catch(Exception e){
@@ -129,9 +133,20 @@ public class FormDataListView extends AbstractView implements AlertMessageListen
 		}
 	}
 	
-	public void clearFormDataList() {
-		formDataList = new Vector();
-		((List)screen).deleteAll();
+	public void clearFormDataList(FormData formData, boolean deleteAll) {
+		List formDataListSc = ((List)screen);
+		//formDataList.delete(formDataList.getSelectedIndex());
+		for(int i=0; i<formDataListSc.size(); i++){
+			String title = formDataListSc.getString(i);
+			if(title.equals(formData.getDataDescription())){
+				formDataListSc.delete(i);
+				formDataList.removeElementAt(i);				
+			}
+		}
+		if(deleteAll){
+			//No formdata therefore clear screen
+			((List)screen).deleteAll();
+		}
 	}
 
 	/**
