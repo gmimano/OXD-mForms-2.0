@@ -543,6 +543,10 @@ public class MenuText {
 		return getText((short)128,"Main Menu");
 	}
 	
+	public static String UPLOAD_ALL_FORM_DATA(){
+		return getText((short)129,"Upload All Form Data");
+	}
+	
 	public static String SELECT_LANGUAGE(){
 		return getText((short)-1,"Select Language");
 	}
