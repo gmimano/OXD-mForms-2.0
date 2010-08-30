@@ -77,6 +77,9 @@ public class DefaultCommands {
 	/** Command in the menu to upload entered data */
 	public static  Command cmdUploadData = new Command(MenuText.UPLOAD_DATA(), MenuText.UPLOAD_DATA(), Command.SCREEN, 2);
 	
+	/** Command in the menu to upload all entered data for a specific form*/
+	public static  Command cmdUploadAllFormData = new Command(MenuText.UPLOAD_ALL_FORM_DATA(), MenuText.UPLOAD_ALL_FORM_DATA(), Command.SCREEN, 2);	
+	
 	/** Command in the menu to configure application */
 	public static  Command cmdSettings = new Command(MenuText.SETTINGS(), MenuText.SETTINGS(), Command.SCREEN, 3);	
 	
