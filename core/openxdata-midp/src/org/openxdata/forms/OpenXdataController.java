@@ -170,7 +170,7 @@ public class OpenXdataController implements Controller, StorageListener, AlertMe
 			//Null check is to prevent bug where we cant get off form list to go backwards.
 			//This happens when clients dirrectly call showForm() and want back to go to
 			//one of their form lists. (eg openclinica client)
-			if(currentView == null)
+			if (currentView == null)
 				this.prevScreen = currentScreen;
 			
 			setStudyEditingMode(studyEditingMode);
@@ -178,7 +178,7 @@ public class OpenXdataController implements Controller, StorageListener, AlertMe
 			if(displayForm){
 				FireSkipRules(formData);
 				this.formViewer.showForm(formData,formEventListener,allowDelete);
-				//saveCurrentView(formViewer);
+				saveCurrentView(formViewer);
 			}
 		}
 		catch(Exception e){

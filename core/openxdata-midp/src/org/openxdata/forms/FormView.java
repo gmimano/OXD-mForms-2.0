@@ -370,10 +370,11 @@ public class FormView extends AbstractView implements AlertMessageListener {
 	private void handleCancelCommand(Displayable d){
 		currentAction = CA_CONFIRM_CANCEL;
 
-		if(dirty)
+		if (dirty) {
 			alertMsg.showConfirm(MenuText.FORM_CLOSE_PROMPT());
-		else
+		} else {
 			onAlertMessage(AlertMessageListener.MSG_OK);
+		}
 	}
 
 	/**
@@ -552,13 +553,14 @@ public class FormView extends AbstractView implements AlertMessageListener {
 	 */
 	public void onAlertMessage(byte msg){
 		if(msg == AlertMessageListener.MSG_OK){
-			if(currentAction == CA_CONFIRM_CANCEL || currentAction == CA_ERROR)
+			if(currentAction == CA_CONFIRM_CANCEL || currentAction == CA_ERROR) {
 				getOpenXdataController().handleCancelCommand(this);
-			else if(currentAction == CA_CONFIRM_DELETE) {
+			} else if(currentAction == CA_CONFIRM_DELETE) {
 				getOpenXdataController().deleteForm(formData,this);
 				getOpenXdataController().handleCancelCommand(this);
-			} else
+			} else {
 				display.setCurrent(screen);
+			}
 		}
 		else
 			show();
