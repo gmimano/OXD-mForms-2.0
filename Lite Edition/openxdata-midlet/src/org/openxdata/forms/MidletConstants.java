@@ -13,5 +13,5 @@ package org.openxdata.forms;
 public class MidletConstants  {
 	
 	public static final String TITLE = "openXdata 1.7";
-	public static final boolean HIDE_STUDIES = false;
+
 }

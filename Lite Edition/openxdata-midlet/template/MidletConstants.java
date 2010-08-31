@@ -13,5 +13,5 @@ package org.openxdata.forms;
 public class MidletConstants  {
 	
 	public static final String TITLE = "@midlet.name@ @version.major@.@version.minor@";
-	public static final boolean HIDE_STUDIES = @hide.studies@;
+
 }
