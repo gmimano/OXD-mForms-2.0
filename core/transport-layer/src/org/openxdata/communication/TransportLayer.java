@@ -2,12 +2,14 @@ package org.openxdata.communication;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.EOFException;
 import java.io.IOException;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Vector;
 
 import javax.microedition.io.Connection;
+import javax.microedition.io.ConnectionNotFoundException;
 import javax.microedition.io.Connector;
 import javax.microedition.io.HttpConnection;
 import javax.microedition.io.StreamConnection;
@@ -26,6 +28,7 @@ import org.openxdata.util.MenuText;
 import org.openxdata.util.SimpleOrderedHashtable;
 
 import com.jcraft.jzlib.ZInputStream;
+import com.jcraft.jzlib.ZStreamException;
 
 
 /**
@@ -561,8 +564,10 @@ public class TransportLayer implements Runnable, BluetoothClientListener, AlertM
 
 			int status  = ((HttpConnection)con).getResponseCode();
 			if (status != HttpConnection.HTTP_OK) {
-				this.eventListener.errorOccured(MenuText.RESPONSE_CODE_FAIL() + status 
-						+ ". " + MenuText.SERVER_INVALID_URL(), null);
+				this.eventListener.errorOccured(
+						MenuText.SERVER_INVALID_URL() + " " +
+						MenuText.RESPONSE_CODE_FAIL() + status + ".", 
+						null);
 			}
 			else {//TODO May need some more specific failure codes
 				//For HTTP, we get only data back. Status is via HTTP status code. So no need of readin the data in param.				
@@ -575,10 +580,33 @@ public class TransportLayer implements Runnable, BluetoothClientListener, AlertM
 		catch (SecurityException e) {
 			this.eventListener.errorOccured(MenuText.DEVICE_PERMISSION_DENIED(),e);
 		}
+		/*catch (ConnectionNotFoundException e) {
+			this.eventListener.errorOccured(
+					MenuText.PROBLEM_HANDLING_REQUEST() + 
+					MenuText.SERVER_INVALID_URL() + " " +
+					"error code: CNFE.", 
+					null);
+		}
+		catch (EOFException e) {
+			this.eventListener.errorOccured(
+					MenuText.PROBLEM_HANDLING_REQUEST() + 
+					MenuText.SERVER_INVALID_URL() + " " +
+					"error code: EOFE.", 
+					null);
+		}
+		catch (ZStreamException e) {
+			this.eventListener.errorOccured(
+					MenuText.PROBLEM_HANDLING_REQUEST() + 
+					MenuText.SERVER_INVALID_URL() + " " +
+					"error code: ZSE.",
+					null);
+		}*/
 		catch (Exception e) {
 			this.eventListener.errorOccured(
-					MenuText.PROBLEM_HANDLING_REQUEST() + e.getMessage()
-					+ ". " + MenuText.SERVER_INVALID_URL(), null);
+					MenuText.PROBLEM_HANDLING_REQUEST() + 
+					MenuText.SERVER_INVALID_URL() + " " +
+					"error code: " + e.getMessage() + ". " , 
+					null);
 			e.printStackTrace();
 		}
 		finally {
