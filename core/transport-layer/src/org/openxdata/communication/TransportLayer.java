@@ -565,8 +565,8 @@ public class TransportLayer implements Runnable, BluetoothClientListener, AlertM
 			int status  = ((HttpConnection)con).getResponseCode();
 			if (status != HttpConnection.HTTP_OK) {
 				this.eventListener.errorOccured(
-						MenuText.SERVER_INVALID_URL() + " " +
-						MenuText.RESPONSE_CODE_FAIL() + status + ".", 
+						MenuText.RESPONSE_CODE_FAIL() + status + ". " +
+						MenuText.SERVER_INVALID_URL(), 
 						null);
 			}
 			else {//TODO May need some more specific failure codes
@@ -580,32 +580,11 @@ public class TransportLayer implements Runnable, BluetoothClientListener, AlertM
 		catch (SecurityException e) {
 			this.eventListener.errorOccured(MenuText.DEVICE_PERMISSION_DENIED(),e);
 		}
-		/*catch (ConnectionNotFoundException e) {
-			this.eventListener.errorOccured(
-					MenuText.PROBLEM_HANDLING_REQUEST() + 
-					MenuText.SERVER_INVALID_URL() + " " +
-					"error code: CNFE.", 
-					null);
-		}
-		catch (EOFException e) {
-			this.eventListener.errorOccured(
-					MenuText.PROBLEM_HANDLING_REQUEST() + 
-					MenuText.SERVER_INVALID_URL() + " " +
-					"error code: EOFE.", 
-					null);
-		}
-		catch (ZStreamException e) {
-			this.eventListener.errorOccured(
-					MenuText.PROBLEM_HANDLING_REQUEST() + 
-					MenuText.SERVER_INVALID_URL() + " " +
-					"error code: ZSE.",
-					null);
-		}*/
 		catch (Exception e) {
 			this.eventListener.errorOccured(
 					MenuText.PROBLEM_HANDLING_REQUEST() + 
-					MenuText.SERVER_INVALID_URL() + " " +
-					"error code: " + e.getMessage() + ". " , 
+					MenuText.SERVER_INVALID_URL() +
+					" Error: " + e.getMessage() + ". " , 
 					null);
 			e.printStackTrace();
 		}
