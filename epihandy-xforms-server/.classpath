@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/epihandy"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/epihandy-xform-layer"/>
+	<classpathentry kind="lib" path="/minixpath/lib/kxml2-2.3.0.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/dbutils"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry excluding="**/.svn/|**/CVS/" kind="src" path="src"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/dbutils"/>
+	<classpathentry kind="var" path="WTK/lib/cldcapi11.jar"/>
+	<classpathentry kind="var" path="WTK/lib/midpapi20.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

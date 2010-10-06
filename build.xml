@@ -1,0 +1,5 @@
+<project name="motech-mforms" default="build-midlet">
+	<target name="build-midlet">
+		<ant antfile="epihandy-midlet/build.xml" inheritall="false"/>
+	</target>
+</project>

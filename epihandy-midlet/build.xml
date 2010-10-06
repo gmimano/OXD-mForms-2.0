@@ -1,0 +1,231 @@
+<project name="openxdata-midlet" default="generate-obfuscated-jad" basedir=".">
+	<property file="../build.properties"/>
+	<property name="midp" value="${WTK-ROOT}"/>
+	<property name="midp_lib" value="${midp}/lib/midpapi20.jar"/>
+	<property name="cldc_lib" value="${midp}/lib/cldcapi11.jar"/>
+	<property name="mmapi" value="${midp}/lib/mmapi.jar"/>
+	<property name="jsr179" value="${midp}/lib/jsr179.jar" />
+	<property name="dbutils" value="../dbutils/dist/dbutils.jar"/>
+	<property name="epihandy-midp" value="../epihandy-midp/dist/epihandy-midp.jar"/>
+	<property name="epihandy" value="../epihandy/dist/epihandy.jar"/>
+	<property name="midp-mvc" value="../midp-mvc/dist/midp-mvc.jar"/>
+	<property name="midp-dbutils" value="../midp-dbutils/dist/midp-dbutils.jar"/>
+	<property name="midp-utils" value="../midp-utils/dist/midp-utils.jar"/>
+	<property name="transport-layer" value="../transport-layer/dist/transportlayer.jar"/>
+	<property name="jzlib" value="../jzlib-1.0.7/dist/jzlib-1.0.7.jar"/>
+	<property name="cldc_classes.zip" value="../epihandy-midp/lib/cldc_classes.zip"/>
+
+	<property name="midlet-version" value="1.2.0" />
+	<property name="midlet-name" value="OpenXdata mForms" />
+	<property name="midlet-description" value="Mobile data collection tool for OpenXdata" />
+	<property name="midlet-icon" value="/icons/openxdata.png" />
+	<property name="midlet-vendor" value="www.openxdata.org" />
+	<property name="midlet-mainclass" value="org.fcitmuk.epihandy.forms.MainForm" />
+
+	<property name="httpUploadUrl" value="http://localhost:8080/openxdata/mpsubmit" />
+	<property name="httpDownloadUrl" value="http://localhost:8080/openxdata/mpsubmit" />
+	<property name="packaged-jar-name" value="${ant.project.name}-${midlet-version}.jar"/>
+	<property name="obfuscated-jar-name" value="${ant.project.name}-tiny-${midlet-version}.jar"/>
+
+	<property name="wtk.cldc.version" value="1.1"/>
+	<property name="wtk.midp.version" value="2.0"/>
+	<property name="wtk.home" value="${WTK-ROOT}"/>
+
+	<property name="proguard.home" value="C:/proguard4.4" />
+	<property name="proguard" value="${proguard.home}/lib/proguard.jar" />
+
+	<property name="antenna.home" value="C:/Antenna" />
+	<property name="antenna" value="${antenna.home}/antenna-bin-1.2.1-beta.jar" />
+
+	<property name="debug" value="false" />
+
+	<taskdef classpath="${proguard}" resource="proguard/ant/task.properties" />
+	<taskdef classpath="${antenna}" resource="antenna.properties" />
+
+	<path id="boot.classpath">
+		<pathelement location="${midp_lib}" />
+		<pathelement location="${cldc_lib}" />
+	</path>
+
+	<path id="classpath">
+		<pathelement location="${epihandy}" />
+		<pathelement location="${midp-dbutils}" />
+		<pathelement location="${dbutils}" />
+		<pathelement location="${epihandy-midp}" />
+		<pathelement location="${midp-mvc}" />
+		<pathelement location="${midp-utils}" />
+		<pathelement location="${transport-layer}" />
+		<pathelement location="${cldc_classes.zip}" />
+		<pathelement location="${jzlib}" />
+	</path>
+
+	<path id="preverify.classpath">
+		<path refid="boot.classpath" />
+		<path refid="classpath" />
+	</path>
+
+	<path id="obfuscate.classpath">
+		<path refid="boot.classpath" />
+		<path location="${mmapi}" />
+		<path location="${jsr179}" />
+	</path>
+
+	<target name="init" description="intialization">
+
+		<condition property="run-debug">
+			<istrue value="${debug}"/>
+		</condition>
+
+		<path id="bootclasspath">
+			<fileset dir="${wtk.home}/lib">
+				<include name="**/*.jar"/>
+			</fileset>
+		</path>
+
+		<mkdir dir="dist"/>
+		<mkdir dir="build/obf"/>
+	</target>
+
+	<target name="clean" description="Delete bin and dist directories">
+		<delete dir="bin"/>
+		<delete dir="dist" />
+		<delete dir="build" />
+	</target>
+
+	<target name="compile" depends="init, clean, build-dependencies">
+		<mkdir dir="bin"/>
+		<javac destdir="bin" bootclasspathref="boot.classpath" classpathref="classpath" target="1.1" source="1.3" debug="${debug}">
+			<src path="src"/>
+		</javac>
+	</target>
+
+	<target name="preverify" depends="clean, init, compile">
+		<mkdir dir="build/preverified"/>
+		<exec executable="${midp}/bin/preverify">
+			<arg value="-classpath" />
+			<arg path="${toString:preverify.classpath}"/>
+			<arg line="-d build/preverified"/>
+			<arg line="bin"/>
+		</exec>
+	</target>
+
+	<target name="obfuscate" depends="package">
+
+		<!-- obfuscate jar-->
+		<echo>obfuscating jar</echo>
+		<proguard>
+			<libraryjar refid="obfuscate.classpath"/>
+		  -injars      dist/${packaged-jar-name}
+		  -outjars     dist/obf/${obfuscated-jar-name}
+		  -repackageclasses ''
+		  -allowaccessmodification
+		  -microedition
+		  -printseeds
+		  -keep public class * extends javax.microedition.midlet.MIDlet
+		</proguard>
+
+	</target>
+
+	<target name="build-dependencies">
+		<ant antfile="../dbutils/build.xml" target="package" inheritall="false">
+			<property name="debug" value="${debug}" />
+		</ant>
+		<ant antfile="../epihandy/build.xml" target="package" inheritall="false">
+			<property name="debug" value="${debug}" />
+		</ant>
+		<ant antfile="../midp-mvc/build.xml" target="package" inheritall="false">
+			<property name="debug" value="${debug}" />
+		</ant>
+		<ant antfile="../midp-utils/build.xml" target="package" inheritall="false">
+			<property name="debug" value="${debug}" />
+		</ant>
+		<ant antfile="../midp-dbutils/build.xml" target="package" inheritall="false">
+			<property name="debug" value="${debug}" />
+		</ant>
+		<ant antfile="../jzlib-1.0.7/build.xml" target="package" inheritall="false" >
+			<property name="debug" value="${debug}" />
+		</ant>
+		<ant antfile="../transport-layer/build.xml" target="package" inheritall="false">
+			<property name="debug" value="${debug}" />
+		</ant>
+		<ant antfile="../epihandy-midp/build.xml" target="package" inheritall="false">
+			<property name="debug" value="${debug}" />
+		</ant>
+	</target>
+
+	<target name="package" depends="preverify">
+
+		<copy todir="build/filtered">
+			<fileset dir="res" id="filtered.resources">
+				<include name="**/*.properties"/>
+			</fileset>
+			<filterset begintoken="@" endtoken="@">
+				<filter token="httpUploadUrl" value="${httpUploadUrl}" />
+				<filter token="httpDownloadUrl" value="${httpDownloadUrl}" />
+			</filterset>
+		</copy>
+
+		<jar basedir="build/preverified" jarfile="dist/${packaged-jar-name}">
+			<manifest>
+				<attribute name="MIDlet-Name" value="${midlet-name}"/>
+				<attribute name="MIDlet-Version" value="${midlet-version}"/>
+				<attribute name="MIDlet-Vendor" value="${midlet-vendor}"/>
+				<attribute name="MIDlet-Description" value="${midlet-description}"/>
+				<attribute name="MicroEdition-Profile" value="MIDP-${wtk.midp.version}"/>
+				<attribute name="MicroEdition-Configuration" value="CLDC-${wtk.cldc.version}"/>
+				<attribute name="MIDlet-1" value="${midlet-name},${midlet-icon},${midlet-mainclass}"/>
+				<attribute name="MIDlet-Permissions" value="javax.microedition.media.control.VideoControl.getSnapshot" />
+			</manifest>
+			<fileset dir="res" excludes="**/*.properties" />
+			<fileset dir="build/filtered" />
+			<zipfileset src="${epihandy}"/>
+			<zipfileset src="${midp-dbutils}"/>
+			<zipfileset src="${dbutils}"/>
+			<zipfileset src="${epihandy-midp}"/>
+			<zipfileset src="${midp-mvc}"/>
+			<zipfileset src="${midp-utils}"/>
+			<zipfileset src="${transport-layer}"/>
+			<zipfileset src="${jzlib}"/>
+			<zipfileset src="${cldc_classes.zip}"/>
+		</jar>
+
+	</target>
+
+	<target name="generate-obfuscated-jad" depends="obfuscate">
+		<wtkjad jadfile="dist/obf/${ant.project.name}-tiny.jad" jarfile="dist/obf/${obfuscated-jar-name}"
+			config="CLDC-${wtk.cldc.version}" profile="MIDP-${wtk.midp.version}" version="${midlet-version}"
+			vendor="${midlet-vendor}" description="${midlet-description}" name="${midlet-name}" update="true">
+			<midlet name="${midlet-name}" class="${midlet-mainclass}" icon="${midlet-icon}"/>
+		</wtkjad>
+	</target>
+
+	<target name="run-obfuscated" depends="generate-obfuscated-jad">
+		<exec executable="${midp}/bin/emulator">
+			<arg line="-Xdescriptor:dist/obf/${ant.project.name}-tiny.jad" />
+		</exec>
+	</target>
+
+	<target name="generate-jad" depends="package">
+		<wtkjad jadfile="dist/${ant.project.name}.jad" jarfile="dist/${packaged-jar-name}"
+			config="CLDC-${wtk.cldc.version}" profile="MIDP-${wtk.midp.version}" version="${midlet-version}"
+			vendor="${midlet-vendor}" description="${midlet-description}" name="${midlet-name}" update="true">
+			<midlet name="${midlet-name}" class="${midlet-mainclass}" icon="${midlet-icon}"/>
+		</wtkjad>
+	</target>
+
+	<target name="run-non-obfuscated" depends="generate-jad">
+		<exec executable="${midp}/bin/emulator">
+			<arg line="-Xdescriptor:dist/${ant.project.name}.jad" />
+		</exec>
+	</target>
+
+	<target name="run-debug" depends="generate-jad">
+		<fail unless="run-debug" message="Attempted to run debugger, but didn't compile with debugging symbols. Please set debug=true and run a clean build." />
+		<exec executable="${midp}/bin/emulator">
+			<arg line="-Xdescriptor:dist/${ant.project.name}.jad" />
+			<arg line="-Xdebug" />
+			<arg line="-Xrunjdwp:transport=dt_socket,address=8000,server=y,suspend=n" />
+		</exec>
+	</target>
+
+</project>

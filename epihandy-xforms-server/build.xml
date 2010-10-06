@@ -1,0 +1,87 @@
+<?xml version="1.0"?>
+<!-- ********************************************************* -->
+<!-- ** epihandy xforms server                                ** -->
+<!-- **	                                                    ** -->
+<!-- ** @author Daniel Kayiwa                               ** -->
+<!-- ** @version 1.0                                        ** -->
+<!-- ********************************************************* -->
+<project name="epihandy-xforms-server" default="package">
+	
+	<property name="dbutils" value="../dbutils/dist/dbutils.jar" />
+	<property name="xforms-layer" value="../epihandy-xform-layer/dist/epihandy-xform-layer.jar" />
+	
+	<path id="classpath">
+		<pathelement location="${dbutils}"/>
+		<pathelement location="${xforms-layer}"/>
+	</path>
+	
+	<!-- *********************************************************** -->
+	<!-- **                     TARGETS                           ** -->
+	<!-- *********************************************************** -->
+	<target name="init" description="initialization">
+	</target>
+
+	<target name="clean" description="Delete bin and dist directories">
+		<delete dir="dist" />
+		<delete dir="bin" />
+	</target>
+	
+	<target name="build-dependencies">
+		<ant antfile="../dbutils/build.xml" target="package" inheritall="false">
+			<property name="debug" value="true" />
+		</ant>
+		<ant antfile="../epihandy/build.xml"  target="package" inheritall="false">
+			<property name="debug" value="true" />
+		</ant>
+		<ant antfile="../minixpath/build.xml" target="package" inheritall="false"/>
+		<ant antfile="../epihandy-xform-layer/build.xml" target="package" inheritall="false"/>
+	</target>
+
+	<target name="compile" depends="build-dependencies,clean,init" description="Compiles the API">
+		<mkdir dir="bin" />
+		
+		<!--  Compile midlet java files -->
+		<javac destdir="bin" classpathref="classpath" debug="true">
+			<src path="src/" />
+			<include name="**/*.java" />
+		</javac>	
+	</target>
+	
+	<target name="package" depends="compile" description="Packages epihandy-xforms-server into jar file">
+		<mkdir dir="dist" />
+		
+		<!-- Create distributable jar file -->
+		<jar destfile="dist/epihandy-xforms-server.jar">
+			<zipfileset dir="bin" prefix="" />
+			<zipfileset src="..\epihandy-xform-layer\dist\epihandy-xform-layer.jar" />
+		</jar>
+	</target>
+	
+	<target name="source-bundle">
+		<jar destfile="dist/epihandy-xforms-server-sources.jar">
+			<zipfileset dir="../epihandy/src" includes="**/*.java" />
+			<zipfileset dir="../epihandy-xform-layer/src" includes="**/*.java" />
+			<zipfileset dir="../minixpath/src" includes="**/*.java" />
+			<zipfileset dir="../dbutils/src" includes="**/*.java" />
+			<zipfileset dir="src" includes="**/*.java" />
+		</jar>
+	</target>
+	
+	<target name="javadoc-bundle">
+		<javadoc destdir="dist/api">
+			<fileset dir="../epihandy/src" includes="**/*.java" />
+			<fileset dir="../epihandy-xform-layer/src" includes="**/*.java" />
+			<fileset dir="../minixpath/src" includes="**/*.java" />
+			<fileset dir="../dbutils/src" includes="**/*.java" />
+			<fileset dir="src" includes="**/*.java" />
+		</javadoc>
+		<jar destfile="dist/epihandy-xforms-server-javadoc.jar" basedir="dist/api" />
+		<delete dir="dist/api" />
+	</target>
+	
+	<target name="deploy" depends="package" description="Deploys to the tomcat lib dirrectory.">
+		<copy tofile="H:\openxdata\Server\openxdata server\lib\epihandy-xforms-server.jar" file="dist\epihandy-xforms-server.jar"/>
+	</target>
+
+</project>
+

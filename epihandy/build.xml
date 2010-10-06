@@ -1,0 +1,72 @@
+<?xml version="1.0"?>
+<!-- ********************************************************* -->
+<!-- ** epihandy mobile API                                 ** -->
+<!-- **	                                                    ** -->
+<!-- ** @author Daniel Kayiwa                               ** -->
+<!-- ** @version 1.0                                        ** -->
+<!-- ********************************************************* -->
+<project name="openxdata" default="package">
+		
+	<property file="../build.properties"/>
+	<property name="midp" value="${WTK-ROOT}"/>
+	<property name="midp_lib" value="${midp}/lib/midpapi20.jar"/>
+	<property name="cldc_lib" value="${midp}/lib/cldcapi11.jar" />
+	<property name="dbutils" value="../dbutils/dist/dbutils.jar" />
+	<property name="debug" value="false" />
+	
+	<path id="classpath">
+		<pathelement location="${dbutils}"/>
+	</path>
+	
+	<path id="boot.classpath">
+		<pathelement location="${cldc_lib}" />
+		<pathelement location="${midp_lib}" />
+	</path>
+	
+	<path id="preverify.classpath">
+		<path refid="boot.classpath" />
+		<path refid="classpath" />
+	</path>
+	
+	<!-- *********************************************************** -->
+	<!-- **                     TARGETS                           ** -->
+	<!-- *********************************************************** -->
+	<target name="init" description="initialization">
+
+	</target>
+
+	<target name="clean" description="Delete bin and dist directories">
+		<delete dir="dist" />
+		<delete dir="bin" />
+	</target>
+
+	<target name="compile" depends="init" description="Compiles the API">
+		<mkdir dir="bin" />
+		
+		<!--  Compile midlet java files -->
+		<javac destdir="bin" bootclasspathref="boot.classpath" classpathref="classpath" source="1.3" target="1.1" debug="${debug}">
+			<src path="src/" />
+			<include name="**/*.java" />
+		</javac>	
+	</target>
+	
+	<target name="preverify" depends="clean, init, compile">
+		<mkdir dir="build/preverified"/>
+		<exec executable="${midp}/bin/preverify">
+			<arg line="-classpath"/>
+			<arg path="${toString:preverify.classpath}"/>
+			<arg line="-d build/preverified"/>
+			<arg line="bin"/>
+		</exec>
+	</target>
+	
+	<target name="package" depends="preverify" description="Packages epihandy api into jar file">
+		<mkdir dir="dist" />
+		
+		<!-- Create distributable jar file -->
+		<jar destfile="dist/epihandy.jar">
+			<zipfileset dir="build/preverified" prefix="" />
+		</jar>
+	</target>
+
+</project>

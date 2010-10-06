@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+<!-- ********************************************************* -->
+<!-- ** epihandy-xform-layer API                                 ** -->
+<!-- **	                                                    ** -->
+<!-- ** @author Daniel Kayiwa                               ** -->
+<!-- ** @version 1.0                                        ** -->
+<!-- ********************************************************* -->
+<project name="epihandy-xform-layer" default="package">
+
+	<property name="epihandy" value="../epihandy/dist/epihandy.jar" />
+	<property name="minixpath" value="../minixpath/dist/minixpath.jar" />
+	<property name="dbutils" value="../dbutils/dist/dbutils.jar" />
+	
+	<path id="classpath">
+		<fileset dir="../minixpath/lib">
+			<include name="**/*.jar"/>
+		</fileset>
+		<pathelement location="${minixpath}"/>
+		<pathelement location="${epihandy}"/>
+		<pathelement location="${dbutils}"/>
+	</path>
+	
+	<!-- *********************************************************** -->
+	<!-- **                     TARGETS                           ** -->
+	<!-- *********************************************************** -->
+	<target name="init" description="initialization">
+	</target>
+
+	<target name="clean" description="Delete bin and dist directories">
+		<delete dir="dist" />
+		<delete dir="bin" />
+	</target>
+
+	<target name="compile" depends="init" description="Compiles the API">
+		<mkdir dir="bin" />
+		<mkdir dir="dist" />
+		
+		<!--  Compile midlet java files -->
+		<javac destdir="bin" classpathref="classpath" source="1.5" debug="true">
+			<src path="src/" />
+			<include name="**/*.java" />
+		</javac>	
+	</target>
+	
+	<target name="package" depends="clean,init,compile" description="Packages epihandy-xform-layer into jar file">
+		<mkdir dir="dist" />
+		
+		<!-- Create distributable jar file -->
+		<jar destfile="dist/epihandy-xform-layer.jar">
+			<zipfileset dir="bin" prefix="" />
+			<zipfileset src="..\epihandy\dist\epihandy.jar" />
+			<zipfileset src="..\dbutils\dist\dbutils.jar" />
+			<zipfileset src="..\minixpath\dist\minixpath.jar" />
+			<zipfileset src="..\minixpath\lib\kxml2-2.3.0.jar" />
+		</jar>
+	</target>
+
+</project>
+

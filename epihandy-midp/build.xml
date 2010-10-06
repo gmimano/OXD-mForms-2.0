@@ -1,0 +1,88 @@
+<?xml version="1.0"?>
+<!-- ********************************************************* -->
+<!-- ** OpenMRS Test Application                            ** -->
+<!-- **	                                                    ** -->
+<!-- ** @author Daniel Kayiwa                               ** -->
+<!-- ** @version 1.0                                        ** -->
+<!-- ********************************************************* -->
+<project name="openxdata-midp" default="package">
+	<property file="../build.properties"/>
+	<property name="midp" value="${WTK-ROOT}"/>
+	<property name="midp_lib" value="${midp}/lib/midpapi20.jar"/>
+	<property name="cldc_lib" value="${midp}/lib/cldcapi11.jar" />
+	<property name="mmapi" value="${midp}/lib/mmapi.jar"/>
+	<property name="epihandy" value="../epihandy/dist/epihandy.jar"/>
+	<property name="midp-mvc" value="../midp-mvc/dist/midp-mvc.jar"/>
+	<property name="midp-dbutils" value="../midp-dbutils/dist/midp-dbutils.jar"/>
+	<property name="midp-utils" value="../midp-utils/dist/midp-utils.jar"/>
+	<property name="jsr179" value="${midp}/lib/jsr179.jar" />
+	<property name="dbutils" value="../dbutils/dist/dbutils.jar"/>
+	<property name="transport-layer" value="../transport-layer/dist/transportlayer.jar"/>
+	<property name="cldc_classes.zip" value="lib/cldc_classes.zip"/>
+	<property name="debug" value="false" />
+	
+	<path id="boot.classpath">
+		<pathelement location="${midp_lib}"/>
+		<pathelement location="${cldc_lib}"/>
+	</path>
+		
+	<path id="classpath">
+		<pathelement location="${cldc_classes.zip}"/>
+		<pathelement location="${epihandy}"/>
+		<pathelement location="${midp-dbutils}"/>
+		<pathelement location="${dbutils}"/>
+		<pathelement location="${midp-utils}"/>
+		<pathelement location="${transport-layer}"/>
+		<pathelement location="${midp-mvc}"/>
+		<pathelement location="${jsr179}"/>
+		<pathelement location="${mmapi}"/>
+	</path>
+	
+	<path id="preverify.classpath">
+		<path refid="boot.classpath"/>
+		<path refid="classpath"/>
+	</path>
+	
+	<!-- *********************************************************** -->
+	<!-- **                     TARGETS                           ** -->
+	<!-- *********************************************************** -->
+	<target name="init" description="initialization">
+	</target>
+
+	<target name="clean" description="Delete bin and dist directories">
+		<delete dir="dist" />
+		<delete dir="bin" />
+		<delete dir="build/preverified"/>
+	</target>
+
+	<target name="compile" depends="clean,init" description="Compiles the midlet">
+		<mkdir dir="bin" />
+		
+		<!--  Compile midlet java files -->
+		<javac destdir="bin" bootclasspathref="boot.classpath" classpathref="classpath" target="1.1" source="1.3" debug="${debug}">
+			<src path="src/" />
+			<include name="**/*.java" />
+		</javac>	
+	</target>
+	
+	<target name="preverify" depends="clean,init, compile">
+		<mkdir dir="build/preverified"/>
+		<exec executable ="${midp}/bin/preverify">
+			<arg line="-classpath"/>
+			<arg path="${toString:preverify.classpath}" />
+			<arg line="-d build/preverified"/>
+			<arg line="bin"/>
+		</exec>
+	</target>
+	
+	<target name="package" depends="preverify" description="Packages midlet into jar file">
+		<mkdir dir="dist" />
+		
+		<!-- Create distributable jar file -->
+		<jar destfile="dist/epihandy-midp.jar">
+			<fileset dir="build/preverified" includes="**/*" />
+		</jar>
+	</target>
+
+</project>
+

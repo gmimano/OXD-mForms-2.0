@@ -1,0 +1,575 @@
+package org.fcitmuk.epihandy.midp.forms;
+
+import java.util.Vector;
+
+import javax.microedition.lcdui.Choice;
+import javax.microedition.lcdui.Command;
+import javax.microedition.lcdui.Displayable;
+import javax.microedition.lcdui.Image;
+import javax.microedition.lcdui.List;
+
+import org.fcitmuk.epihandy.EpihandyConstants;
+import org.fcitmuk.epihandy.FormData;
+import org.fcitmuk.epihandy.PageData;
+import org.fcitmuk.epihandy.QuestionData;
+import org.fcitmuk.epihandy.QuestionDef;
+import org.fcitmuk.epihandy.ValidationRule;
+import org.fcitmuk.epihandy.midp.db.StoredStudyDef;
+import org.fcitmuk.epihandy.midp.model.Model;
+import org.fcitmuk.epihandy.midp.model.ModelListener;
+import org.fcitmuk.midp.mvc.AbstractView;
+import org.fcitmuk.util.AlertMessage;
+import org.fcitmuk.util.AlertMessageListener;
+import org.fcitmuk.util.DefaultCommands;
+import org.fcitmuk.util.MenuText;
+
+/**
+ * Displays a form. This means displaying the list of questions on a form.
+ * This view may also optionally like to display the answers of the questions if any.
+ * It is up to the view to either display the questions either one at a time
+ * or all at the same time. The view does not know how to edit a question (as in doesnt know
+ * how to edit images, dates, numbers, text etc). All it does is provide the user with
+ * a way of starting editing of a question. This could be by a button, voice or any other
+ * way depending on its implementation. The view also doesnt know where and how to save a form.
+ * All it does is delegate to the controller and pass it the modified model.
+ * It is the view which decides whether to group questions in pages or any other format.
+ * It should allow the user to:
+ * 1. Browse through the questions.
+ * 2. Edit a question, 
+ * 3. Save the form.
+ * 4. Close the form.
+ * 
+ * @author Daniel
+ *
+ */
+public class FormView extends AbstractView implements AlertMessageListener, ModelListener {
+
+	/** Command for displaying the next page. */
+	private Command cmdNext = new Command(MenuText.NEXT_PAGE(),Command.SCREEN,1);
+
+	/** Command for displaying the previous page. */
+	private Command cmdPrev = new Command(MenuText.PREVIOUS_PAGE(),Command.SCREEN,2);
+
+	private FormData formData;
+	private PageData currentPage; //TODO is this really necessary????
+	private AlertMessage alertMsg;
+
+	//for managing state
+	private int currentPageIndex = EpihandyConstants.NO_SELECTION;
+	private int currentQuestionIndex = EpihandyConstants.NO_SELECTION;
+	private QuestionData currentQuestion = null;
+
+	private final byte CA_NONE = 0;
+	private final byte CA_CONFIRM_CANCEL = 1;
+	private final byte CA_CONFIRM_DELETE = 2;
+	private final byte CA_ERROR = 3;
+
+	private byte currentAction = CA_NONE;
+
+	private boolean dirty = false;
+
+	/** Keeps a mapping of displayed questions (in a page) to their indices in the list control.
+	 *  We were originally using the questions collection of the page in formdata which
+	 *  did not work as their indices get out of sync with those of the List control
+	 *  because of invisible questions not being put in the list.
+	 */
+	private Vector displayedQuestions;
+
+	private Model model;
+
+	public FormView(Model model) {
+		this.model = model;
+		model.addModelListener(this);
+		List list = new List("", Choice.IMPLICIT);
+		list.setFitPolicy(List.TEXT_WRAP_ON);
+		screen = list;
+		alertMsg = new AlertMessage(display,title,screen,this);
+	}
+
+	/**
+	 * Called by the controller after an editing operation.
+	 * 
+	 * @param saved - true when the edit was commited, else false.
+	 */
+	public void onEndEdit(boolean saved, Command cmd){
+
+		if(!dirty && saved)
+			dirty = true;
+
+		display.setCurrent(screen);
+
+		if(cmd == DefaultCommands.cmdBackParent){
+			if(currentQuestionIndex > 0)
+				currentQuestionIndex-=1;
+			else
+				currentQuestionIndex = displayedQuestions.size() - 1;
+		}
+		else if(cmd == DefaultCommands.cmdPrev){
+			if(currentQuestionIndex > 1)
+				currentQuestionIndex-=2;
+			else{
+				currentQuestionIndex -=1;	
+				cmd = DefaultCommands.cmdFirst;
+			}
+		}
+		else if(cmd == DefaultCommands.cmdFirst)
+			currentQuestionIndex = 0;
+		else if(cmd == DefaultCommands.cmdLast)
+			currentQuestionIndex = displayedQuestions.size() - 1;
+
+		if((currentQuestionIndex == 0 && (cmd == DefaultCommands.cmdFirst))||
+				(currentQuestionIndex == displayedQuestions.size() - 1 && (cmd == DefaultCommands.cmdBackParent))){
+			currentQuestionIndex = 0;
+			currentQuestion = null;
+		}
+		else
+			currentQuestion  = (QuestionData)displayedQuestions.elementAt(currentQuestionIndex);
+
+		showPage(this.currentPageIndex, new Integer(currentQuestionIndex));
+
+		if(cmd != DefaultCommands.cmdBackParent && GeneralSettings.isSingleQtnEdit())
+		{
+			//if we are on the last question.
+			if(currentQuestionIndex == displayedQuestions.size()){
+				//if no on the last page
+				if(currentPageIndex < formData.getPages().size()){
+					currentPageIndex++;
+					if(currentPageIndex == formData.getPages().size()){
+						currentPageIndex = 0;
+						currentQuestionIndex = 0;
+					}
+					showPage(currentPageIndex,new Integer(0));
+				}
+			}
+
+			handleListSelectCommand(screen);
+		}
+	}
+
+	/**
+	 * Gets the index of the next question for editing.
+	 * Gets the next visible and enabled question, else stays at the current question.
+	 * 
+	 * @param answered - set to true if you want to skip questions with answers already.
+	 * 
+	 * @return - the next question display index.
+	 */
+	private int getNextQuestionIndex(boolean notAnswered){
+		int index = currentQuestionIndex;//+1;
+
+		while(index < displayedQuestions.size()){
+			QuestionData qtn = (QuestionData)displayedQuestions.elementAt(index);
+			QuestionDef def = qtn.getDef();
+			if(def.isVisible() && def.isEnabled()){
+				if(notAnswered){
+					if(!qtn.isAnswered()){
+						currentQuestionIndex = index;
+						break;
+					}
+				}
+				else{
+					if(currentQuestion == null){
+						currentQuestion = qtn;
+						currentQuestionIndex = index;
+						break;
+					}
+					else if(currentQuestion.getId() == qtn.getId()){
+						do { 
+							currentQuestionIndex = ++index; 
+							if (currentQuestionIndex < displayedQuestions.size()) { 
+								currentQuestion = (QuestionData)displayedQuestions.elementAt(currentQuestionIndex); 
+							} else { 
+								break; // if we are at the end, stop looking 
+							} 
+						} while (!currentQuestion.getDef().isEnabled());  
+						break; 
+					}
+				}
+			}
+			index++;
+		}
+		return currentQuestionIndex;
+	}
+
+	public void showForm() {
+		display.setCurrent(screen);
+	}
+
+	private void initForm(FormData data){
+		try{
+			formData = new FormData(data);
+
+			screen.setTitle(formData.getDef().getName() + " - " + title);
+
+			getEpihandyController().FireSkipRules(formData);
+
+			currentPageIndex = 0;
+			currentQuestionIndex = 0;	
+			currentQuestion = null;
+			dirty = false;
+
+			//create here such that the show page can use.
+
+			showPage(currentPageIndex,new Integer(currentQuestionIndex));
+
+			//commands are added here because the show page can remove all of them for ease
+			//of current implementation.
+			if(displayedQuestions.size() > 0){
+				screen.setCommandListener(this);
+				if(!data.isNew())
+					screen.addCommand(DefaultCommands.cmdDelete);
+				else
+					screen.removeCommand(DefaultCommands.cmdDelete);
+				screen.addCommand(DefaultCommands.cmdSave);
+				screen.addCommand(DefaultCommands.cmdCancel);
+				StoredStudyDef study = getEpihandyController().getCurrentStudy(); // TODO: Should get from model
+
+				// Only show error commands if there are errors present.
+				if (model.formDataInError(study.getId(), data
+						.getDefId(), data.getRecordId())) {
+					screen.addCommand(DefaultCommands.cmdShowErrors);
+					screen.addCommand(DefaultCommands.cmdClearErrors);
+				}
+				else {
+					screen.removeCommand(DefaultCommands.cmdShowErrors);
+					screen.removeCommand(DefaultCommands.cmdClearErrors);
+				}
+			}
+		}
+		catch(Exception e){
+			String s = MenuText.FORM_DISPLAY_PROBLEM();
+			if(e.getMessage() != null && e.getMessage().trim().length() > 0)
+				s = e.getMessage();
+			currentAction = CA_ERROR;
+			alertMsg.showError(s);
+		}
+	}
+
+	/**
+	 * Shows a particular page.
+	 * 
+	 * @param pageIndex - the index of the page.
+	 * @param currentQuestionIndex - the index of the question to preselect.
+	 */
+	private void showPage(int pageIndex,Integer currentQuestionIndex){
+
+		Vector pages = formData.getPages();
+		if (pageIndex < 0 && pageIndex >= pages.size()) {
+			alertMsg.showError(MenuText.FORM_DISPLAY_PROBLEM());
+			return;
+		}
+		
+		currentPageIndex = pageIndex;
+		((List)screen).deleteAll();
+
+		currentPage = ((PageData)pages.elementAt(pageIndex));
+		boolean useQtnNumbering = GeneralSettings.isQtnNumbering(); 
+	 	int qtnNumberCount = (useQtnNumbering ? previousQuestionCount(pages, pageIndex) : 0); 
+		Vector qns = currentPage.getQuestions();
+
+		Image image = null;
+		QuestionData qn; 
+		displayedQuestions = new Vector();
+		for(int i=0; i<qns.size(); i++){
+			qn = (QuestionData)qns.elementAt(i);
+			if (qn.getDef().isVisible()) {
+				
+				if (qn.getDef().isMandatory() && !qn.isAnswered())
+					image = Images.REQUIRED_IMAGE;
+				else if (!qn.getDef().isEnabled())
+					 image = Images.DISABLED_QUESTION;
+				else 
+					image = Images.EMPTY_IMAGE;
+				
+				((List)screen).append(
+						(useQtnNumbering ? String.valueOf(qtnNumberCount+i+1)+ " " : "") + 
+						qn.toString(), 
+						image);
+				
+				displayedQuestions.addElement(qn);
+			}
+		}
+
+		if(pageIndex < pages.size()-1)
+			screen.addCommand(cmdNext);
+		else
+			screen.removeCommand(cmdNext);
+
+		if(pageIndex > 0)
+			screen.addCommand(cmdPrev);
+		else
+			screen.removeCommand(cmdPrev);
+
+		if(displayedQuestions.size() != 0) {
+			selectNextQuestion(currentQuestionIndex);
+
+			String name = "";
+			if(formData.getDef().getPageCount() > 1)
+				name = currentPage.getDef().getName()+ " - ";
+			screen.setTitle(name + formData.getDef().getName() + " - " + title);
+		}
+	}
+	
+ 	private int previousQuestionCount(Vector pages, int pageIndex) { 
+ 	 	int qtnNumberCount = 0; 
+ 	 	for (int i=0; i<pageIndex; i++) { 
+ 	 		PageData pd = (PageData)pages.elementAt(i); 
+ 	 		qtnNumberCount+=pd.getNumberOfQuestions(); 
+ 	 	} 
+ 	 	return qtnNumberCount; 
+ 	} 
+
+	/**
+	 * Selects the next question to edit.
+	 * 
+	 * @param currentQuestionIndex - index of the current question to edit
+	 */
+	private void selectNextQuestion(Integer currentQuestionIndex){
+		if(currentQuestionIndex == null)
+			((List)screen).setSelectedIndex(0, true);
+		else{
+			currentQuestionIndex = new Integer(getNextQuestionIndex(false));
+			if(currentQuestionIndex != null && currentQuestionIndex.intValue() < ((List)screen).size())
+				((List)screen).setSelectedIndex(currentQuestionIndex.intValue(), true);
+			else if(currentQuestionIndex != null  && currentQuestionIndex.intValue() == ((List)screen).size()){
+				//TODO Restructure this with the above. Added temporarily to prevent jumping to the
+				//first question from the last one.
+				currentQuestionIndex = new Integer(((List)screen).size() - 1);
+				((List)screen).setSelectedIndex(currentQuestionIndex.intValue(), true);
+			}
+		}
+	}
+
+	/** Moves to the next page. */
+	private void nextPage(){
+		showPage(++this.currentPageIndex,null);
+	}
+
+	/** Moves to the previous page. */
+	private void prevPage(){
+		showPage(--this.currentPageIndex,null);
+	}
+
+	/**
+	 * Processes the command events.
+	 * 
+	 * @param c - the issued command.
+	 * @param d - the screen object the command was issued for.
+	 */
+	public void commandAction(Command c, Displayable d) {
+		try{
+			if(c == List.SELECT_COMMAND)
+				handleListSelectCommand(d);
+			else if(c == DefaultCommands.cmdSave)
+				handleSaveCommand(d);
+			else if(c == DefaultCommands.cmdCancel)
+				handleCancelCommand(d);
+			else if(c == cmdNext)
+				nextPage();
+			else if(c == cmdPrev)
+				prevPage();
+			else if(c == DefaultCommands.cmdDelete)
+				handleDeleteCommand(d);
+			else if(c == DefaultCommands.cmdShowErrors)
+				handleShowErrors();
+			else if (c == DefaultCommands.cmdClearErrors)
+				handleClearErrors();
+		}
+		catch(Exception e){
+			alertMsg.showError(e.getMessage());
+		}
+	}
+
+	private void handleShowErrors() {
+		currentAction = CA_NONE;
+		int studyDefId = getEpihandyController().getCurrentStudy().getId();
+		String errorMessage = model.getFormError(studyDefId, formData);
+		alertMsg.show(errorMessage);
+	}
+
+	private void handleClearErrors() {
+		currentAction = CA_NONE;
+		int studyDefId = getEpihandyController().getCurrentStudy().getId();
+		// TODO: Clean this up...
+		model.deleteFormError(studyDefId, formData);
+		alertMsg.show("Cleared form errors.");
+	}
+
+	/**
+	 * Processes the delete command event.
+	 * 
+	 * @param d - the screen object the command was issued for.
+	 */
+	private void handleDeleteCommand(Displayable d){
+		currentAction = CA_CONFIRM_DELETE;
+		alertMsg.showConfirm(MenuText.DATA_DELETE_PROMPT());
+	}
+
+	/**
+	 * Processes the cancel command event.
+	 * 
+	 * @param d - the screen object the command was issued for.
+	 */
+	private void handleCancelCommand(Displayable d){
+		currentAction = CA_CONFIRM_CANCEL;
+
+		if(dirty)
+			alertMsg.showConfirm(MenuText.FORM_CLOSE_PROMPT());
+		else
+			onAlertMessage(AlertMessageListener.MSG_OK);
+	}
+
+	/**
+	 * Processes the Save command event.
+	 * 
+	 * @param d - the screen object the command was issued for.
+	 */
+	private void handleSaveCommand(Displayable d){
+		//Check if user entered data correctly.
+		if(!formData.isRequiredAnswered()){
+			alertMsg.show(MenuText.REQUIRED_PROMPT());
+			selectMissingValueQtn();
+		}
+		else if(!formData.isFormAnswered())
+			alertMsg.show(MenuText.ANSWER_MINIMUM_PROMPT());
+		else{
+			String errMsg = selectInvalidQtn();			
+			if(errMsg != null){
+				alertMsg.show(errMsg);
+				return;
+			}
+
+			getEpihandyController().saveFormData(formData);
+		}
+	}
+
+	private boolean selectMissingValueQtn(byte pageNo){	
+
+		if(pageNo != currentPageIndex)
+			showPage(pageNo,new Integer(0));
+
+		for(int i=0; i<displayedQuestions.size(); i++){
+			QuestionData qtn = (QuestionData)displayedQuestions.elementAt(i);
+			QuestionDef def = qtn.getDef();
+			if(def.isMandatory() && !qtn.isAnswered()){
+				((List)screen).setSelectedIndex(i, true);
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	private String selectInvalidQtn(byte pageNo){	
+
+		if(pageNo != currentPageIndex)
+			showPage(pageNo,new Integer(0));
+
+		for(int i=0; i<displayedQuestions.size(); i++){
+			QuestionData qtn = (QuestionData)displayedQuestions.elementAt(i);
+
+			ValidationRule rule = formData.getDef().getValidationRule(qtn.getId());
+			if(rule == null)
+				continue;
+
+			rule.setFormData(formData);
+
+			if(!rule.isValid()){
+				((List)screen).setSelectedIndex(i, true);
+				return rule.getErrorMessage();
+			}
+		}
+
+		return null;
+	}
+
+	private void selectMissingValueQtn(){
+		Vector pages = formData.getPages();
+		for(byte i = 0; i < pages.size(); i++){
+			if(selectMissingValueQtn(i))
+				break;
+		}
+	}
+
+	private String selectInvalidQtn(){
+		Vector pages = formData.getPages();
+		for(byte i = 0; i < pages.size(); i++){
+			String errorMsg = selectInvalidQtn(i);
+			if(errorMsg != null)
+				return errorMsg;
+		}
+		return null;
+	}
+
+	/**
+	 * Processes the list selection command event. This is the command that the user
+	 * invokes to start editing of a question.
+	 * 
+	 * @param d - the screen object the command was issued for.
+	 */
+	public void handleListSelectCommand(Displayable d){
+		//save the user state for more friendliness
+		currentQuestionIndex = ((List)d).getSelectedIndex();
+		currentQuestion = (QuestionData)displayedQuestions.elementAt(currentQuestionIndex);
+		if(currentQuestion.getDef().isEnabled()){
+			getEpihandyController().startEdit(currentQuestion, currentQuestionIndex+1, displayedQuestions.size());
+		}
+	}
+
+	private EpihandyController getEpihandyController(){
+		return (EpihandyController)controller;
+	}
+
+	/**
+	 * If in cancel mode, user is sure wants to cancel saving changed (discard form data)
+	 */
+	public void onAlertMessage(byte msg){
+		if(msg == AlertMessageListener.MSG_OK){
+			if(currentAction == CA_CONFIRM_CANCEL || currentAction == CA_ERROR)
+				getEpihandyController().handleCancelCommand(this);
+			else if(currentAction == CA_CONFIRM_DELETE)
+				getEpihandyController().deleteForm(formData);
+			else
+				display.setCurrent(screen);
+		}
+		else
+			show();
+
+		currentAction = CA_NONE;
+	}
+
+	public FormData getFormData(){
+		return formData;
+	}
+
+	public void formDataChanged(Model m) {
+		// TODO Auto-generated method stub
+	}
+
+	public void formDataSelected(Model m) {
+		FormData selectedData = model.getSelectedFormData();
+		if (selectedData == null)
+			selectedData = new FormData(model.getActiveForm());
+		initForm(selectedData);
+	}
+
+	public void formErrorsChanged(Model m) {
+		// TODO Auto-generated method stub
+	}
+
+	public void formSelected(Model m) {
+		// TODO Auto-generated method stub
+	}
+
+	public void formsChanged(Model m) {
+		// TODO Auto-generated method stub
+	}
+
+	public void studiesChanged(Model m) {
+		// TODO Auto-generated method stub
+	}
+
+	public void studySelected(Model m) {
+		// TODO Auto-generated method stub
+	}
+}

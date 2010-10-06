@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry excluding="**/.svn/|**/CVS/" kind="src" path="src"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/dbutils"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/midp-utils"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/midp-mvc"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/midp-dbutils"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/epihandy"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/jzlib-1.0.7"/>
+	<classpathentry kind="var" path="WTK/lib/cldcapi11.jar"/>
+	<classpathentry kind="var" path="WTK/lib/midpapi20.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
