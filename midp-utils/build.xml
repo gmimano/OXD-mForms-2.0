@@ -14,7 +14,11 @@
 	<property name="dbutils" value="../dbutils/dist/dbutils.jar"/>
 	<property name="epihandy" value="../epihandy/dist/epihandy.jar" />
 	<property name="debug" value="false" />
-	
+
+    <property name="locale" value="en" />
+    <property name="locale.fromfile" value="i18n/menu_text_${locale}.properties" />
+    <property name="locale.file" value="build/res/menu_text.properties" />
+    
 	<path id="boot.classpath">
 		<pathelement location="${midp_lib}"/>
 		<pathelement location="${cldc_lib}"/>
@@ -63,13 +67,17 @@
 		</exec>
 	</target>
 
-	<target name="package" depends="preverify" description="Packages code into jar file">
+	<target name="select-translation">
+        <copy file="${locale.fromfile}" tofile="${locale.file}" overwrite="true" />
+	</target>
+
+	<target name="package" depends="preverify,select-translation" description="Packages code into jar file">
 		<mkdir dir="dist" />
 		
 		<!-- Create distributable jar file -->
 		<jar destfile="dist/midp-utils.jar">
 			<fileset dir="build/preverified" includes="**/*" />
-			<fileset dir="res" />
+			<fileset dir="build/res" />
 		</jar>
 	</target>
 
