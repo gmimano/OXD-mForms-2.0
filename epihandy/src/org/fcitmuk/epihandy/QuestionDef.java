@@ -280,12 +280,12 @@ public class QuestionDef implements Persistent{
 
 		setVariableName(dis.readUTF().intern());
 
-		if(getType() != QuestionDef.QTN_TYPE_REPEAT)
+		if (getType() != QuestionDef.QTN_TYPE_REPEAT) {
 			setOptions(PersistentHelper.read(dis,OptionDef.class));
-		else{
-			options = new RepeatQtnsDef();
-			((RepeatQtnsDef)options).read(dis);
-			((RepeatQtnsDef)options).setQtnDef(this);
+		} else {
+			RepeatQtnsDef repeatQtns = new RepeatQtnsDef(this);
+			repeatQtns.read(dis);
+			setRepeatQtnsDef(repeatQtns);
 		}
 	}
 
