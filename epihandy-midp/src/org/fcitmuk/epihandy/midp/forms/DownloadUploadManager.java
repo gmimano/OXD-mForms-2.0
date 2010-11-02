@@ -10,6 +10,7 @@ import org.fcitmuk.db.util.Persistent;
 import org.fcitmuk.db.util.PersistentInt;
 import org.fcitmuk.epihandy.EpihandyConstants;
 import org.fcitmuk.epihandy.FormData;
+import org.fcitmuk.epihandy.FormDataSummary;
 import org.fcitmuk.epihandy.LanguageList;
 import org.fcitmuk.epihandy.MenuTextList;
 import org.fcitmuk.epihandy.RequestHeader;
@@ -546,6 +547,20 @@ public class DownloadUploadManager implements TransportLayerListener,AlertMessag
 						uploadMessage.append(uploadResponse.getErrorCount());
 						uploadMessage.append(" failed, ");
 					}
+					
+					// Display session references
+					StringBuffer sessionReferences = new StringBuffer();
+					if (uploadResponse.getSuccessCount() > 0) {
+						sessionReferences.append("\nSession reference(s):");
+						FormDataSummary[] summary = uploadResponse.getUploadFormDataSummary();
+						for (int i=0, n=summary.length; i<n; i++) {
+							sessionReferences.append("\n'");
+							String description = formUpload.getDataDescription(summary[i].getStudyIndex(), summary[i].getFormIndex());
+							sessionReferences.append(description);
+							sessionReferences.append("' = ");
+							sessionReferences.append(summary[i].getReference());
+						}
+					}
 
 					// Remove the successfully uploaded forms, if settings allow
 					if (GeneralSettings.deleteDataAfterUpload()) {
@@ -554,6 +569,8 @@ public class DownloadUploadManager implements TransportLayerListener,AlertMessag
 						uploadMessage.append(deletedCount);
 						uploadMessage.append(" removed.");
 					}
+					
+					uploadMessage.append(sessionReferences);
 					
 					message = uploadMessage.toString().intern();
 					
@@ -565,13 +582,15 @@ public class DownloadUploadManager implements TransportLayerListener,AlertMessag
 				else
 					message = MenuText.DATA_UPLOAD_FAILURE();
 			} catch (Exception e) {
-				//e.printStackTrace();
+				e.printStackTrace();
 				message = MenuText.PROBLEM_CLEANING_STORE();
 			}
 		} else if (currentAction == CA_SINGLE_DATA_UPLOAD) {
 			ResponseHeader status = (ResponseHeader) dataOutParams;
 			if (status.isSuccess()) {
 				StudyDataList studyDataList = (StudyDataList)dataIn;
+				UploadResponse uploadResponse = (UploadResponse) dataOut;
+				
 				StudyData studyData = (StudyData)studyDataList.getStudies().elementAt(0);
 				FormData formData = (FormData)studyData.getForms().elementAt(0);
 				if (GeneralSettings.deleteDataAfterUpload()) {
@@ -579,7 +598,15 @@ public class DownloadUploadManager implements TransportLayerListener,AlertMessag
 							controller.getCurrentStudy().getId(), 
 							formData);
 				}
-				message = MenuText.DATA_UPLOAD_SUCCESS();
+				
+				StringBuffer uploadMessage = new StringBuffer();
+				uploadMessage.append(MenuText.DATA_UPLOAD_SUCCESS());
+				FormDataSummary[] summary = uploadResponse.getUploadFormDataSummary();
+				if (summary.length > 0) {
+					uploadMessage.append("\nSession reference: ");
+					uploadMessage.append(summary[0].getReference());
+				}
+				message = uploadMessage.toString();
 			} else {
 				message = MenuText.DATA_UPLOAD_FAILURE();
 			}

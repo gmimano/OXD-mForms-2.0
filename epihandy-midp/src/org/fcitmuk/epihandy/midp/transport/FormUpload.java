@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.util.Vector;
 
 import org.fcitmuk.db.util.Persistent;
+import org.fcitmuk.epihandy.FormData;
+import org.fcitmuk.epihandy.FormDef;
 import org.fcitmuk.epihandy.midp.model.Model;
 
 /**
@@ -50,6 +52,15 @@ public class FormUpload implements Persistent {
 		Vector study = (Vector) uploadedFormsData.elementAt(studyPos);
 		int[] form = (int[]) study.elementAt(formPos);
 		return form;
+	}
+	
+	public String getDataDescription(int studyPos, int formPos) {
+		int[] ids = getFormAtPos(studyPos, formPos);
+		FormData formData = model.getFormData(ids[0], ids[1], ids[2]);
+		FormDef formDef = model.getFormDef(studyPos, formPos);
+		formData.setDef(formDef);
+		formData.buildDataDescription();
+		return formDef.getName() + " " + formData.getDataDescription();
 	}
 
 	/**
