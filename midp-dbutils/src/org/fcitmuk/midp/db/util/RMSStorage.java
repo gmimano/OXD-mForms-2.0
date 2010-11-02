@@ -208,7 +208,10 @@ public class RMSStorage implements Storage{
 			return obj;
 		}
 		catch(Exception e){
-			eventListener.errorOccured("Exception: ", e);
+			e.printStackTrace();
+			if (eventListener != null) {
+				eventListener.errorOccured("Exception: ", e);
+			}
 		}
 		finally{
 			close();
