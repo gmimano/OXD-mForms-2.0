@@ -125,24 +125,19 @@ public class FormView extends AbstractView implements AlertMessageListener, Mode
 		else
 			currentQuestion  = (QuestionData)displayedQuestions.elementAt(currentQuestionIndex);
 
+		// FIXME: serious code smell going on here with the "currentQuestionIndex" variables that shadow the class attribute - sometimes. Along with sneaky "pass by reference" to ensure the class variable is updated (sometimes)!
 		showPage(this.currentPageIndex, new Integer(currentQuestionIndex));
 
 		if(cmd != DefaultCommands.cmdBackParent && GeneralSettings.isSingleQtnEdit())
 		{
-			//if we are on the last question.
-			if(currentQuestionIndex == displayedQuestions.size()){
-				//if no on the last page
-				if(currentPageIndex < formData.getPages().size()){
-					currentPageIndex++;
-					if(currentPageIndex == formData.getPages().size()){
-						currentPageIndex = 0;
-						currentQuestionIndex = 0;
-					}
-					showPage(currentPageIndex,new Integer(0));
-				}
+			if (currentQuestionIndex == displayedQuestions.size()) {
+				// if we are beyond the last question
+				// start at the first question ("back to list" functionality which is consistent with "single question edit" setting on the DefaultTypeEditor)
+				currentQuestionIndex = 0;
+				showPage(currentPageIndex,new Integer(currentQuestionIndex));
+			} else {
+				handleListSelectCommand(screen);
 			}
-
-			handleListSelectCommand(screen);
 		}
 	}
 
@@ -188,6 +183,7 @@ public class FormView extends AbstractView implements AlertMessageListener, Mode
 			}
 			index++;
 		}
+		
 		return currentQuestionIndex;
 	}
 
@@ -325,13 +321,13 @@ public class FormView extends AbstractView implements AlertMessageListener, Mode
 	 * @param currentQuestionIndex - index of the current question to edit
 	 */
 	private void selectNextQuestion(Integer currentQuestionIndex){
-		if(currentQuestionIndex == null)
+		if (currentQuestionIndex == null) {
 			((List)screen).setSelectedIndex(0, true);
-		else{
+		} else {
 			currentQuestionIndex = new Integer(getNextQuestionIndex(false));
-			if(currentQuestionIndex != null && currentQuestionIndex.intValue() < ((List)screen).size())
+			if (currentQuestionIndex != null && currentQuestionIndex.intValue() < ((List)screen).size()) {
 				((List)screen).setSelectedIndex(currentQuestionIndex.intValue(), true);
-			else if(currentQuestionIndex != null  && currentQuestionIndex.intValue() == ((List)screen).size()){
+			} else if(currentQuestionIndex != null  && currentQuestionIndex.intValue() == ((List)screen).size()) {
 				//TODO Restructure this with the above. Added temporarily to prevent jumping to the
 				//first question from the last one.
 				currentQuestionIndex = new Integer(((List)screen).size() - 1);
