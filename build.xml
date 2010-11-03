@@ -2,4 +2,8 @@
 	<target name="build-midlet">
 		<ant antfile="epihandy-midlet/build.xml" inheritall="false"/>
 	</target>
+
+	<target name="run">
+		<ant antfile="epihandy-midlet/build.xml" target="run-obfuscated" inheritall="false"/>
+	</target>
 </project>
