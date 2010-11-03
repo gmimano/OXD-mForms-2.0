@@ -117,8 +117,8 @@ public class FormView extends AbstractView implements AlertMessageListener, Mode
 		else if(cmd == DefaultCommands.cmdLast)
 			currentQuestionIndex = displayedQuestions.size() - 1;
 
-		if((currentQuestionIndex == 0 && (cmd == DefaultCommands.cmdFirst))||
-				(currentQuestionIndex == displayedQuestions.size() - 1 && (cmd == DefaultCommands.cmdBackParent))){
+		if ( (currentQuestionIndex == 0 && cmd == DefaultCommands.cmdFirst) ||
+				(currentQuestionIndex == (displayedQuestions.size() - 1) && cmd == DefaultCommands.cmdBackParent) ) {
 			currentQuestionIndex = 0;
 			currentQuestion = null;
 		}
@@ -130,7 +130,7 @@ public class FormView extends AbstractView implements AlertMessageListener, Mode
 
 		if(cmd != DefaultCommands.cmdBackParent && GeneralSettings.isSingleQtnEdit())
 		{
-			if (currentQuestionIndex == displayedQuestions.size()) {
+			if (cmd != DefaultCommands.cmdLast && currentQuestionIndex == displayedQuestions.size()) {
 				// if we are beyond the last question
 				// start at the first question ("back to list" functionality which is consistent with "single question edit" setting on the DefaultTypeEditor)
 				currentQuestionIndex = 0;
