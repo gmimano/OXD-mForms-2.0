@@ -564,16 +564,4 @@ public class TransportLayer implements Runnable, AlertMessageListener {
 
 		connectionParameters.addElement(conParam);
 	}
-
-	public String getConnectionParameterValue(int conType, String name)
-	{		
-		for(int i=0; i<connectionParameters.size(); i++)
-		{
-			ConnectionParameter cp = (ConnectionParameter)connectionParameters.elementAt(i);
-			if(cp.getConnectionType() == conType && cp.getName().equals(name))
-				return cp.getValue(); //If parameter already exists, then we preserve the user customized value and dont overwrite it with the api hard coded one.
-		}
-
-		return null;
-	}
 }
