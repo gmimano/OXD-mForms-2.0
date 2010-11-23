@@ -118,10 +118,12 @@ public class FormData  extends AbstractRecord{
 		for(byte i=0; i<this.getDef().getPages().size(); i++){
 			PageDef pageDef = (PageDef)this.getDef().getPages().elementAt(i);
 			Vector questions = new Vector();
-			for(byte j=0; j<pageDef.getQuestions().size(); j++){
-				QuestionDef qtnDef = (QuestionDef)pageDef.getQuestions().elementAt(j);
-				QuestionData qtnData = new QuestionData(qtnDef);
-				questions.addElement(qtnData);
+			if (pageDef.getQuestions() != null) {
+				for(byte j=0; j<pageDef.getQuestions().size(); j++){
+					QuestionDef qtnDef = (QuestionDef)pageDef.getQuestions().elementAt(j);
+					QuestionData qtnData = new QuestionData(qtnDef);
+					questions.addElement(qtnData);
+				}
 			}
 			PageData pageData = new PageData(questions,pageDef);
 			pages.addElement(pageData);
