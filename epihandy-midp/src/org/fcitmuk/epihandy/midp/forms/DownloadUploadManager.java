@@ -7,7 +7,9 @@ import javax.microedition.lcdui.Displayable;
 import org.fcitmuk.communication.TransportLayer;
 import org.fcitmuk.communication.TransportLayerListener;
 import org.fcitmuk.db.util.Persistent;
+import org.fcitmuk.db.util.PersistentArray;
 import org.fcitmuk.db.util.PersistentInt;
+import org.fcitmuk.db.util.PersistentString;
 import org.fcitmuk.epihandy.EpihandyConstants;
 import org.fcitmuk.epihandy.FormData;
 import org.fcitmuk.epihandy.FormDataSummary;
@@ -231,13 +233,25 @@ public class DownloadUploadManager implements TransportLayerListener,AlertMessag
 			alertMsg.showConfirm(MenuText.UPLOAD_DATA_PROMPT());
 		}
 	}
+	
+	public void downloadUsers(Displayable currentScreen, String userName, String password) {
+		this.userName = userName;
+		this.password = password;
+
+		currentAction = CA_USERS_DOWNLOAD;
+		
+		if (currentScreen != null)
+			alertMsg.setPrevScreen(currentScreen);
+
+		downloadUsers();
+	}
 
 	private void downloadStudies() {
 		alertMsg.showProgress(MenuText.STUDY_LIST_DOWNLOAD(),MenuText.DOWNLOADING_STUDY_LIST());
 
 		requestHeader.setLocale(LanguageSettings.getLocale());
 		requestHeader.setAction(RequestHeader.ACTION_DOWNLOAD_STUDY_LIST);
-		
+
 		setCommunicationParams();
 		transportLayer.download(requestHeader, null, responseHeader,controller.getStudyDownload(), this, userName, password);
 	}
@@ -251,9 +265,10 @@ public class DownloadUploadManager implements TransportLayerListener,AlertMessag
 		PersistentInt studyIdParam = new PersistentInt(EpihandyConstants.NULL_ID);
 		if (this.currentStudy != null)
 			studyIdParam = new PersistentInt(currentStudy.getId());
-
+		PersistentArray dataInParams = new PersistentArray();
+		dataInParams.setValues(new Persistent[] {new PersistentString(userName), studyIdParam});
 		setCommunicationParams();
-		transportLayer.download(requestHeader, studyIdParam, responseHeader,controller.getUserAndFormDownload(), this, userName, password); // StudyDef
+		transportLayer.download(requestHeader, dataInParams, responseHeader,controller.getUserAndFormDownload(), this, userName, password); // StudyDef
 	}
 
 	private void downloadUsers() {
@@ -261,8 +276,9 @@ public class DownloadUploadManager implements TransportLayerListener,AlertMessag
 
 		requestHeader.setLocale(LanguageSettings.getLocale());
 		requestHeader.setAction(RequestHeader.ACTION_DOWNLOAD_USERS);
+		PersistentString userParam = new PersistentString(userName);
 		setCommunicationParams();
-		transportLayer.download(requestHeader, null, responseHeader,new UserList(), this, userName, password);
+		transportLayer.download(requestHeader, userParam, responseHeader,new UserList(), this, userName, password);
 	}
 	
 	private void downloadLanguages() {
@@ -322,9 +338,8 @@ public class DownloadUploadManager implements TransportLayerListener,AlertMessag
 		case CA_LANGUAGES_DOWNLOAD:
 		case CA_MENU_TEXT_DOWNLOAD:
 		case CA_FORMS_DOWNLOAD:
-			url = settings.getSetting(TransportLayer.KEY_FORM_DOWNLOAD_HTTP_URL);
-			break;
 		case CA_STUDY_LIST_DOWNLOAD:
+		case CA_USERS_DOWNLOAD:
 			url = settings.getSetting(TransportLayer.KEY_FORM_DOWNLOAD_HTTP_URL);
 			break;
 		case CA_DATA_UPLOAD: 
@@ -333,7 +348,7 @@ public class DownloadUploadManager implements TransportLayerListener,AlertMessag
 			break;
 		}
 		
-		if (url != null) {
+		if (url != null && !url.trim().equals("")) {
 			transportLayer.setCommnucationParameter(TransportLayer.KEY_HTTP_URL, url);
 		}
 
@@ -382,7 +397,7 @@ public class DownloadUploadManager implements TransportLayerListener,AlertMessag
 	 */
 	public void downloaded(Persistent dataInParams, Persistent dataIn, Persistent dataOutParams, Persistent dataOut) {
 		String message = MenuText.PROBLEM_SAVING_DOWNLOAD();
-		boolean wasUserDownload = false, errorsOccured = false;;
+		boolean errorsOccured = false;;
 		try {
 			if (currentAction == CA_STUDY_LIST_DOWNLOAD) {
 				StudyDownload dl = ((StudyDownload) dataOut);
@@ -395,14 +410,9 @@ public class DownloadUploadManager implements TransportLayerListener,AlertMessag
 			}
 			else if (currentAction == CA_USERS_DOWNLOAD) {
 				EpihandyDataStorage.saveUsers((UserList) dataOut);
-				wasUserDownload = true;
-				alertMsg.showProgress(MenuText.FORM_DOWNLOAD(),((UserList)dataOut).size()+" "+MenuText.USER_DOWNLOAD_SAVED());
-				currentAction = CA_FORMS_DOWNLOAD;
-				downloadForms();
-				alertMsg.showProgress(MenuText.FORM_DOWNLOAD(), MenuText.DOWNLOADING_FORMS());
+				message = ((UserList)dataOut).size()+" "+MenuText.USER_DOWNLOAD_SAVED();
 			} 
 			else if (currentAction == CA_FORMS_DOWNLOAD) {
-				
 				UsersAndFormDownload dl = ((UsersAndFormDownload) dataOut);
 
 				if (dl.getException() != null) {
@@ -444,12 +454,10 @@ public class DownloadUploadManager implements TransportLayerListener,AlertMessag
 			message += e.getMessage();
 		}
 
-		if (!wasUserDownload) { // after downloading users, we want to continue downloading forms.
-			currentAction = CA_NONE;
-			alertMsg.show(message);
-		}
+		currentAction = CA_NONE;
+		alertMsg.show(message);
 
-		if (!errorsOccured && transportLayerListener != null && !wasUserDownload)
+		if (!errorsOccured && transportLayerListener != null)
 			transportLayerListener.downloaded(dataInParams, dataIn, dataOutParams, dataOut);
 	}
 	
@@ -667,5 +675,9 @@ public class DownloadUploadManager implements TransportLayerListener,AlertMessag
 	
 	public void setPrevSrceen(Displayable screen){
 		alertMsg.setPrevScreen(screen); //TODO Need to fix this hack
+	}
+	
+	public void restorePrevScreen(){
+		setPrevSrceen(transportLayer.getPrevScreen());
 	}
 }

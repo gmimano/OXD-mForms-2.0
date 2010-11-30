@@ -272,6 +272,7 @@ public class TransportLayer implements Runnable, AlertMessageListener {
 				break;
 			}
 		}catch(Exception e){
+			e.printStackTrace();
 			this.eventListener.errorOccured(MenuText.PROBLEM_HANDLING_REQUEST(),e);
 		}
 	}
@@ -389,6 +390,7 @@ public class TransportLayer implements Runnable, AlertMessageListener {
 			this.eventListener.errorOccured(MenuText.DEVICE_PERMISSION_DENIED(),e);
 		}
 		catch(Exception e){
+			e.printStackTrace();
 			this.eventListener.errorOccured(MenuText.PROBLEM_HANDLING_REQUEST(),e);
 		}
 		finally{
@@ -442,8 +444,9 @@ public class TransportLayer implements Runnable, AlertMessageListener {
 				for(int i=0; i<connectionParameters.size(); i++)
 				{
 					ConnectionParameter conParam = (ConnectionParameter)connectionParameters.elementAt(i);
-					if(conParam.getValue() != null)
+					if(conParam.getValue() != null) {
 						settings.setSetting(conParam.getName(), conParam.getValue());
+					}
 				}
 				settings.saveSettings();
 			}

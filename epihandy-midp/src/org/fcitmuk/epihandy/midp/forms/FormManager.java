@@ -92,8 +92,8 @@ public class FormManager implements TransportLayerListener{
 		//register GPS type editor if it is available on the phone, otherwise use the default GPS one
 		controller.setTypeEditor(QuestionDef.QTN_TYPE_GPS, GPSTypeEditor.getGPSTypeEditor());
 		
-		userMgr = new UserManager(display,prevScreen,title,null);
 		downloadMgr = new DownloadUploadManager(transportLayer, controller, title, this);
+		userMgr = new UserManager(display,prevScreen,title,null, downloadMgr);
 		
 		((EpihandyController)controller).setDownloadManager(downloadMgr);
 		((EpihandyController)controller).setUserManager(userMgr);
@@ -107,9 +107,8 @@ public class FormManager implements TransportLayerListener{
 		QuestionData.dateDisplayFormat = DateSettings.getDateFormat();
 	}
 
-	public void setUserManager(UserManager userManager){
-		this.userMgr = userManager;
-		((EpihandyController)controller).setUserManager(userMgr);
+	public UserManager getUserManager() {
+		return userMgr;
 	}
 	
 	/**

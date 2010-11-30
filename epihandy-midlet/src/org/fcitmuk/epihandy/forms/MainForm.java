@@ -6,6 +6,9 @@ import javax.microedition.lcdui.Displayable;
 import javax.microedition.midlet.MIDlet;
 
 import org.fcitmuk.communication.TransportLayer;
+import org.fcitmuk.communication.TransportLayerListener;
+import org.fcitmuk.db.util.Persistent;
+import org.fcitmuk.epihandy.RequestHeader;
 import org.fcitmuk.epihandy.midp.db.EpihandyDataStorage;
 import org.fcitmuk.epihandy.midp.forms.FormManager;
 import org.fcitmuk.epihandy.midp.forms.LogonListener;
@@ -23,7 +26,7 @@ import org.fcitmuk.util.MenuText;
  * @author dagmar@cell-life.orgs
  *O
  */
-public class MainForm extends MIDlet implements StorageListener,AlertMessageListener,LogonListener,LogoutListener {
+public class MainForm extends MIDlet implements StorageListener,AlertMessageListener,LogonListener,LogoutListener,TransportLayerListener {
 	
 	/** Reference to the current display. */
 	private Display display;
@@ -59,7 +62,7 @@ public class MainForm extends MIDlet implements StorageListener,AlertMessageList
 		transportLayer.setDisplay(display);
 		transportLayer.setDefaultCommnucationParameter(TransportLayer.KEY_HTTP_URL, "");
 	
-		formMgr = new FormManager(title, display, null, null, transportLayer, null, this);
+		formMgr = new FormManager(title, display, null, null, transportLayer, this, this);
 		FormManager.setGlobalInstance(formMgr);
 		
 		mainScreen = formMgr.getPrevScreen(); // this was initialised for us
@@ -77,9 +80,9 @@ public class MainForm extends MIDlet implements StorageListener,AlertMessageList
 	}
 
 	protected void startApp() {
-		userMgr = new UserManager(display,mainScreen,title,this);
+		userMgr = formMgr.getUserManager();
+		userMgr.setLogonListener(this);
 		userMgr.logOn();
-		formMgr.setUserManager(userMgr);
 	}
 		
 	/**
@@ -129,5 +132,25 @@ public class MainForm extends MIDlet implements StorageListener,AlertMessageList
 	public void onLogout() {
 		exitConfirmMode = true;
 		alertMsg.showConfirm(MenuText.EXIT_PROMPT());
+	}
+
+	// TransportLayerListener
+	public void cancelled() {
+	}
+
+	// TransportLayerListener
+	public void downloaded(Persistent dataInParams, Persistent dataIn, Persistent dataOutParams, Persistent dataOut) {
+		RequestHeader requestHeader = (RequestHeader)dataInParams;
+		if (requestHeader.getAction() == RequestHeader.ACTION_DOWNLOAD_USERS) {
+			userMgr.validateUser();
+		}
+	}
+
+	// TransportLayerListener
+	public void updateCommunicationParams() {
+	}
+
+	// TransportLayerListener
+	public void uploaded(Persistent dataInParams, Persistent dataIn, Persistent dataOutParams, Persistent dataOut) {
 	}
 }

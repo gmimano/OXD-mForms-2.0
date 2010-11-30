@@ -37,12 +37,16 @@ public class UserManager extends AbstractView implements AlertMessageListener {
 	private LoginForm loginForm;
 	private LogonListener logonListener;
 	
-	public UserManager(Display display,Displayable prevScreen,String title,LogonListener logonListener){
+	private DownloadUploadManager downloadMgr;
+	private boolean retrievingUserDetails = false;
+	
+	public UserManager(Display display,Displayable prevScreen,String title,LogonListener logonListener, DownloadUploadManager downloadMgr){
 		super();
 		setDisplay(display);
 		setTitle(title);
 		setPrevScreen(prevScreen);
 		setLogonListener(logonListener);
+		setDownloadManager(downloadMgr);
 	}
 
 	/** 
@@ -85,6 +89,10 @@ public class UserManager extends AbstractView implements AlertMessageListener {
 		display.setCurrent(frm);
 	}
 	
+	public void validateUser() {
+		validateUser(loginForm);
+	}
+	
 	/**
 	 * Check to see if a user is authorised. As for now, we are not checking user
 	 * passwords because of danger of tranfering passwords over the place.
@@ -96,27 +104,32 @@ public class UserManager extends AbstractView implements AlertMessageListener {
 	 * @param password - the user password.
 	 * @return true when valid user, else false.
 	 */
-	private boolean isUserValid(String name, String password) throws Exception {
-		//I think it makes sense to force users enter a user name and password
-		//even when no user information has yet been loaded from the server.
-		if(name.trim().length() == 0 || password.trim().length() == 0)
+	private boolean isUserValid(String name, String password) {
+		retrievingUserDetails = false;
+		
+		if (name.trim().length() == 0 || password.trim().length() == 0)
 			return false;
 		
+		UserManager.user = null;
 		UserList users = EpihandyDataStorage.getUsers();
-		if(users == null || users.size() == 0)
-			return true; //No users in db so every one has free entry
-		
-		user = null;
-		for(int i=0; i<users.size(); i++){
-			user = users.getUser(i);
-			if(user.getName().toLowerCase().equals(name.toLowerCase()))
-				return authenticate(user,password);
+		if (users != null && users.size() > 0) {
+			for(int i=0; i<users.size(); i++){
+				User user = users.getUser(i);
+				if (user.getName().toLowerCase().equals(name.toLowerCase())) {
+					UserManager.user = user;
+					return authenticate(user,password);
+				}
+			}
 		}
+		// retrieve the user from the server (this happens in the background)
+		downloadMgr.downloadUsers(this.screen, name, password);
+		downloadMgr.setPrevSrceen(loginForm);
+		retrievingUserDetails = true; // indicate that the user is still being retrieved (not a login failure)
 		
 		return false;
 	}
 	
-	private boolean authenticate(User user, String password) throws Exception {
+	private boolean authenticate(User user, String password) {
 		String hashedPassword = encodeString(password + user.getSalt(), false);
 		boolean result = (hashedPassword.equals(user.getPassword()));
 		if (!result) {
@@ -130,7 +143,7 @@ public class UserManager extends AbstractView implements AlertMessageListener {
      * @param string to encode
      * @return the SHA-1 encryption of a given string
      */
-    public static String encodeString(String strToEncode, boolean hexString2) throws Exception {
+    public static String encodeString(String strToEncode, boolean hexString2) {
     	SHA1Digest digEng = new SHA1Digest();
     	
   		byte[] input = strToEncode.getBytes(); //TODO: pick a specific character encoding, don't rely on the platform default
@@ -181,9 +194,9 @@ public class UserManager extends AbstractView implements AlertMessageListener {
 	 * Gets login information from the user and check if he or she is authorised.
 	 * @param d
 	 */
-	private void validateUser(Displayable d) throws Exception {
+	private void validateUser(Displayable d) {
 		loginForm = (LoginForm)d;
-		if(isUserValid(loginForm.getUserName(),loginForm.getPassword())){
+		if (isUserValid(loginForm.getUserName(),loginForm.getPassword())) {
 			setLoggedOn(true);
 			saveUserName();
 			boolean displayPrevScreen = true;
@@ -191,9 +204,10 @@ public class UserManager extends AbstractView implements AlertMessageListener {
 				displayPrevScreen = logonListener.onLoggedOn();
 			if(displayPrevScreen)
 				display.setCurrent(prevScreen);
-		}
-		else
+			downloadMgr.restorePrevScreen();
+		} else if (!retrievingUserDetails) {
 			alertMsg.show(MenuText.INVALID_NAME_PASSWORD());
+		}
 	}
 	
 	private void saveUserName(){
@@ -276,4 +290,8 @@ public class UserManager extends AbstractView implements AlertMessageListener {
     	return encodeString(Long.toString(System.currentTimeMillis()) 
     			+ Long.toString(rnd.nextLong()), false);
     }
+    
+	public void setDownloadManager(DownloadUploadManager downloadMgr){
+		this.downloadMgr = downloadMgr;
+	}
 }

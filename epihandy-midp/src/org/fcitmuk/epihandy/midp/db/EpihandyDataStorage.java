@@ -4,6 +4,7 @@ import java.util.Vector;
 
 import org.fcitmuk.epihandy.LanguageList;
 import org.fcitmuk.epihandy.MenuTextList;
+import org.fcitmuk.epihandy.User;
 import org.fcitmuk.epihandy.UserList;
 import org.fcitmuk.midp.db.util.Storage;
 import org.fcitmuk.midp.db.util.StorageFactory;
@@ -29,6 +30,26 @@ public class EpihandyDataStorage {
 	
 	public static void saveUsers(UserList users){
 		Storage store = StorageFactory.getStorage(IDENTIFIER_USER_STORAGE,storageListener);
+
+		UserList currentUserList = getUsers();
+		if (currentUserList != null) {
+			// merge new list with old list
+			Vector newUsers = users.getUsers();
+			if (newUsers == null) {
+				newUsers = new Vector();
+				users.setUsers(newUsers);
+			}
+			Vector currentUsers = currentUserList.getUsers();
+			if (currentUsers != null) {
+				for (int i=0, j=currentUsers.size(); i<j; i++) {
+					User user1 = (User)currentUsers.elementAt(i);
+					if (!newUsers.contains(user1)) {
+						newUsers.addElement(user1);
+					}
+				}
+			}
+		}
+		
 		store.delete(); //only one list is allowed.
 		store.addNew(users);
 	}
