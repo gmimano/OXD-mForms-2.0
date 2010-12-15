@@ -105,8 +105,8 @@ public class Model {
 		return null;
 	}
 	
-	public FormDef getFormDef(int study, int form) {
-		return studyStore.getFormDef(studies[study], studyForms[form]);
+	public FormDef getFormDef(int studyId, int formId) {
+		return studyStore.getFormDef(studyId, formId);
 	}
 
 	public int getSelectedFormIndex() {

@@ -2,6 +2,7 @@ package org.fcitmuk.epihandy.midp.db;
 
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.util.Vector;
 
 import org.fcitmuk.epihandy.FormDef;
 import org.fcitmuk.midp.db.util.Storage;
@@ -62,6 +63,18 @@ public class StudyStore {
 	public FormDef getFormDef(StoredStudyDef study, StoredFormDef form) {
 		Storage formDefStore = getFormDefStore(study);
 		return (FormDef) formDefStore.read(form.getRecordId(), FormDef.class);
+	}
+	
+	public FormDef getFormDef(int studyDefId, int formDefId) {
+		Storage formDefStore = getFormDefStore(studyDefId);
+		Vector forms = formDefStore.read(FormDef.class);
+		for (int i=0; i<forms.size(); i++) {
+			FormDef form = (FormDef) forms.elementAt(i);
+			if (form.getId() == formDefId) {
+				return form;
+			}
+		}
+		return null;
 	}
 
 	public void storeStudiesFromStream(DataInputStream dis)
@@ -192,6 +205,12 @@ public class StudyStore {
 	private Storage getFormDefStore(StoredStudyDef studyDef) {
 		Storage formDefStore = StorageFactory.getStorage("FormDefs."
 				+ studyDef.getId(), null);
+		return formDefStore;
+	}
+	
+	private Storage getFormDefStore(int studyDefId) {
+		Storage formDefStore = StorageFactory.getStorage("FormDefs."
+				+ studyDefId, null);
 		return formDefStore;
 	}
 
