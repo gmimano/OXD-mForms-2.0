@@ -19,10 +19,10 @@ import org.fcitmuk.db.util.Persistent;
 public class Condition implements Persistent{
 
 	/** expression functions **/
-	private static final int SUM = 1;
-	private static final int MAX = 2;
-	private static final int MIN = 3;
-	private static final int AVG = 4;
+	private static final int FUNC_SUM = 1;
+	private static final int FUNC_MAX = 2;
+	private static final int FUNC_MIN = 3;
+	private static final int FUNC_AVG = 4;
 
 	/** The unique identifier of the question referenced by this condition. */
 	private byte questionId = EpihandyConstants.NULL_ID;
@@ -203,19 +203,19 @@ public class Condition implements Persistent{
 			}
 			String expression = value.substring(4, lastIndexOf);
 			int indexOf = 0;
-			double answer = expressionFunction == MIN ? Double.MAX_VALUE : 0d;
+			double answer = expressionFunction == FUNC_MIN ? Double.MAX_VALUE : 0d;
 			int count = 0;
 			while (indexOf >= 0){
 				int indexOf2 = expression.indexOf('|', indexOf + 1);
-				String expressionArgRef = expression.substring(indexOf, indexOf2 > 0 ? indexOf2 : expression.length()).trim();
+				String expressionArgRef = expression.substring(indexOf, indexOf2 > 0 ? indexOf2 : expression.length()).trim().intern();
 				String expressionArg = expressionArgRef;
 				if(expressionArgRef.startsWith(rootNode+"/")){
 					QuestionData qn2 = data.getQuestion("/"+expressionArgRef);
 					if(qn2 != null){
-						expressionArg = qn2.getValueAnswer().trim();
+						expressionArg = qn2.getValueAnswer();
 					}
 				}
-				if(expressionArg.length() > 0){
+				if(expressionArg != null && expressionArg.trim().length() > 0){
 					try {
 							double argVal = Double.parseDouble(expressionArg);
 							answer = processAggregate(answer, argVal, expressionFunction);
@@ -226,7 +226,7 @@ public class Condition implements Persistent{
 				indexOf = indexOf2 >= 0 ? indexOf2 + 1 : indexOf2;
 				count++;
 			}
-			if (expressionFunction == AVG){
+			if (expressionFunction == FUNC_AVG){
 				answer = answer / count;
 			}
 			return String.valueOf(answer);
@@ -236,86 +236,36 @@ public class Condition implements Persistent{
 
 	private int getExpressionFunction() {
 		if (value.startsWith("sum(")){
-			return SUM;
+			return FUNC_SUM;
 		} else if (value.startsWith("avg(")){
-			return AVG;
+			return FUNC_AVG;
 		} else if (value.startsWith("min(")){
-			return MIN;
+			return FUNC_MIN;
 		} else if (value.startsWith("max(")){
-			return MAX;
+			return FUNC_MAX;
 		}
 		return -1;
 	}
 
 	private double processAggregate(double answer, double nextArg, int function) {
 		switch (function) {
-		case (SUM):
-		case (AVG):
+		case (FUNC_SUM):
+		case (FUNC_AVG):
 			return answer + nextArg;
-		case (MAX):
+		case (FUNC_MAX):
 			return answer > nextArg ? answer : nextArg;
-		case (MIN):
+		case (FUNC_MIN):
 			return answer < nextArg ? answer : nextArg;
 		}
 		return 0;
 	}
 
-	private void truncateDecimalPoints() {
-		if (value != null && value.indexOf('.') > 0)
-			value = value.substring(0,value.indexOf('.'));
-		
-		if (secondValue != null && secondValue.indexOf('.') > 0)
-			secondValue = secondValue.substring(0,secondValue.indexOf('.'));
-	}
-	
 	private boolean isNumericTrue(QuestionData data, boolean validation){
-		try{			
-			if(data.getValueAnswer() == null || data.getValueAnswer().trim().length() == 0){
-				if(validation || operator == EpihandyConstants.OPERATOR_NOT_EQUAL ||
-						operator == EpihandyConstants.OPERATOR_NOT_BETWEEN)
-					return true;
-				return operator == EpihandyConstants.OPERATOR_IS_NULL;
-			}
-			else if(operator == EpihandyConstants.OPERATOR_IS_NOT_NULL)
-				return true;
-			
-			truncateDecimalPoints();
-			
-			long answer = Long.parseLong(data.getValueAnswer());
-			long longValue = Long.parseLong(value);
-
-			long secondLongValue = longValue;
-			if(secondValue != null && secondValue.trim().length() > 0)
-				secondLongValue = Long.parseLong(secondValue);
-
-			if(operator == EpihandyConstants.OPERATOR_EQUAL)
-				return longValue == answer;
-			else if(operator == EpihandyConstants.OPERATOR_NOT_EQUAL)
-				return longValue != answer;
-			else if(operator == EpihandyConstants.OPERATOR_LESS)
-				return answer < longValue;
-			else if(operator == EpihandyConstants.OPERATOR_LESS_EQUAL)
-				return answer < longValue || longValue == answer;
-			else if(operator == EpihandyConstants.OPERATOR_GREATER)
-				return answer > longValue;
-			else if(operator == EpihandyConstants.OPERATOR_GREATER_EQUAL)
-				return answer > longValue || longValue == answer;
-			else if(operator == EpihandyConstants.OPERATOR_BETWEEN)
-				return answer > longValue && longValue < secondLongValue;
-			else if(operator == EpihandyConstants.OPERATOR_NOT_BETWEEN)
-				return !(answer > longValue && longValue < secondLongValue);
-		}
-		catch(Exception ex){
-			ex.printStackTrace();
-		}
-
-		return false;
+		return isDecimalTrue(data, validation);
 	}
 
 //	TODO Should this test be case sensitive?
 	private boolean isTextTrue(QuestionData data, boolean validation){
-		//return value.equals(data.getTextAnswer());
-
 		Object answer = data.getValueAnswer();
 		
 		if(function == EpihandyConstants.FUNCTION_VALUE){
