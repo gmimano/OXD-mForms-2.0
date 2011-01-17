@@ -133,6 +133,33 @@ public class Condition implements Persistent{
 						}
 					}
 				}
+			} else if (value.startsWith("sum(")){
+				int lastIndexOf = value.lastIndexOf(')');
+				if (lastIndexOf < 0)
+					return true; // malformed sum function
+				value = value.substring(4, lastIndexOf);
+				int indexOf = 0;
+				double sum = 0d;
+				while (indexOf >= 0){
+					int indexOf2 = value.indexOf('|', indexOf + 1);
+					String sumargref = value.substring(indexOf, indexOf2 > 0 ? indexOf2 : value.length()).trim();
+					String sumarg = sumargref;
+					if(sumargref.startsWith(data.getDef().getVariableName()+"/")){
+						QuestionData qn2 = data.getQuestion("/"+sumargref);
+						if(qn2 != null){
+							sumarg = qn2.getValueAnswer().trim();
+						}
+					}
+					if(sumarg.length() > 0){
+						try {
+								sum += Double.parseDouble(sumarg);
+						} catch (NumberFormatException e) {
+							return true; //unable to sum values
+						}
+					}
+					indexOf = indexOf2 >= 0 ? indexOf2 + 1 : indexOf2;
+				}
+				value = String.valueOf(sum);
 			}
 
 			switch(qn.getDef().getType()){
