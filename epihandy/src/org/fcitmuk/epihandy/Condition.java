@@ -18,6 +18,12 @@ import org.fcitmuk.db.util.Persistent;
  */
 public class Condition implements Persistent{
 
+	/** expression functions **/
+	private static final int SUM = 1;
+	private static final int MAX = 2;
+	private static final int MIN = 3;
+	private static final int AVG = 4;
+
 	/** The unique identifier of the question referenced by this condition. */
 	private byte questionId = EpihandyConstants.NULL_ID;
 
@@ -116,52 +122,16 @@ public class Condition implements Persistent{
 		try{
 			QuestionData qn = data.getQuestion(this.questionId);
 
-			if(value.startsWith(data.getDef().getVariableName()+"/")){
-				QuestionData qn2 = data.getQuestion("/"+value);
-				if(qn2 != null){
-					value = qn2.getValueAnswer();
-					if(value == null || value.trim().length() == 0){
-						value = tempValue;
-						if(qn.getAnswer() == null || qn.getValueAnswer().trim().length() == 0)
-							return true; //Both questions not answered yet
-						return false;
-					}
-					else if(qn.getAnswer() == null || qn.getValueAnswer().trim().length() == 0){
-						if(qn.getDef().getType() != QuestionDef.QTN_TYPE_REPEAT){
-							value = tempValue;
-							return false;
-						}
-					}
+			String realValue = getRealValue(data);
+			if(realValue == null || realValue.trim().length() == 0){
+				return (qn.getAnswer() == null || qn.getValueAnswer().trim().length() == 0);
+			} else if(qn.getAnswer() == null || qn.getValueAnswer().trim().length() == 0){
+				if(qn.getDef().getType() != QuestionDef.QTN_TYPE_REPEAT){
+					return false;
 				}
-			} else if (value.startsWith("sum(")){
-				int lastIndexOf = value.lastIndexOf(')');
-				if (lastIndexOf < 0)
-					return true; // malformed sum function
-				value = value.substring(4, lastIndexOf);
-				int indexOf = 0;
-				double sum = 0d;
-				while (indexOf >= 0){
-					int indexOf2 = value.indexOf('|', indexOf + 1);
-					String sumargref = value.substring(indexOf, indexOf2 > 0 ? indexOf2 : value.length()).trim();
-					String sumarg = sumargref;
-					if(sumargref.startsWith(data.getDef().getVariableName()+"/")){
-						QuestionData qn2 = data.getQuestion("/"+sumargref);
-						if(qn2 != null){
-							sumarg = qn2.getValueAnswer().trim();
-						}
-					}
-					if(sumarg.length() > 0){
-						try {
-								sum += Double.parseDouble(sumarg);
-						} catch (NumberFormatException e) {
-							return true; //unable to sum values
-						}
-					}
-					indexOf = indexOf2 >= 0 ? indexOf2 + 1 : indexOf2;
-				}
-				value = String.valueOf(sum);
 			}
-
+			value = realValue;
+			
 			switch(qn.getDef().getType()){
 			case QuestionDef.QTN_TYPE_TEXT:
 				ret = isTextTrue(qn,validation);
@@ -202,6 +172,92 @@ public class Condition implements Persistent{
 		value = tempValue;
 
 		return ret;
+	}
+
+	/**
+	 * Attempt to convert the condition expression into a real value. Supported features:
+	 * <ul>
+	 * <li>Fetch the value of a referenced node e.g. root/question1
+	 * <li>Sum the values of various nodes e.g. sum(root/q1 | root/q2 | root/q3)
+	 * <li>Avg the values of various nodes e.g. avg(root/q1 | root/q2 | root/q3)
+	 * <li>Min the values of various nodes e.g. min(root/q1 | root/q2 | root/q3)
+	 * <li>Max the values of various nodes e.g. max(root/q1 | root/q2 | root/q3)
+	 * 
+	 * @param data the form data containing the current forms data
+	 * @return String representing the real value of the expression
+	 */
+	private String getRealValue(FormData data) {
+		String rootNode = data.getDef().getVariableName();
+		int expressionFunction = getExpressionFunction();
+		if(value.startsWith(rootNode+"/")){
+			QuestionData qn2 = data.getQuestion("/"+value);
+			if(qn2 != null){
+				return qn2.getValueAnswer();
+			} else {
+				return null;
+			}
+		} else if (expressionFunction > 0){
+			int lastIndexOf = value.lastIndexOf(')');
+			if (lastIndexOf < 0) {
+				lastIndexOf = value.length();
+			}
+			String expression = value.substring(4, lastIndexOf);
+			int indexOf = 0;
+			double answer = expressionFunction == MIN ? Double.MAX_VALUE : 0d;
+			int count = 0;
+			while (indexOf >= 0){
+				int indexOf2 = expression.indexOf('|', indexOf + 1);
+				String expressionArgRef = expression.substring(indexOf, indexOf2 > 0 ? indexOf2 : expression.length()).trim();
+				String expressionArg = expressionArgRef;
+				if(expressionArgRef.startsWith(rootNode+"/")){
+					QuestionData qn2 = data.getQuestion("/"+expressionArgRef);
+					if(qn2 != null){
+						expressionArg = qn2.getValueAnswer().trim();
+					}
+				}
+				if(expressionArg.length() > 0){
+					try {
+							double argVal = Double.parseDouble(expressionArg);
+							answer = processAggregate(answer, argVal, expressionFunction);
+					} catch (NumberFormatException e) {
+						return null; //unable to sum values
+					}
+				}
+				indexOf = indexOf2 >= 0 ? indexOf2 + 1 : indexOf2;
+				count++;
+			}
+			if (expressionFunction == AVG){
+				answer = answer / count;
+			}
+			return String.valueOf(answer);
+		}
+		return value;
+	}
+
+	private int getExpressionFunction() {
+		if (value.startsWith("sum(")){
+			return SUM;
+		} else if (value.startsWith("avg(")){
+			return AVG;
+		} else if (value.startsWith("min(")){
+			return MIN;
+		} else if (value.startsWith("max(")){
+			return MAX;
+		}
+		return -1;
+	}
+
+	private double processAggregate(double answer, double nextArg, int function) {
+		switch (function) {
+		case (SUM):
+		case (AVG):
+			return answer + nextArg;
+		case (MAX):
+			return answer > nextArg ? answer : nextArg;
+		case (MIN):
+			return answer < nextArg ? answer : nextArg;
+		}
+		return 0;
 	}
 
 	private void truncateDecimalPoints() {
