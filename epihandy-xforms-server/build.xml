@@ -9,6 +9,7 @@
 	
 	<property name="dbutils" value="../dbutils/dist/dbutils.jar" />
 	<property name="xforms-layer" value="../epihandy-xform-layer/dist/epihandy-xform-layer.jar" />
+	<property name="version" value="0.8.0" />
 	
 	<path id="classpath">
 		<pathelement location="${dbutils}"/>
@@ -47,18 +48,18 @@
 		</javac>	
 	</target>
 	
-	<target name="package" depends="compile" description="Packages epihandy-xforms-server into jar file">
+	<target name="package" depends="compile" description="Packages ${ant.project.name} into jar file">
 		<mkdir dir="dist" />
 		
 		<!-- Create distributable jar file -->
-		<jar destfile="dist/epihandy-xforms-server.jar">
+		<jar destfile="dist/${ant.project.name}-${version}.jar">
 			<zipfileset dir="bin" prefix="" />
 			<zipfileset src="..\epihandy-xform-layer\dist\epihandy-xform-layer.jar" />
 		</jar>
 	</target>
 	
 	<target name="source-bundle">
-		<jar destfile="dist/epihandy-xforms-server-sources.jar">
+		<jar destfile="dist/${ant.project.name}-${version}-sources.jar">
 			<zipfileset dir="../epihandy/src" includes="**/*.java" />
 			<zipfileset dir="../epihandy-xform-layer/src" includes="**/*.java" />
 			<zipfileset dir="../minixpath/src" includes="**/*.java" />
@@ -75,12 +76,12 @@
 			<fileset dir="../dbutils/src" includes="**/*.java" />
 			<fileset dir="src" includes="**/*.java" />
 		</javadoc>
-		<jar destfile="dist/epihandy-xforms-server-javadoc.jar" basedir="dist/api" />
+		<jar destfile="dist/${ant.project.name}-${version}-javadoc.jar" basedir="dist/api" />
 		<delete dir="dist/api" />
 	</target>
 	
 	<target name="deploy" depends="package" description="Deploys to the tomcat lib dirrectory.">
-		<copy tofile="H:\openxdata\Server\openxdata server\lib\epihandy-xforms-server.jar" file="dist\epihandy-xforms-server.jar"/>
+		<copy tofile="H:\openxdata\Server\openxdata server\lib\${ant.project.name}.jar" file="dist\${ant.project.name}.jar"/>
 	</target>
 
 </project>
