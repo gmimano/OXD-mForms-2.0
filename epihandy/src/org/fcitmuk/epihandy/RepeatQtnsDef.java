@@ -59,7 +59,7 @@ public class RepeatQtnsDef implements Persistent {
 	public void addQuestion(QuestionDef qtn){
 		if(questions == null)
 			questions = new Vector();
-		qtn.setId((byte)(questions.size()+1));
+		qtn.setId((short)(questions.size()+1));
 		questions.addElement(qtn);
 	}
 	
@@ -77,7 +77,7 @@ public class RepeatQtnsDef implements Persistent {
 		if(questions == null)
 			return null;
 		
-		for(byte i=0; i<getQuestions().size(); i++){
+		for(int i=0; i<getQuestions().size(); i++){
 			QuestionDef def = (QuestionDef)getQuestions().elementAt(i);
 			if(def.getVariableName().equals(varName))
 				return def;
@@ -86,11 +86,11 @@ public class RepeatQtnsDef implements Persistent {
 		return null;
 	}
 	
-	public QuestionDef getQuestion(byte id){
+	public QuestionDef getQuestion(short id){
 		if(questions == null)
 			return null;
 		
-		for(byte i=0; i<getQuestions().size(); i++){
+		for(int i=0; i<getQuestions().size(); i++){
 			QuestionDef def = (QuestionDef)getQuestions().elementAt(i);
 			if(def.getId() == id)
 				return def;
@@ -101,12 +101,12 @@ public class RepeatQtnsDef implements Persistent {
 	
 	/** Reads a page definition object from the supplied stream. */
 	public void read(DataInputStream dis) throws IOException, InstantiationException, IllegalAccessException {
-		setQuestions(PersistentHelper.read(dis,QuestionDef.class));
+		setQuestions(PersistentHelper.readMedium(dis,QuestionDef.class));
 	}
 
 	/** Write the page definition object to the supplied stream. */
 	public void write(DataOutputStream dos) throws IOException {
-		PersistentHelper.write(getQuestions(), dos);
+		PersistentHelper.writeMedium(getQuestions(), dos);
 	}
 	
 	private void copyQuestions(Vector questions){
@@ -114,7 +114,7 @@ public class RepeatQtnsDef implements Persistent {
 			return;
 		
 		this.questions = new Vector();
-		for(byte i=0; i<questions.size(); i++)
+		for(int i=0; i<questions.size(); i++)
 			this.questions.addElement(new QuestionDef((QuestionDef)questions.elementAt(i)));
 	}
 }

@@ -115,11 +115,11 @@ public class FormData  extends AbstractRecord{
 	/** Creates page and question data from their corresponding definitions. */
 	private void createFormData(){
 		Vector pages = new Vector();
-		for(byte i=0; i<this.getDef().getPages().size(); i++){
+		for(int i=0; i<this.getDef().getPages().size(); i++){
 			PageDef pageDef = (PageDef)this.getDef().getPages().elementAt(i);
 			Vector questions = new Vector();
 			if (pageDef.getQuestions() != null) {
-				for(byte j=0; j<pageDef.getQuestions().size(); j++){
+				for(int j=0; j<pageDef.getQuestions().size(); j++){
 					QuestionDef qtnDef = (QuestionDef)pageDef.getQuestions().elementAt(j);
 					QuestionData qtnData = new QuestionData(qtnDef);
 					questions.addElement(qtnData);
@@ -144,12 +144,12 @@ public class FormData  extends AbstractRecord{
 			createFormData();
 
 		//After loading a form data from RMS, it has ids for def objects which need to be set at runtime
-		for(byte i=0; i<this.getPages().size(); i++){
+		for(int i=0; i<this.getPages().size(); i++){
 			PageData pageData = (PageData)this.getPages().elementAt(i);
 			PageDef pageDef = (PageDef)this.def.getPages().elementAt(i);
 			pageData.setDef(pageDef);
 
-			for(byte j=0; j<pageData.getQuestions().size(); j++){
+			for(int j=0; j<pageData.getQuestions().size(); j++){
 				QuestionData qtnData = (QuestionData)pageData.getQuestions().elementAt(j);
 				QuestionDef qtnDef = pageDef.getQuestion(qtnData.getId());
 				if (qtnDef == null)
@@ -160,14 +160,14 @@ public class FormData  extends AbstractRecord{
 					((OptionData)qtnData.getAnswer()).setDef((OptionDef)qtnDef.getOptions().elementAt(Integer.parseInt(qtnData.getOptionAnswerIndices().toString())));
 				else if(qtnData.getAnswer() != null && qtnDef.getType() == QuestionDef.QTN_TYPE_LIST_MULTIPLE){
 					Vector answers = (Vector)qtnData.getAnswer();
-					for(byte k=0; k<answers.size(); k++){
+					for(int k=0; k<answers.size(); k++){
 						OptionData option = (OptionData)answers.elementAt(k);
-						option.setDef((OptionDef)qtnDef.getOptions().elementAt(((Byte)((Vector)qtnData.getOptionAnswerIndices()).elementAt(k)).byteValue()));
+						option.setDef((OptionDef)qtnDef.getOptions().elementAt(((Short)((Vector)qtnData.getOptionAnswerIndices()).elementAt(k)).shortValue()));
 					}
 				}
 				else if(qtnData.getAnswer() != null && qtnDef.getType() == QuestionDef.QTN_TYPE_REPEAT){
 					RepeatQtnsDataList answer = (RepeatQtnsDataList)qtnData.getAnswer();
-					for(byte k=0; k<answer.size(); k++){
+					for(int k=0; k<answer.size(); k++){
 						RepeatQtnsData data = answer.getRepeatQtnsData(k);
 						data.setDef(qtnDef.getRepeatQtnsDef());
 					}
@@ -178,10 +178,10 @@ public class FormData  extends AbstractRecord{
 		updateDynamicOptions();
 	}
 
-	public QuestionData getQuestion(byte id){
-		for(byte i=0; i<this.getPages().size(); i++){
+	public QuestionData getQuestion(short id){
+		for(int i=0; i<this.getPages().size(); i++){
 			PageData page = (PageData)this.getPages().elementAt(i);
-			for(byte j=0; j<page.getQuestions().size(); j++){
+			for(int j=0; j<page.getQuestions().size(); j++){
 				QuestionData qtn = (QuestionData)page.getQuestions().elementAt(j);
 				if(qtn.getDef().getId() == id)
 					return qtn;
@@ -192,9 +192,9 @@ public class FormData  extends AbstractRecord{
 	}
 
 	public QuestionData getQuestion(String varName){
-		for(byte i=0; i<this.getDef().getPages().size(); i++){
+		for(int i=0; i<this.getDef().getPages().size(); i++){
 			PageDef page = (PageDef)this.getDef().getPages().elementAt(i);
-			for(byte j=0; j<page.getQuestions().size(); j++){
+			for(int j=0; j<page.getQuestions().size(); j++){
 				QuestionDef qtn = (QuestionDef)page.getQuestions().elementAt(j);
 				if(qtn.getVariableName().equals(varName))
 					return getQuestion(qtn.getId());
@@ -280,7 +280,7 @@ public class FormData  extends AbstractRecord{
 		if(qtn != null){
 			Vector ret = new Vector();
 			Vector options = (Vector)qtn.getAnswer();
-			for(byte i=0; i<options.size(); i++)
+			for(int i=0; i<options.size(); i++)
 				ret.addElement(((OptionData)options.elementAt(i)).getDef().getVariableName());
 
 			return ret;
@@ -298,9 +298,9 @@ public class FormData  extends AbstractRecord{
 	public boolean isRequiredAnswered(){
 
 		//Check and return if you find just one question which is not valid.
-		for(byte i=0; i<pages.size(); i++){
+		for(int i=0; i<pages.size(); i++){
 			PageData page = (PageData)pages.elementAt(i);
-			for(byte j=0; j<page.getQuestions().size(); j++){
+			for(int j=0; j<page.getQuestions().size(); j++){
 				QuestionData qtn = (QuestionData)page.getQuestions().elementAt(j);
 				if(!qtn.isValid())
 					return false;
@@ -316,9 +316,9 @@ public class FormData  extends AbstractRecord{
 	 * @return true if yes, else false
 	 */
 	public boolean isFormAnswered(){
-		for(byte i=0; i<pages.size(); i++){
+		for(int i=0; i<pages.size(); i++){
 			PageData page = (PageData)pages.elementAt(i);
-			for(byte j=0; j<page.getQuestions().size(); j++){
+			for(int j=0; j<page.getQuestions().size(); j++){
 				QuestionData qtn = (QuestionData)page.getQuestions().elementAt(j);
 				if(qtn.isAnswered())
 					return true;
@@ -375,9 +375,9 @@ public class FormData  extends AbstractRecord{
 	}
 
 	public void buildQuestionDataDescription(){
-		for(byte i=0; i<pages.size(); i++){
+		for(int i=0; i<pages.size(); i++){
 			PageData page = (PageData)pages.elementAt(i);
-			for(byte j=0; j<page.getQuestions().size(); j++)
+			for(int j=0; j<page.getQuestions().size(); j++)
 				buildQuestionDataDescription((QuestionData)page.getQuestions().elementAt(j));
 		}
 	}
@@ -433,9 +433,9 @@ public class FormData  extends AbstractRecord{
 	}
 
 	public void updateDynamicOptions(){
-		for(byte i=0; i<this.getPages().size(); i++){
+		for(int i=0; i<this.getPages().size(); i++){
 			PageData pageData = (PageData)this.getPages().elementAt(i);
-			for(byte j=0; j<pageData.getQuestions().size(); j++)
+			for(int j=0; j<pageData.getQuestions().size(); j++)
 				updateDynamicOptions((QuestionData)pageData.getQuestions().elementAt(j), true);
 		}
 	}

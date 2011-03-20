@@ -141,7 +141,7 @@ public class FormDef implements Persistent{
 		return getName();
 	}
 
-	public ValidationRule getValidationRule(byte questionId){
+	public ValidationRule getValidationRule(short questionId){
 		if(validationRules == null)
 			return null;
 
@@ -164,7 +164,7 @@ public class FormDef implements Persistent{
 		if(varName == null || pages == null)
 			return null;
 
-		for(byte i=0; i<getPages().size(); i++){
+		for(int i=0; i<getPages().size(); i++){
 			QuestionDef def = ((PageDef)getPages().elementAt(i)).getQuestion(varName);
 			if(def != null)
 				return def;
@@ -179,11 +179,11 @@ public class FormDef implements Persistent{
 	 * @param id - the numeric identifier of the question. 
 	 * @return the question reference.
 	 */
-	public QuestionDef getQuestion(byte id){	
+	public QuestionDef getQuestion(short id){	
 		if(pages == null)
 			return null;
 
-		for(byte i=0; i<getPages().size(); i++){
+		for(int i=0; i<getPages().size(); i++){
 			QuestionDef def = ((PageDef)getPages().elementAt(i)).getQuestion(id);
 			if(def != null)
 				return def;
@@ -198,7 +198,7 @@ public class FormDef implements Persistent{
 	 * @param varName - the string identifier of the question. 
 	 * @return the numeric question identifier.
 	 */
-	public byte getQuestionId(String varName){
+	public short getQuestionId(String varName){
 		QuestionDef qtn = getQuestion(varName);
 		if(qtn != null)
 			return qtn.getId();
@@ -212,7 +212,7 @@ public class FormDef implements Persistent{
 		}
 		
 		if(pages.size() == 0){
-			PageDef page = new PageDef(/*this.getVariableName()*/"Page1",Byte.parseByte("1"),null);
+			PageDef page = new PageDef("Page1",Short.parseShort("1"),null);
 			pages.addElement(page);
 		}
 
@@ -236,16 +236,16 @@ public class FormDef implements Persistent{
 		setVariableName(dis.readUTF().intern());
 
 		setDescriptionTemplate(dis.readUTF().intern());
-		setPages(PersistentHelper.read(dis,PageDef.class));
-		setSkipRules(PersistentHelper.read(dis,SkipRule.class));
-		setValidationRules(PersistentHelper.read(dis,ValidationRule.class));
+		setPages(PersistentHelper.readMedium(dis,PageDef.class));
+		setSkipRules(PersistentHelper.readMedium(dis,SkipRule.class));
+		setValidationRules(PersistentHelper.readMedium(dis,ValidationRule.class));
 
-		byte len = dis.readByte();
+		short len = dis.readShort();
 		if(len == 0)
 			return;
 		dynamicOptions = new Hashtable();
-		for(byte i=0; i<len; i++){
-			Byte questionId = new Byte(dis.readByte());
+		for(short i=0; i<len; i++){
+			Short questionId = new Short(dis.readShort());
 			DynamicOptionDef dynamicOptionDef = new DynamicOptionDef();
 			dynamicOptionDef.read(dis);
 			dynamicOptions.put(questionId, dynamicOptionDef);
@@ -271,22 +271,22 @@ public class FormDef implements Persistent{
 		mdos.writeUTF(getVariableName());
 
 		mdos.writeUTF(getDescriptionTemplate());
-		PersistentHelper.write(getPages(), mdos);
-		PersistentHelper.write(getSkipRules(), mdos);
-		PersistentHelper.write(getValidationRules(), mdos);
+		PersistentHelper.writeMedium(getPages(), mdos);
+		PersistentHelper.writeMedium(getSkipRules(), mdos);
+		PersistentHelper.writeMedium(getValidationRules(), mdos);
 
 		if(dynamicOptions != null){
-			mdos.writeByte(dynamicOptions.size());
+			mdos.writeShort(dynamicOptions.size());
 			Enumeration keys = dynamicOptions.keys();
-			Byte key;
+			Short key;
 			while(keys.hasMoreElements()){
-				key  = (Byte)keys.nextElement();
-				mdos.writeByte(key.byteValue());
+				key  = (Short)keys.nextElement();
+				mdos.writeShort(key.shortValue());
 				((DynamicOptionDef)dynamicOptions.get(key)).write(mdos);
 			}
 		}
 		else
-			mdos.writeByte(0);
+			mdos.writeShort(0);
 		
 		// Write length, then contents
 		dos.writeInt(baos.size());
@@ -295,7 +295,7 @@ public class FormDef implements Persistent{
 
 	private void copyPages(Vector pages){
 		this.pages =  new Vector();
-		for(byte i=0; i<pages.size(); i++) //Should have atleast one page is why we are not checking for nulls.
+		for(int i=0; i<pages.size(); i++) //Should have atleast one page is why we are not checking for nulls.
 			this.pages.addElement(new PageDef((PageDef)pages.elementAt(i)));
 	}
 
@@ -303,7 +303,7 @@ public class FormDef implements Persistent{
 		if(rules != null)
 		{
 			this.skipRules =  new Vector();
-			for(byte i=0; i<rules.size(); i++)
+			for(int i=0; i<rules.size(); i++)
 				this.skipRules.addElement(new SkipRule((SkipRule)rules.elementAt(i)));
 		}
 	}
@@ -312,7 +312,7 @@ public class FormDef implements Persistent{
 		if(rules != null)
 		{
 			this.validationRules =  new Vector();
-			for(byte i=0; i<rules.size(); i++)
+			for(int i=0; i<rules.size(); i++)
 				this.validationRules.addElement(new ValidationRule((ValidationRule)rules.elementAt(i)));
 		}
 	}
@@ -323,9 +323,9 @@ public class FormDef implements Persistent{
 			this.dynamicOptions =  new Hashtable();
 
 			Enumeration keys = dynamicOptions.keys();
-			Byte key;
+			Short key;
 			while(keys.hasMoreElements()){
-				key = (Byte)keys.nextElement();
+				key = (Short)keys.nextElement();
 				this.dynamicOptions.put(key, new DynamicOptionDef((DynamicOptionDef)dynamicOptions.get(key)));
 			}
 		}
@@ -344,7 +344,7 @@ public class FormDef implements Persistent{
 		if(pages == null)
 			pages = new Vector();
 
-		pages.addElement(new PageDef("Page"+pages.size(),(byte)pages.size(),null));
+		pages.addElement(new PageDef("Page"+pages.size(),(short)pages.size(),null));
 	}
 
 	public void moveQuestion2Page(QuestionDef qtn, int pageNo){
@@ -378,9 +378,9 @@ public class FormDef implements Persistent{
 		((PageDef)pages.elementAt(pages.size()-1)).setName(name);
 	}
 	
-	public DynamicOptionDef getDynamicOptions(byte questionId){
+	public DynamicOptionDef getDynamicOptions(short questionId){
 		if(dynamicOptions == null)
 			return null;
-		return (DynamicOptionDef)dynamicOptions.get(new Byte(questionId));
+		return (DynamicOptionDef)dynamicOptions.get(new Short(questionId));
 	}
 }

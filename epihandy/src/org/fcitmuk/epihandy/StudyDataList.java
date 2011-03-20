@@ -49,7 +49,7 @@ public class StudyDataList  implements Persistent{
 			if(studies == null)
 				studies = studyList;
 			else{
-				for(byte i=0; i<studyList.size(); i++ )
+				for(int i=0; i<studyList.size(); i++ )
 					studies.addElement(studyList.elementAt(i));
 			}
 		}

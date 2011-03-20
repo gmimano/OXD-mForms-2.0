@@ -62,7 +62,7 @@ public class QuestionDef implements Persistent{
 	 * given a unique (on a form) id starting from 1 up to 127. The assumption is that one will never need to have
 	 * a form with more than 127 questions for a mobile device (It would be too big).
 	 */
-	private byte id = EpihandyConstants.NULL_ID;
+	private short id = EpihandyConstants.NULL_ID;
 
 	public static final byte QTN_TYPE_NULL = 0;
 	
@@ -149,7 +149,7 @@ public class QuestionDef implements Persistent{
 	 * @param variableName
 	 * @param options
 	 */
-	public QuestionDef(byte id,String text, String helpText, boolean mandatory, byte type, String defaultValue, boolean visible, boolean enabled, boolean locked, String variableName, Object options) {
+	public QuestionDef(short id,String text, String helpText, boolean mandatory, byte type, String defaultValue, boolean visible, boolean enabled, boolean locked, String variableName, Object options) {
 		this();
 		setId(id);
 		setText(text);
@@ -164,11 +164,11 @@ public class QuestionDef implements Persistent{
 		setOptions(options);
 	}
 
-	public byte getId() {
+	public short getId() {
 		return id;
 	}
 
-	public void setId(byte id) {
+	public void setId(short id) {
 		this.id = id;
 	}
 
@@ -263,7 +263,7 @@ public class QuestionDef implements Persistent{
 	 * Reads the object from stream.
 	 */
 	public void read(DataInputStream dis) throws IOException, IllegalAccessException, InstantiationException{
-		setId(dis.readByte());
+		setId(dis.readShort());
 
 		setText(dis.readUTF().intern());
 		setHelpText(dis.readUTF().intern());
@@ -293,7 +293,7 @@ public class QuestionDef implements Persistent{
 	 * Write the object to stream.
 	 */
 	public void write(DataOutputStream dos) throws IOException {
-		dos.writeByte(getId());
+		dos.writeShort(getId());
 
 		dos.writeUTF(getText());
 		dos.writeUTF(getHelpText());
@@ -332,21 +332,12 @@ public class QuestionDef implements Persistent{
 	public String toString() {
 		return getText();
 	}
-
-	/*private void copyQuestionOptions(Vector options){
-		if(options == null)
-			return;
-
-		this.options = new Vector();
-		for(byte i=0; i<options.size(); i++)
-			((Vector)this.options).addElement(new OptionDef((OptionDef)options.elementAt(i)));
-	}*/
 	
 	public static Vector copyQuestionOptions(Vector options){
 		if(options == null)
 			return null;
 		Vector copy = new Vector();
-		for(byte i=0; i<options.size(); i++)
+		for(int i=0; i<options.size(); i++)
 			copy.addElement(new OptionDef((OptionDef)options.elementAt(i)));
 		return copy;
 	}

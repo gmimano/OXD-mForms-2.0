@@ -28,7 +28,7 @@ public class RepeatQtnsData implements Persistent {
 	 * This value does not have to be stored.
 	 * Only used for identintification at runtime.
 	 * */
-	private byte id;
+	private short id;
 	
 	
 	public RepeatQtnsData(){
@@ -43,26 +43,26 @@ public class RepeatQtnsData implements Persistent {
 		questions = new Vector();
 		
 		Vector qtns = data.getQuestions();
-		for(byte i=0; i<qtns.size(); i++)
+		for(int i=0; i<qtns.size(); i++)
 			questions.addElement(new QuestionData((QuestionData)qtns.elementAt(i)));		
 	}
 
-	public RepeatQtnsData(byte id,RepeatQtnsDef def) {
+	public RepeatQtnsData(short id, RepeatQtnsDef def) {
 		setId(id);
 		setDef(def);
 	}
 	
-	public RepeatQtnsData(byte id, Vector questions, RepeatQtnsDef def) {
+	public RepeatQtnsData(short id, Vector questions, RepeatQtnsDef def) {
 		setId(id);
 		setQuestions(questions);
 		setDef(def);
 	}
 	
-	public byte getId() {
+	public short getId() {
 		return id;
 	}
 	
-	public void setId(byte id) {
+	public void setId(short id) {
 		this.id = id;
 	}
 	
@@ -94,7 +94,7 @@ public class RepeatQtnsData implements Persistent {
 		if(questions == null || questions.size() == 0)
 			createQuestionData();
 		
-		for(byte j=0; j<questions.size(); j++){
+		for(int j=0; j<questions.size(); j++){
 			QuestionData qtnData = (QuestionData)questions.elementAt(j);
 			QuestionDef qtnDef = def.getQuestion(qtnData.getId());
 			qtnData.setDef(qtnDef);
@@ -102,9 +102,9 @@ public class RepeatQtnsData implements Persistent {
 				((OptionData)qtnData.getAnswer()).setDef((OptionDef)qtnDef.getOptions().elementAt(Integer.parseInt(qtnData.getOptionAnswerIndices().toString())));
 			else if(qtnData.getAnswer() != null && qtnDef.getType() == QuestionDef.QTN_TYPE_LIST_MULTIPLE){
 				Vector answers = (Vector)qtnData.getAnswer();
-				for(byte k=0; k<answers.size(); k++){
+				for(int k=0; k<answers.size(); k++){
 					OptionData option = (OptionData)answers.elementAt(k);
-					option.setDef((OptionDef)qtnDef.getOptions().elementAt(((Byte)((Vector)qtnData.getOptionAnswerIndices()).elementAt(k)).byteValue()));
+					option.setDef((OptionDef)qtnDef.getOptions().elementAt(((Short)((Vector)qtnData.getOptionAnswerIndices()).elementAt(k)).shortValue()));
 				}
 			}
 		}	
@@ -118,7 +118,7 @@ public class RepeatQtnsData implements Persistent {
 		if(qtns == null)
 			return;
 		
-		for(byte i=0; i<qtns.size(); i++)
+		for(int i=0; i<qtns.size(); i++)
 			questions.addElement(new QuestionData((QuestionDef)qtns.elementAt(i)));
 	}
 	
@@ -128,7 +128,7 @@ public class RepeatQtnsData implements Persistent {
 	
 	public void setQuestionDataById(QuestionData questionData){
 		QuestionData data;
-		for(byte i=0; i<questions.size(); i++){
+		for(int i=0; i<questions.size(); i++){
 			data = (QuestionData)questions.elementAt(i);
 			if(data.getId() == questionData.getId()){
 				questions.setElementAt(questionData, i);
@@ -164,7 +164,7 @@ public class RepeatQtnsData implements Persistent {
 	 * @return
 	 */
 	public boolean isAnswered(){
-		for(byte i=0; i<questions.size(); i++){
+		for(int i=0; i<questions.size(); i++){
 			if(((QuestionData)questions.elementAt(i)).isAnswered())
 				return true; 
 		}

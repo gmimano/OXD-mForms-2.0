@@ -17,7 +17,7 @@ import org.fcitmuk.db.util.PersistentHelper;
 public class ValidationRule implements Persistent {
 	
 	/** The unique identifier of the question referenced by this condition. */
-	private int questionId;
+	private short questionId;
 	
 	/** A list of conditions (Condition object) to be tested for a rule. 
 	 * E.g. age is greater than 4. etc
@@ -53,7 +53,7 @@ public class ValidationRule implements Persistent {
 	 * @param action
 	 * @param actionTargets
 	 */
-	public ValidationRule(int questionId, Vector conditions , String errorMessage) {
+	public ValidationRule(short questionId, Vector conditions , String errorMessage) {
 		setQuestionId(questionId);
 		setConditions(conditions);
 		setErrorMessage(errorMessage);
@@ -67,11 +67,11 @@ public class ValidationRule implements Persistent {
 		this.conditions = conditions;
 	}
 
-	public int getQuestionId() {
+	public short getQuestionId() {
 		return questionId;
 	}
 
-	public void setQuestionId(int questionId) {
+	public void setQuestionId(short questionId) {
 		this.questionId = questionId;
 	}
 	
@@ -149,8 +149,8 @@ public class ValidationRule implements Persistent {
 	 * @see org.fcitmuk.db.util.Persistent#read(java.io.DataInputStream)
 	 */
 	public void read(DataInputStream dis) throws IOException, InstantiationException, IllegalAccessException {
-		setQuestionId(dis.readByte());
-		setConditions(PersistentHelper.read(dis,Condition.class));
+		setQuestionId(dis.readShort());
+		setConditions(PersistentHelper.readMedium(dis,Condition.class));
 		setErrorMessage(dis.readUTF().intern());
 		setConditionsOperator(dis.readByte());
 
@@ -160,8 +160,8 @@ public class ValidationRule implements Persistent {
 	 * @see org.fcitmuk.db.util.Persistent#write(java.io.DataOutputStream)
 	 */
 	public void write(DataOutputStream dos) throws IOException {
-		dos.writeByte(getQuestionId());
-		PersistentHelper.write(getConditions(), dos);
+		dos.writeShort(getQuestionId());
+		PersistentHelper.writeMedium(getConditions(), dos);
 		dos.writeUTF(getErrorMessage());
 		dos.writeByte(getConditionsOperator());
 	}

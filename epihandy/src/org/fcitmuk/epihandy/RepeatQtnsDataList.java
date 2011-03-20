@@ -26,7 +26,7 @@ public class RepeatQtnsDataList  implements Persistent {
 	
 	public RepeatQtnsDataList(RepeatQtnsDataList repeatQtnsDataList){
 		repeatQtnsDatas = new Vector();
-		for(byte i=0; i<repeatQtnsDataList.size(); i++)
+		for(int i=0; i<repeatQtnsDataList.size(); i++)
 			repeatQtnsDatas.addElement(new RepeatQtnsData(repeatQtnsDataList.getRepeatQtnsData(i)));
 	}
 	
@@ -77,7 +77,7 @@ public class RepeatQtnsDataList  implements Persistent {
 			repeatQtnsDatas = new Vector();
 		
 		RepeatQtnsData data;
-		for(byte i=0; i<repeatQtnsDatas.size(); i++){
+		for(int i=0; i<repeatQtnsDatas.size(); i++){
 			data = (RepeatQtnsData)repeatQtnsDatas.elementAt(i);
 			if(data.getId() == repeatQtnsData.getId()){
 				repeatQtnsDatas.setElementAt(repeatQtnsData, i);
@@ -127,8 +127,8 @@ public class RepeatQtnsDataList  implements Persistent {
 		
 		//Set the runtime identifiers.
 		if(repeatQtnsDatas != null){
-			for(byte i=0; i<repeatQtnsDatas.size(); i++)
-				((RepeatQtnsData)repeatQtnsDatas.elementAt(i)).setId((byte)(i+1));
+			for(int i=0; i<repeatQtnsDatas.size(); i++)
+				((RepeatQtnsData)repeatQtnsDatas.elementAt(i)).setId((short)(i+1));
 		}
 	}
 

@@ -51,7 +51,7 @@ public class EpihandyXform{
 	public static final String ATTRIBUTE_VALUE_SHOW = "show";
 	public static final String ATTRIBUTE_VALUE_HIDE = "hide";
 
-	private static byte nextOptionId = 1;
+	private static short nextOptionId = 1;
 
 	/**
 	 * Updates the XForm model with the answers.
@@ -586,13 +586,13 @@ public class EpihandyXform{
 				} else if (tagname.equals("bind") || tagname.equals("ref")) {
 					QuestionDef qtn = new QuestionDef();
 					if(formDef.getPages() == null)
-						qtn.setId(Byte.parseByte("1"));
+						qtn.setId(Short.parseShort("1"));
 					else{
 						if(((PageDef)formDef.getPages().elementAt(0)).getQuestions().size() > 126){
 							System.out.println("Failed parsing Xform because it exceeds the currently supported maximum number of questions. Count="+((PageDef)formDef.getPages().elementAt(0)).getQuestions().size());
 							break;
 						}
-						qtn.setId(Byte.parseByte(String.valueOf(((PageDef)formDef.getPages().elementAt(0)).getQuestions().size()+1)));
+						qtn.setId(Short.parseShort(String.valueOf(((PageDef)formDef.getPages().elementAt(0)).getQuestions().size()+1)));
 					}
 					qtn.setVariableName(child.getAttributeValue(null, "nodeset"));
 					setQuestionType(qtn,child.getAttributeValue(null, "type"),child);
@@ -723,7 +723,7 @@ public class EpihandyXform{
 
 		if (!label.equals("") && !value.equals("")) { //$NON-NLS-1$ //$NON-NLS-2$
 			if (questionDef != null && questionDef.getOptions() != null)
-				questionDef.addOption(new OptionDef(Byte.parseByte(String.valueOf(questionDef.getOptions().size())),label, value));
+				questionDef.addOption(new OptionDef(Short.parseShort(String.valueOf(questionDef.getOptions().size())),label, value));
 		} 
 		else if (!label.equals("") && questionDef != null){
 			if(questionDef.getText() == null || questionDef.getText().trim().length()==0){
@@ -803,7 +803,7 @@ public class EpihandyXform{
 					continue;
 
 				optionDef = new OptionDef(getNextOptionId(),label, value);
-				Byte optionId = (Byte)parentOptionIdMap.get(parent);
+				Short optionId = (Short)parentOptionIdMap.get(parent);
 				if(optionId == null){
 					OptionDef optnDef = parentQuestionDef.getOptionWithValue(parent);
 					if(parentQuestionDef.getType() == QuestionDef.QTN_TYPE_LIST_EXCLUSIVE_DYNAMIC){
@@ -814,7 +814,7 @@ public class EpihandyXform{
 					}
 					if(optnDef == null)
 						continue;
-					optionId = new Byte(optnDef.getId());
+					optionId = new Short(optnDef.getId());
 					parentOptionIdMap.put(parent, optionId);
 				}
 				Vector optionList = getOptionList(dynamicOptionDef,optionId);
@@ -844,7 +844,7 @@ public class EpihandyXform{
 		} 
 	}
 
-	private static void setOptionList(DynamicOptionDef dynamicOptionDef,Byte optionId, Vector list){
+	private static void setOptionList(DynamicOptionDef dynamicOptionDef, Short optionId, Vector list){
 		if(dynamicOptionDef.getParentToChildOptions() == null)
 			dynamicOptionDef.setParentToChildOptions(new Hashtable());
 		dynamicOptionDef.getParentToChildOptions().put(optionId, list);
@@ -872,7 +872,7 @@ public class EpihandyXform{
 		return null;
 	}
 
-	private static DynamicOptionDef getChildDynamicOptions(FormDef formDef, byte questionId){
+	private static DynamicOptionDef getChildDynamicOptions(FormDef formDef, short questionId){
 		if(formDef.getDynamicOptions() == null)
 			return null;
 
@@ -886,20 +886,20 @@ public class EpihandyXform{
 		return null;
 	}
 
-	private static byte getNextOptionId() {
+	private static short getNextOptionId() {
 		return nextOptionId++;
 	}
 
-	private static Vector getOptionList(DynamicOptionDef dynamicOptionDef, Byte optionId){
+	private static Vector getOptionList(DynamicOptionDef dynamicOptionDef, Short optionId){
 		if(dynamicOptionDef.getParentToChildOptions() == null)
 			return null;
 		return (Vector)dynamicOptionDef.getParentToChildOptions().get(optionId);
 	}
 
-	private static void setDynamicOptionDef(FormDef formDef, byte questionId, DynamicOptionDef dynamicOptionDef){
+	private static void setDynamicOptionDef(FormDef formDef, short questionId, DynamicOptionDef dynamicOptionDef){
 		if(formDef.getDynamicOptions() == null)
 			formDef.setDynamicOptions(new Hashtable());
-		formDef.getDynamicOptions().put(new Byte(questionId), dynamicOptionDef);
+		formDef.getDynamicOptions().put(new Short(questionId), dynamicOptionDef);
 	}
 
 	private static Element getInstanceNode(Element modelNode, String instanceId){
@@ -1030,10 +1030,10 @@ public class EpihandyXform{
 		Vector rules = new Vector();
 
 		Enumeration keys = relevants.keys();
-		byte id = 0;
+		short id = 0;
 		while(keys.hasMoreElements()){
 			QuestionDef qtn = (QuestionDef)keys.nextElement();
-			SkipRule skipRule = buildSkipRule(formDef, qtn.getId(),(String)relevants.get(qtn),++id,getAction(actions.get(qtn)));
+			SkipRule skipRule = buildSkipRule(formDef, qtn.getId(), (String)relevants.get(qtn), ++id, getAction(actions.get(qtn)));
 			if(skipRule != null)
 				rules.add(skipRule);
 		}
@@ -1055,17 +1055,17 @@ public class EpihandyXform{
 		formDef.setValidationRules(rules);
 	}
 
-	private static SkipRule buildSkipRule(FormDef formDef, byte questionId, String relevant, byte id, byte action){
+	private static SkipRule buildSkipRule(FormDef formDef, short questionId, String relevant, short skipRuleId, byte action){
 
 		SkipRule skipRule = new SkipRule();
-		skipRule.setId(id);
+		skipRule.setId(skipRuleId);
 		//TODO For now we are only dealing with hiding and showing.
 		skipRule.setAction(action); //TODO This should depend on whats in the xforms file
 		skipRule.setConditions(getSkipRuleConditions(formDef,relevant,skipRule.getAction()));
 		skipRule.setConditionsOperator(getConditionsOperator(relevant));
 
 		Vector actionTargets = new Vector();
-		actionTargets.add(new Byte(questionId));
+		actionTargets.add(new Short(questionId));
 		skipRule.setActionTargets(actionTargets);
 		//skipRule.setName(name);
 
@@ -1074,10 +1074,10 @@ public class EpihandyXform{
 		return skipRule;
 	}
 
-	private static ValidationRule buildValidationRule(FormDef formDef, byte questionId, String constraint, String constraintMsg){
+	private static ValidationRule buildValidationRule(FormDef formDef, short questionId, String constraint, String constraintMsg){
 
 		ValidationRule validationRule = new ValidationRule(questionId,null,null);
-		validationRule.setConditions(getValidationRuleConditions(formDef,constraint,questionId));
+		validationRule.setConditions(getValidationRuleConditions(formDef, constraint, questionId));
 		validationRule.setConditionsOperator(getConditionsOperator(constraint));
 
 		if(constraintMsg == null)
@@ -1096,8 +1096,8 @@ public class EpihandyXform{
 		Vector list = getConditionsOperatorTokens(relevant);
 
 		Condition condition  = new Condition();
-		for(byte i=0; i<list.size(); i++){
-			condition = getSkipRuleCondition(formDef,(String)list.elementAt(i),(byte)(i+1),action);
+		for(int i=0; i<list.size(); i++){
+			condition = getSkipRuleCondition(formDef,(String)list.elementAt(i),(short)(i+1),action);
 			if(condition != null)
 				conditions.add(condition);
 		}
@@ -1105,7 +1105,7 @@ public class EpihandyXform{
 		return conditions;
 	}
 
-	private static Vector getValidationRuleConditions(FormDef formDef, String constraint, byte questionId){
+	private static Vector getValidationRuleConditions(FormDef formDef, String constraint, short questionId){
 		Vector conditions = new Vector();
 
 		Vector list = getConditionsOperatorTokens(constraint);
@@ -1120,7 +1120,7 @@ public class EpihandyXform{
 		return conditions;
 	}
 
-	private static Condition getSkipRuleCondition(FormDef formDef, String relevant, byte id, byte action){		
+	private static Condition getSkipRuleCondition(FormDef formDef, String relevant, short id, byte action){		
 
 		Condition condition  = new Condition();
 		condition.setId(id);
@@ -1171,7 +1171,7 @@ public class EpihandyXform{
 		return condition;
 	}
 
-	private static Condition getValidationRuleCondition(FormDef formDef, String constraint, byte questionId){		
+	private static Condition getValidationRuleCondition(FormDef formDef, String constraint, short questionId){		
 		Condition condition  = new Condition();
 		condition.setId(questionId);
 		condition.setOperator(getOperator(constraint,EpihandyConstants.ACTION_ENABLE));
@@ -1393,11 +1393,11 @@ public class EpihandyXform{
 	private static String addNonBindControl(FormDef formDef,Element child,Hashtable relevants, String ref, String bind){
 		QuestionDef qtn = new QuestionDef();
 		if(formDef.getPages() == null)
-			qtn.setId(Byte.parseByte("1"));
+			qtn.setId(Short.parseShort("1"));
 		else{
 			if(isNumQuestionsBiggerThanMax(formDef))
 				return null;
-			qtn.setId(Byte.parseByte(String.valueOf(((PageDef)formDef.getPages().elementAt(0)).getQuestions().size()+1)));
+			qtn.setId(Short.parseShort(String.valueOf(((PageDef)formDef.getPages().elementAt(0)).getQuestions().size()+1)));
 		}
 
 		if(child.getAttributeValue(null, "type") == null)

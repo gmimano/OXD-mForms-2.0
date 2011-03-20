@@ -20,7 +20,7 @@ public class PageDef implements Persistent{
 	private Vector questions;
 
 	/** The page number. */
-	private byte pageNo = EpihandyConstants.NULL_ID;
+	private short pageNo = EpihandyConstants.NULL_ID;
 
 	/** The name of the page. */
 	private String name = EpihandyConstants.EMPTY_STRING;
@@ -35,17 +35,17 @@ public class PageDef implements Persistent{
 		copyQuestions(pageDef.getQuestions());
 	}
 
-	public PageDef(String name, byte pageNo,Vector questions) {
+	public PageDef(String name, short pageNo, Vector questions) {
 		setName(name);
 		setPageNo(pageNo);
 		setQuestions(questions);
 	}
 
-	public byte getPageNo() {
+	public short getPageNo() {
 		return pageNo;
 	}
 
-	public void setPageNo(byte pageNo) {
+	public void setPageNo(short pageNo) {
 		this.pageNo = pageNo;
 	}
 
@@ -75,7 +75,7 @@ public class PageDef implements Persistent{
 		if(questions == null)
 			return null;
 		
-		for(byte i=0; i<getQuestions().size(); i++){
+		for(int i=0; i<getQuestions().size(); i++){
 			QuestionDef def = (QuestionDef)getQuestions().elementAt(i);
 			if(def.getVariableName().equals(varName))
 				return def;
@@ -91,11 +91,11 @@ public class PageDef implements Persistent{
 		return null;
 	}
 
-	public QuestionDef getQuestion(byte id){
+	public QuestionDef getQuestion(short id){
 		if(questions == null)
 			return null;
 		
-		for(byte i=0; i<getQuestions().size(); i++){
+		for(int i=0; i<getQuestions().size(); i++){
 			QuestionDef def = (QuestionDef)getQuestions().elementAt(i);
 			if(def.getId() == id)
 				return def;
@@ -113,16 +113,16 @@ public class PageDef implements Persistent{
 
 	/** Reads a page definition object from the supplied stream. */
 	public void read(DataInputStream dis) throws IOException, InstantiationException, IllegalAccessException {
-		setPageNo(dis.readByte());
+		setPageNo(dis.readShort());
 		setName(dis.readUTF().intern());
-		setQuestions(PersistentHelper.read(dis,QuestionDef.class));
+		setQuestions(PersistentHelper.readMedium(dis,QuestionDef.class));
 	}
 
 	/** Write the page definition object to the supplied stream. */
 	public void write(DataOutputStream dos) throws IOException {
-		dos.writeByte(getPageNo());
+		dos.writeShort(getPageNo());
 		dos.writeUTF(getName());
-		PersistentHelper.write(getQuestions(), dos);
+		PersistentHelper.writeMedium(getQuestions(), dos);
 	}
 
 	public String toString() {
@@ -131,7 +131,7 @@ public class PageDef implements Persistent{
 
 	private void copyQuestions(Vector questions){
 		this.questions = new Vector();
-		for(byte i=0; i<questions.size(); i++)
+		for(short i=0; i<questions.size(); i++)
 			this.questions.addElement(new QuestionDef((QuestionDef)questions.elementAt(i)));
 	}
 }

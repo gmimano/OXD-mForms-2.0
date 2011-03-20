@@ -79,7 +79,7 @@ public class StudyData implements Persistent{
 			if(forms == null)
 				forms = formList;
 			else{
-				for(byte i=0; i<formList.size(); i++ )
+				for(int i=0; i<formList.size(); i++ )
 					forms.addElement(formList.elementAt(i));
 			}
 		}

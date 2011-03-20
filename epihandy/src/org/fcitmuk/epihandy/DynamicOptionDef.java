@@ -19,7 +19,7 @@ import org.fcitmuk.db.util.PersistentHelper;
 public class DynamicOptionDef  implements Persistent {
 
 	/** The question whose values are determined by or dependent on the answer of another question. **/
-	private byte questionId;
+	private short questionId;
 
 	/** A map between each parent option and a list of possible options for the dependant question. */
 	private Hashtable parentToChildOptions;
@@ -45,12 +45,12 @@ public class DynamicOptionDef  implements Persistent {
 	}
 
 
-	public byte getQuestionId() {
+	public short getQuestionId() {
 		return questionId;
 	}
 
 
-	public void setQuestionId(byte questionId) {
+	public void setQuestionId(short questionId) {
 		this.questionId = questionId;
 	}
 	
@@ -61,45 +61,45 @@ public class DynamicOptionDef  implements Persistent {
 		this.parentToChildOptions = new Hashtable();
 		
 		Enumeration keys = parentToChildOptions.keys();
-		Byte key;
+		Short key;
 		while(keys.hasMoreElements()){
-			key = (Byte)keys.nextElement();
+			key = (Short)keys.nextElement();
 			this.parentToChildOptions.put(key, QuestionDef.copyQuestionOptions((Vector)parentToChildOptions.get(key)));
 		}
 	}
 	
-	public Vector getOptionList(byte optionId){
+	public Vector getOptionList(short optionId){
 		if(parentToChildOptions == null)
 			return null;
-		return (Vector)parentToChildOptions.get(new Byte(optionId));
+		return (Vector)parentToChildOptions.get(new Short(optionId));
 	}
 	
 	public void read(DataInputStream dis) throws IOException , InstantiationException, IllegalAccessException {
-		setQuestionId(dis.readByte());
+		setQuestionId(dis.readShort());
 		
-		byte len = dis.readByte();
+		short len = dis.readShort();
 		if(len == 0)
 			return;
 		
 		parentToChildOptions = new Hashtable();
-		for(byte i=0; i<len; i++ )
-			parentToChildOptions.put(new Byte(dis.readByte()), PersistentHelper.read(dis, OptionDef.class));
+		for(int i=0; i<len; i++ )
+			parentToChildOptions.put(new Short(dis.readShort()), PersistentHelper.readMedium(dis, OptionDef.class));
 	}
 
 	public void write(DataOutputStream dos) throws IOException {
-		dos.writeByte(getQuestionId());
+		dos.writeShort(getQuestionId());
 
 		if(parentToChildOptions != null){
-			dos.writeByte(parentToChildOptions.size());
+			dos.writeShort(parentToChildOptions.size());
 			Enumeration keys = parentToChildOptions.keys();
-			Byte key;
+			Short key;
 			while(keys.hasMoreElements()){
-				key = (Byte)keys.nextElement();
-				dos.writeByte(key.byteValue());
-				PersistentHelper.write((Vector)parentToChildOptions.get(key), dos);
+				key = (Short)keys.nextElement();
+				dos.writeShort(key.shortValue());
+				PersistentHelper.writeMedium((Vector)parentToChildOptions.get(key), dos);
 			}
 		}
 		else
-			dos.writeByte(0);
+			dos.writeShort(0);
 	}
 }

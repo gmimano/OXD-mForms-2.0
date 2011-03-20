@@ -19,7 +19,7 @@ import org.fcitmuk.db.util.PersistentHelper;
 public class PageData  implements Persistent{
 
 	/** The page number. */
-	private byte pageNo = EpihandyConstants.NULL_ID;
+	private short pageNo = EpihandyConstants.NULL_ID;
 
 	/** A list of question data for this object. */
 	private Vector questions;
@@ -53,11 +53,11 @@ public class PageData  implements Persistent{
 		this.questions = questions;
 	}
 
-	public byte getPageNo() {
+	public short getPageNo() {
 		return pageNo;
 	}
 
-	public void setPageNo(byte pageNo) {
+	public void setPageNo(short pageNo) {
 		this.pageNo = pageNo;
 	}
 	
@@ -83,13 +83,13 @@ public class PageData  implements Persistent{
 
 	/** Reads the page data object from the stream .*/
 	public void read(DataInputStream dis) throws IOException, InstantiationException, IllegalAccessException {
-		setPageNo(dis.readByte());
-		setQuestions(PersistentHelper.read(dis,QuestionData.class));
+		setPageNo(dis.readShort());
+		setQuestions(PersistentHelper.readMedium(dis,QuestionData.class));
 	}
 
 	/** Writes the page data object to the stream. */
 	public void write(DataOutputStream dos) throws IOException {
-		dos.writeByte(getPageNo());
-		PersistentHelper.write(getQuestions(), dos);
+		dos.writeShort(getPageNo());
+		PersistentHelper.writeMedium(getQuestions(), dos);
 	}
 }

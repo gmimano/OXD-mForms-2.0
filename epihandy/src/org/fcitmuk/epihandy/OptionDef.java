@@ -14,7 +14,7 @@ import org.fcitmuk.db.util.Persistent;
  */
 public class OptionDef implements Persistent {
 	/** The numeric unique identifier of an answer option. */
-	private byte id = EpihandyConstants.NULL_ID;
+	private short id = EpihandyConstants.NULL_ID;
 
 	/** The display text of the answer option. */
 	private String text = EpihandyConstants.EMPTY_STRING;
@@ -44,18 +44,18 @@ public class OptionDef implements Persistent {
 	 * @param text
 	 * @param variableName
 	 */
-	public OptionDef(byte id,String text, String variableName) {
+	public OptionDef(short id, String text, String variableName) {
 		this();
 		setId(id);
 		setText(text);
 		setVariableName(variableName);
 	}
 
-	public byte getId() {
+	public short getId() {
 		return id;
 	}
 
-	public void setId(byte id) {
+	public void setId(short id) {
 		this.id = id;
 	}
 
@@ -83,7 +83,7 @@ public class OptionDef implements Persistent {
 	 * 
 	 */
 	public void read(DataInputStream dis) throws IOException {
-		setId(dis.readByte());
+		setId(dis.readShort());
 		setText(dis.readUTF().intern());
 		setVariableName(dis.readUTF().intern());
 	}
@@ -92,7 +92,7 @@ public class OptionDef implements Persistent {
 	 * 
 	 */
 	public void write(DataOutputStream dos) throws IOException {
-		dos.writeByte(getId());
+		dos.writeShort(getId());
 		dos.writeUTF(getText());
 		dos.writeUTF(getVariableName());
 	}

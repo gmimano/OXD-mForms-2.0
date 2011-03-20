@@ -98,7 +98,7 @@ public class StudyDef implements Persistent{
 		this.variableName = variableName;
 	}
 
-	public FormDef getFormAt(byte index){
+	public FormDef getFormAt(short index){
 		return (FormDef)forms.elementAt(index);
 	}
 
@@ -113,7 +113,7 @@ public class StudyDef implements Persistent{
 			if(forms == null)
 				forms = formList;
 			else{
-				for(byte i=0; i<formList.size(); i++ )
+				for(int i=0; i<formList.size(); i++ )
 					forms.addElement(formList.elementAt(i));
 			}
 		}
@@ -132,7 +132,7 @@ public class StudyDef implements Persistent{
 		setId(dis.readInt());
 		setName(dis.readUTF().intern());
 		setVariableName(dis.readUTF().intern());
-		setForms(PersistentHelper.read(dis,FormDef.class));
+		setForms(PersistentHelper.readMedium(dis,FormDef.class));
 	}
 
 	/** 
@@ -149,7 +149,7 @@ public class StudyDef implements Persistent{
 		mdos.writeInt(getId());
 		mdos.writeUTF(getName());
 		mdos.writeUTF(getVariableName());
-		PersistentHelper.write(getForms(), mdos);
+		PersistentHelper.writeMedium(getForms(), mdos);
 		
 		// Write length, then output contents
 		dos.writeInt(baos.size());
@@ -163,7 +163,7 @@ public class StudyDef implements Persistent{
 	 * @return - the form definition.
 	 */
 	public FormDef getForm(String varName){
-		for(byte i=0; i<forms.size(); i++){
+		for(int i=0; i<forms.size(); i++){
 			FormDef def = (FormDef)forms.elementAt(i);
 			if(def.getVariableName().equals(varName))
 				return def;
@@ -179,7 +179,7 @@ public class StudyDef implements Persistent{
 	 * @return - the form definition.
 	 */
 	public FormDef getForm(int formId){
-		for(byte i=0; i<forms.size(); i++){
+		for(int i=0; i<forms.size(); i++){
 			FormDef def = (FormDef)forms.elementAt(i);
 			if(def.getId() == formId)
 				return def;
@@ -194,7 +194,7 @@ public class StudyDef implements Persistent{
 
 	private void copyForms(Vector forms){
 		this.forms = new Vector();
-		for(byte i=0; i<forms.size(); i++)
+		for(int i=0; i<forms.size(); i++)
 			this.forms.addElement(new FormDef((FormDef)forms.elementAt(i)));
 	}
 }

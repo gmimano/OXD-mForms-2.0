@@ -25,7 +25,7 @@ public class Condition implements Persistent{
 	private static final int FUNC_AVG = 4;
 
 	/** The unique identifier of the question referenced by this condition. */
-	private byte questionId = EpihandyConstants.NULL_ID;
+	private short questionId = EpihandyConstants.NULL_ID;
 
 	/** The operator of the condition. Eg Equal to, Greater than, etc. */
 	private byte operator = EpihandyConstants.OPERATOR_NULL;
@@ -42,7 +42,7 @@ public class Condition implements Persistent{
 	private String secondValue = EpihandyConstants.EMPTY_STRING;
 
 	/** The unique identifier of a condition. */
-	private byte id = EpihandyConstants.NULL_ID;
+	private short id = EpihandyConstants.NULL_ID;
 
 	/** Creates a new condition object. */
 	public Condition(){
@@ -62,7 +62,7 @@ public class Condition implements Persistent{
 	 * @param operator - the condition operator.
 	 * @param value - the value to be equated to.
 	 */
-	public Condition(byte id,byte questionId, byte operator, byte function, String value) {
+	public Condition(short id, short questionId, byte operator, byte function, String value) {
 		this();
 		setQuestionId(questionId);
 		setOperator(operator);
@@ -77,10 +77,10 @@ public class Condition implements Persistent{
 	public void setOperator(byte operator) {
 		this.operator = operator;
 	}
-	public byte getQuestionId() {
+	public short getQuestionId() {
 		return questionId;
 	}
-	public void setQuestionId(byte questionId) {
+	public void setQuestionId(short questionId) {
 		this.questionId = questionId;
 	}
 	public String getValue() {
@@ -89,10 +89,10 @@ public class Condition implements Persistent{
 	public void setValue(String value) {
 		this.value = value;
 	}
-	public byte getId() {
+	public short getId() {
 		return id;
 	}
-	public void setId(byte conditionId) {
+	public void setId(short conditionId) {
 		this.id = conditionId;
 	}
 
@@ -519,8 +519,8 @@ public class Condition implements Persistent{
 	 * @throws IllegalAccessException
 	 */
 	public void read(DataInputStream dis) throws IOException, InstantiationException, IllegalAccessException {
-		setId(dis.readByte());
-		setQuestionId(dis.readByte());
+		setId(dis.readShort());
+		setQuestionId(dis.readShort());
 		setOperator(dis.readByte());
 		setValue(dis.readUTF().intern());
 		setFunction(dis.readByte());
@@ -533,8 +533,8 @@ public class Condition implements Persistent{
 	 * @throws IOException
 	 */
 	public void write(DataOutputStream dos) throws IOException {
-		dos.writeByte(getId());
-		dos.writeByte(getQuestionId());
+		dos.writeShort(getId());
+		dos.writeShort(getQuestionId());
 		dos.writeByte(getOperator());
 		dos.writeUTF(getValue());
 		dos.writeByte(getFunction());

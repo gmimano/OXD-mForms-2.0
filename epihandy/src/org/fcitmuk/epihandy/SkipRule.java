@@ -22,7 +22,7 @@ public class SkipRule implements Persistent{
 	/** The numeric identifier of a rule. This is assigned in code and hence
 	 * is not known by the user.
 	 */
-	private byte id = EpihandyConstants.NULL_ID;
+	private short id = EpihandyConstants.NULL_ID;
 
 	/** A list of conditions (Condition object) to be tested for a rule. 
 	 * E.g. If sex is Male. If age is greatern than 4. etc
@@ -59,7 +59,7 @@ public class SkipRule implements Persistent{
 	 * @param action
 	 * @param actionTargets
 	 */
-	public SkipRule(byte ruleId, Vector conditions, byte action, Vector actionTargets /*, String name*/) {
+	public SkipRule(short ruleId, Vector conditions, byte action, Vector actionTargets) {
 		setId(ruleId);
 		setConditions(conditions);
 		setAction(action);
@@ -90,20 +90,20 @@ public class SkipRule implements Persistent{
 		this.conditions = conditions;
 	}
 
-	public byte getId() {
+	public short getId() {
 		return id;
 	}
 
-	public void setId(byte id) {
+	public void setId(short id) {
 		this.id = id;
 	}
 
 	//TODO This is very very wiered
-	public byte getConditionsOperator() {
+	public short getConditionsOperator() {
 		return id;
 	}
 
-	public void setConditionsOperator(byte id) {
+	public void setConditionsOperator(short id) {
 		this.id = id;
 	}
 
@@ -115,7 +115,7 @@ public class SkipRule implements Persistent{
 	public void fire(FormData data){
 		boolean trueFound = false, falseFound = false;
 
-		for(byte i=0; i<getConditions().size(); i++){
+		for(int i=0; i<getConditions().size(); i++){
 			Condition condition = (Condition)this.getConditions().elementAt(i);
 			if(condition.isTrue(data,false))
 				trueFound = true;
@@ -133,8 +133,8 @@ public class SkipRule implements Persistent{
 	/** Executes the action of a rule for its conditition's true or false value. */
 	public void ExecuteAction(FormData data,boolean conditionTrue){
 		Vector qtns = this.getActionTargets();
-		for(byte i=0; i<qtns.size(); i++)
-			ExecuteAction(data.getQuestion(Byte.parseByte(qtns.elementAt(i).toString())),conditionTrue);
+		for(int i=0; i<qtns.size(); i++)
+			ExecuteAction(data.getQuestion(Short.parseShort(qtns.elementAt(i).toString())),conditionTrue);
 	}
 
 	/** Executes the rule action on the supplied question. */
@@ -166,10 +166,10 @@ public class SkipRule implements Persistent{
 	 * @see org.fcitmuk.db.util.Persistent#read(java.io.DataInputStream)
 	 */
 	public void read(DataInputStream dis) throws IOException, InstantiationException, IllegalAccessException {
-		setId(dis.readByte());
+		setId(dis.readShort());
 		setAction(dis.readByte());
 		setConditions(PersistentHelper.read(dis,Condition.class));
-		setActionTargets(PersistentHelper.readBytes(dis));
+		setActionTargets(PersistentHelper.readShorts(dis));
 		setConditionsOperator(dis.readByte());
 
 	}
@@ -178,22 +178,22 @@ public class SkipRule implements Persistent{
 	 * @see org.fcitmuk.db.util.Persistent#write(java.io.DataOutputStream)
 	 */
 	public void write(DataOutputStream dos) throws IOException {
-		dos.writeByte(getId());
+		dos.writeShort(getId());
 		dos.writeByte(getAction());
 		PersistentHelper.write(getConditions(), dos);
-		PersistentHelper.writeBytes(getActionTargets(), dos);
+		PersistentHelper.writeShorts(getActionTargets(), dos);
 		dos.writeByte(getConditionsOperator());
 	}
 
 	private void copyConditions(Vector conditions){
 		this.conditions = new Vector();
-		for(byte i=0; i<conditions.size(); i++)
+		for(int i=0; i<conditions.size(); i++)
 			this.conditions.addElement(new Condition((Condition)conditions.elementAt(i)));
 	}
 
 	private void copyActionTargets(Vector actionTargets){
 		this.actionTargets = new Vector();
-		for(byte i=0; i<actionTargets.size(); i++)
-			this.actionTargets.addElement(new Byte(((Byte)actionTargets.elementAt(i)).byteValue()));
+		for(int i=0; i<actionTargets.size(); i++)
+			this.actionTargets.addElement(new Short(((Short)actionTargets.elementAt(i)).shortValue()));
 	}
 }

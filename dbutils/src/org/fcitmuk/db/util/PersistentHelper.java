@@ -228,6 +228,23 @@ public class PersistentHelper {
 	}
 	
 	/**
+	 * Writes a list of bytes a stream.
+	 * 
+	 * @param byteVector - the Byte vector.
+	 * @param dos  - the stream.
+	 * @throws IOException
+	 */
+	public static void writeShorts(Vector byteVector, DataOutputStream dos) throws IOException {	
+		if(byteVector != null){
+			dos.writeShort(byteVector.size());
+			for(int i=0; i<byteVector.size(); i++ )
+				dos.writeShort(((Short)byteVector.elementAt(i)).shortValue());
+		}
+		else
+			dos.writeShort(0);
+	}
+	
+	/**
 	 * Reads a small vector (byte size) of persistent objects of a certain class from a stream.
 	 * 
 	 * @param dis - the stream to read from.
@@ -359,6 +376,29 @@ public class PersistentHelper {
 			byteVector.addElement(new Byte(dis.readByte()));
 		
 		return byteVector;
+	}
+	
+	/**
+	 * Reads a list of bytes from the stream.
+	 * 
+	 * @param dis
+	 * @return
+	 * @throws IOException
+	 * @throws InstantiationException
+	 * @throws IllegalAccessException
+	 */
+	public static Vector readShorts(DataInputStream dis) throws IOException, InstantiationException,IllegalAccessException {
+		
+		short len = dis.readShort();
+		if(len == 0)
+			return null;
+		
+		Vector shortVector = new Vector(len);
+		
+		for(int i=0; i<len; i++ )
+			shortVector.addElement(new Short(dis.readShort()));
+		
+		return shortVector;
 	}
 	
 	/**

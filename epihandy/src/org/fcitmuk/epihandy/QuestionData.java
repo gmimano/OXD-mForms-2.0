@@ -50,7 +50,7 @@ public class QuestionData implements Persistent{
 	private QuestionDef def;
 
 	/** The numeric unique identifier for the question that this data is collected for. */
-	private byte id = EpihandyConstants.NULL_ID;
+	private short id = EpihandyConstants.NULL_ID;
 
 	private String dataDescription;
 
@@ -76,11 +76,11 @@ public class QuestionData implements Persistent{
 		setDef(def);
 	}
 
-	public byte getId() {
+	public short getId() {
 		return id;
 	}
 
-	public void setId(byte id) {
+	public void setId(short id) {
 		this.id = id;
 	}
 
@@ -108,7 +108,7 @@ public class QuestionData implements Persistent{
 
 		Vector list = (Vector)answer;
 		String s = null;
-		for(byte i=0; i<list.size(); i++){
+		for(int i=0; i<list.size(); i++){
 			if(s!= null)
 				s += ",";
 			else
@@ -178,11 +178,11 @@ public class QuestionData implements Persistent{
 	}
 
 	public void setOptionAnswer(String textAnswer){
-		for(byte i=0; i<getDef().getOptions().size(); i++){
+		for(short i=0; i<getDef().getOptions().size(); i++){
 			OptionDef optionDef = (OptionDef)getDef().getOptions().elementAt(i);
 			if(optionDef.getVariableName().equals(textAnswer)){
 				setAnswer(new OptionData(optionDef));
-				setOptionAnswerIndices(new Byte(i));
+				setOptionAnswerIndices(new Short(i));
 				break;
 			}
 		}
@@ -191,13 +191,13 @@ public class QuestionData implements Persistent{
 	public void setOptionAnswers(Vector vals){
 		Vector optionAnswers = new Vector();
 		Vector optionAnswerIndices = new Vector();
-		for(byte j=0; j<vals.size(); j++){
+		for(short j=0; j<vals.size(); j++){
 			String strVal = (String)vals.elementAt(j);
-			for(byte i=0; i<getDef().getOptions().size(); i++){
+			for(short i=0; i<getDef().getOptions().size(); i++){
 				OptionDef option = (OptionDef)getDef().getOptions().elementAt(i);
 				if(option.getVariableName().equals(strVal)){
 					optionAnswers.addElement(new OptionData(option));
-					optionAnswerIndices.addElement(new Byte(i));
+					optionAnswerIndices.addElement(new Short(i));
 					break;
 				}
 			}
@@ -406,7 +406,7 @@ public class QuestionData implements Persistent{
 					break;
 				case QuestionDef.QTN_TYPE_LIST_MULTIPLE:
 					String s = ""; Vector optionAnswers = (Vector)getAnswer();
-					for(byte i=0; i<optionAnswers.size(); i++){
+					for(int i=0; i<optionAnswers.size(); i++){
 						if(s.length() != 0)
 							s += MULITPLE_SELECT_TEXT_SEPARATOR;
 						s += ((OptionData)optionAnswers.elementAt(i)).getDef().getText();
@@ -415,7 +415,7 @@ public class QuestionData implements Persistent{
 					break;
 				case QuestionDef.QTN_TYPE_REPEAT:
 					s = ""; RepeatQtnsDataList list = (RepeatQtnsDataList)getAnswer();
-					for(byte i=0; i<list.size(); i++){
+					for(int i=0; i<list.size(); i++){
 						if(s.length() != 0)
 							s += REPEAT_TEXT_SEPARATOR;
 						s += list.getRepeatQtnsData(i).toString();
@@ -519,7 +519,7 @@ public class QuestionData implements Persistent{
 					break;
 				case QuestionDef.QTN_TYPE_LIST_MULTIPLE:
 					String s = ""; Vector optionAnswers = (Vector)getAnswer();
-					for(byte i=0; i<optionAnswers.size(); i++){
+					for(int i=0; i<optionAnswers.size(); i++){
 						if(s.length() != 0)
 							s += MULITPLE_SELECT_VALUE_SEPARATOR;
 						s += ((OptionData)optionAnswers.elementAt(i)).getValue();
@@ -572,7 +572,7 @@ public class QuestionData implements Persistent{
 
 		if(getDef().getType() == QuestionDef.QTN_TYPE_LIST_MULTIPLE){
 			Vector optionAnswers = (Vector)getAnswer();
-			for(byte i=0; i<optionAnswers.size(); i++){
+			for(int i=0; i<optionAnswers.size(); i++){
 				if(((OptionData)optionAnswers.elementAt(i)).getValue().equals(val))
 					return true;
 			}
@@ -613,7 +613,7 @@ public class QuestionData implements Persistent{
 	 * @throws IllegalAccessException
 	 */
 	public void read(DataInputStream dis) throws IOException, IllegalAccessException, InstantiationException{
-		setId(dis.readByte());	
+		setId(dis.readShort());	
 		readAnswer(dis,dis.readByte());
 	}
 
@@ -649,17 +649,17 @@ public class QuestionData implements Persistent{
 				option.read(dis);
 				setAnswer(option);	
 
-				setOptionAnswerIndices(new Byte(dis.readByte()));
+				setOptionAnswerIndices(new Short(dis.readShort()));
 			}
 			break;
 		case QuestionDef.QTN_TYPE_LIST_MULTIPLE:
 			if(dis.readBoolean()){
-				setAnswer(PersistentHelper.read(dis,OptionData.class));
+				setAnswer(PersistentHelper.readMedium(dis,OptionData.class));
 
-				byte count = dis.readByte(); //should always be greater than zero
+				short count = dis.readShort(); //should always be greater than zero
 				Vector col = new Vector();
-				for(byte i=0; i<count; i++)
-					col.addElement(new Byte(dis.readByte()));
+				for(short i=0; i<count; i++)
+					col.addElement(new Short(dis.readShort()));
 				setOptionAnswerIndices(col);
 			}
 			break;
@@ -676,8 +676,7 @@ public class QuestionData implements Persistent{
 			if(dis.readBoolean()){
 				int size = dis.readInt();
 				byte[] data = new byte[size];
-				for(int index = 0; index < size; index ++)
-					data[index] = dis.readByte();
+				dis.read(data, 0, size);
 				answer = data;
 			}
 			break;
@@ -691,7 +690,7 @@ public class QuestionData implements Persistent{
 	 * @throws IOException
 	 */
 	public void write(DataOutputStream dos) throws IOException {
-		dos.writeByte(getId());
+		dos.writeShort(getId());
 
 		//This type is only used when reading data back from storage.
 		//Otherwise it is not kept in memory because it can be got from the QuestionDef.
@@ -723,7 +722,7 @@ public class QuestionData implements Persistent{
 			if(getAnswer() != null){
 				dos.writeBoolean(true);
 				((OptionData)getAnswer()).write(dos);
-				dos.writeByte(((Byte)getOptionAnswerIndices()).byteValue());
+				dos.writeShort(((Short)getOptionAnswerIndices()).shortValue());
 			}
 			else
 				dos.writeBoolean(false);
@@ -731,11 +730,11 @@ public class QuestionData implements Persistent{
 		case QuestionDef.QTN_TYPE_LIST_MULTIPLE:
 			if(getAnswer() != null){
 				dos.writeBoolean(true);
-				PersistentHelper.write((Vector)getAnswer(), dos);
+				PersistentHelper.writeMedium((Vector)getAnswer(), dos);
 				Vector col = (Vector)getOptionAnswerIndices();
-				dos.writeByte(col.size());
-				for(byte i=0; i<col.size(); i++)
-					dos.writeByte(((Byte)col.elementAt(i)).byteValue());
+				dos.writeShort(col.size());
+				for(short i=0; i<col.size(); i++)
+					dos.writeShort(((Short)col.elementAt(i)).shortValue());
 			}
 			else
 				dos.writeBoolean(false);

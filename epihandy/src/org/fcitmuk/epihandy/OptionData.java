@@ -14,7 +14,7 @@ import org.fcitmuk.db.util.Persistent;
  */
 public class OptionData  implements Persistent {
 	
-	private byte id = EpihandyConstants.NULL_ID;
+	private short id = EpihandyConstants.NULL_ID;
 	private OptionDef def;
 	
 	public OptionData(){
@@ -32,11 +32,11 @@ public class OptionData  implements Persistent {
 		setId(def.getId());
 	}
 
-	public byte getId() {
+	public short getId() {
 		return id;
 	}
 
-	public void setId(byte id) {
+	public void setId(short id) {
 		this.id = id;
 	}
 	
@@ -49,11 +49,11 @@ public class OptionData  implements Persistent {
 	}
 
 	public void read(DataInputStream dis) throws IOException {
-		setId(dis.readByte());
+		setId(dis.readShort());
 	}
 
 	public void write(DataOutputStream dos) throws IOException {
-		dos.writeByte(getId());
+		dos.writeShort(getId());
 	}
 	
 	public String toString() {
