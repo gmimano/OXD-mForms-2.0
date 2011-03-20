@@ -131,7 +131,7 @@ public class StudyStore {
 			id = dis.readInt();
 			name = dis.readUTF();
 			varName = dis.readUTF();
-			numForms = dis.readByte();
+			numForms = dis.readShort();
 		} catch (IOException e) {
 			throw new MalformedStreamException("Failed to read study header: "
 					+ e.getMessage());
