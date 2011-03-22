@@ -93,7 +93,7 @@ public class RepeatTypeEditor extends AbstractView implements TypeEditor, TypeEd
 		
 		if(view == dataListView){
 			if(commandAction == CommandAction.NEW){
-				rptQtnsData = new RepeatQtnsData((byte)(rptQtnsDataList.size()+1),rptQtnsDef);
+				rptQtnsData = new RepeatQtnsData((short)(rptQtnsDataList.size()+1),rptQtnsDef);
 				dataView.showQtnData(rptQtnsData, this);
 			}
 			else if(commandAction == CommandAction.EDIT){

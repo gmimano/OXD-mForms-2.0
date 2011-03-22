@@ -439,7 +439,7 @@ public class FormView extends AbstractView implements AlertMessageListener, Mode
 		}
 	}
 
-	private boolean selectMissingValueQtn(byte pageNo){	
+	private boolean selectMissingValueQtn(int pageNo){	
 
 		if(pageNo != currentPageIndex)
 			showPage(pageNo,new Integer(0));
@@ -456,7 +456,7 @@ public class FormView extends AbstractView implements AlertMessageListener, Mode
 		return false;
 	}
 
-	private String selectInvalidQtn(byte pageNo){	
+	private String selectInvalidQtn(int pageNo){	
 
 		if(pageNo != currentPageIndex)
 			showPage(pageNo,new Integer(0));
@@ -481,7 +481,7 @@ public class FormView extends AbstractView implements AlertMessageListener, Mode
 
 	private void selectMissingValueQtn(){
 		Vector pages = formData.getPages();
-		for(byte i = 0; i < pages.size(); i++){
+		for(int i = 0; i < pages.size(); i++){
 			if(selectMissingValueQtn(i))
 				break;
 		}
@@ -489,7 +489,7 @@ public class FormView extends AbstractView implements AlertMessageListener, Mode
 
 	private String selectInvalidQtn(){
 		Vector pages = formData.getPages();
-		for(byte i = 0; i < pages.size(); i++){
+		for(int i = 0; i < pages.size(); i++){
 			String errorMsg = selectInvalidQtn(i);
 			if(errorMsg != null)
 				return errorMsg;

@@ -127,7 +127,7 @@ public class DefaultTypeEditor extends AbstractView implements TypeEditor,AlertM
 
 					if(currentQuestion.getOptionAnswerIndices() != null){
 						for(int i=0; i<((Vector)currentQuestion.getOptionAnswerIndices()).size(); i++)
-							((ChoiceGroup)currentCtrl).setSelectedIndex(((Byte)((Vector)currentQuestion.getOptionAnswerIndices()).elementAt(i)).byteValue(), true);
+							((ChoiceGroup)currentCtrl).setSelectedIndex(((Short)((Vector)currentQuestion.getOptionAnswerIndices()).elementAt(i)).shortValue(), true);
 					}
 				}
 				break;
@@ -235,7 +235,7 @@ public class DefaultTypeEditor extends AbstractView implements TypeEditor,AlertM
 			}
 			else{
 				currentQuestion.setAnswer(ctrl.getSelectedIndex() == 0 ? new Boolean(true) : new Boolean(false));
-				currentQuestion.setOptionAnswerIndices(toByte(index));
+				currentQuestion.setOptionAnswerIndices(toShort(index));
 			}
 			break;
 		case QuestionDef.QTN_TYPE_LIST_EXCLUSIVE:
@@ -251,7 +251,7 @@ public class DefaultTypeEditor extends AbstractView implements TypeEditor,AlertM
 				}
 				else{
 					currentQuestion.setAnswer(new OptionData((OptionDef)options.elementAt(index)));
-					currentQuestion.setOptionAnswerIndices(toByte(index));
+					currentQuestion.setOptionAnswerIndices(toShort(index));
 				}
 			}
 			break;
@@ -264,7 +264,7 @@ public class DefaultTypeEditor extends AbstractView implements TypeEditor,AlertM
 				for(int i=0; i<options.size(); i++){
 					if(ctrl.isSelected(i)){
 						optionAnswers.addElement(new OptionData((OptionDef)options.elementAt(i)));
-						optionAnswerIndices.addElement(toByte(i));
+						optionAnswerIndices.addElement(toShort(i));
 					}
 				}
 
@@ -280,8 +280,8 @@ public class DefaultTypeEditor extends AbstractView implements TypeEditor,AlertM
 		}
 	}
 
-	public static Byte toByte(int val){
-		return new Byte(Byte.parseByte(String.valueOf(val)));
+	public static Short toShort(int val){
+		return new Short(Short.parseShort(String.valueOf(val)));
 	}
 
 	public void onAlertMessage(byte msg){

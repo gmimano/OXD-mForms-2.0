@@ -477,7 +477,7 @@ public class DownloadUploadManager implements TransportLayerListener,AlertMessag
 			int formCount = formUpload.getFormCount(studyidx);
 			for (int formidx = 0; formidx < formCount; formidx++) {
 				if (!uploadResponse.isFailedForm((byte) studyidx,
-						(byte) formidx)) {
+						(short) formidx)) {
 					int[] formId = formUpload.getFormAtPos(studyidx, formidx);
 					idsToDelete.addElement(new int[] { formId[0], formId[1],
 							formId[2] });
