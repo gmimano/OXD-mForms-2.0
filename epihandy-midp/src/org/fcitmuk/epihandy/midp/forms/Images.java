@@ -17,6 +17,7 @@ public class Images {
 	public static Image REQUIRED_IMAGE;
 	public static Image DISABLED_QUESTION;
 	public static Image EMPTY_IMAGE;
+	public static Image PARTIAL_IMAGE;
 
 	static {
 		try {
@@ -25,6 +26,7 @@ public class Images {
 			HASDATA_IMAGE = Image.createImage("/icons/dot.png");
 			REQUIRED_IMAGE = Image.createImage("/icons/asterisk.png");
 			DISABLED_QUESTION = Image.createImage("/icons/delete-gray.png");
+			PARTIAL_IMAGE = Image.createImage("/icons/partial.png");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
