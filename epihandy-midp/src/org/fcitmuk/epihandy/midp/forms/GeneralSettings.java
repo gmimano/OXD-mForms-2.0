@@ -19,7 +19,6 @@ public class GeneralSettings extends AbstractView{
 	public static final String KEY_QUESTION_NUMBERING = "QUESTION_NUMBERING";
 	public static final String KEY_OK_ON_RIGHT = "OK_ON_RIGHT";
 	public static final String KEY_DELETE_DATA_AFTER_UPLOAD = "DELETE_DATA_AFTER_UPLOAD";
-	public static final String KEY_FORCE_COMPLETE_FORMS = "FORCE_COMPLETE_FORMS";
 	public static final String STORAGE_NAME_SETTINGS = "fcitmuk.GeneralSettings";
 	
 	private ChoiceGroup currentCtrl;
@@ -39,14 +38,12 @@ public class GeneralSettings extends AbstractView{
 		currentCtrl.append(MenuText.NUMBERING(), null);
 		currentCtrl.append(MenuText.OK_ON_RIGHT(), null);
 		currentCtrl.append(MenuText.DELETE_AFTER_UPLOAD(), null);
-		currentCtrl.append(MenuText.FORCE_COMPLETE_FORMS(), null);
 		
 		Settings settings = new Settings(STORAGE_NAME_SETTINGS,true);
 		currentCtrl.setSelectedIndex(0,Utilities.stringToBoolean(settings.getSetting(KEY_SINGLE_QUESTION_EDIT)));
 		currentCtrl.setSelectedIndex(1,Utilities.stringToBoolean(settings.getSetting(KEY_QUESTION_NUMBERING)));
 		currentCtrl.setSelectedIndex(2,Utilities.stringToBoolean(settings.getSetting(KEY_OK_ON_RIGHT)));
 		currentCtrl.setSelectedIndex(3,Utilities.stringToBoolean(settings.getSetting(KEY_DELETE_DATA_AFTER_UPLOAD),true));
-		currentCtrl.setSelectedIndex(4,Utilities.stringToBoolean(settings.getSetting(KEY_FORCE_COMPLETE_FORMS),true));
 		
 		screen.setCommandListener(this);
 		((Form)screen).append(currentCtrl);
@@ -86,11 +83,9 @@ public class GeneralSettings extends AbstractView{
 		settings.setSetting(KEY_QUESTION_NUMBERING,Utilities.booleanToString((currentCtrl.isSelected(1))));
 		settings.setSetting(KEY_OK_ON_RIGHT,Utilities.booleanToString((currentCtrl.isSelected(2))));
 		settings.setSetting(KEY_DELETE_DATA_AFTER_UPLOAD,Utilities.booleanToString((currentCtrl.isSelected(3))));
-		settings.setSetting(KEY_FORCE_COMPLETE_FORMS,Utilities.booleanToString((currentCtrl.isSelected(4))));
 		settings.saveSettings();
 		
-		// TODO: Figure out why this hack is here
-		DefaultCommands.cmdOk = new Command(MenuText.OK(), currentCtrl.isSelected(4) ? Command.CANCEL : Command.OK, 1);
+		DefaultCommands.cmdOk = new Command(MenuText.OK(), currentCtrl.isSelected(3) ? Command.CANCEL : Command.OK, 1);
 		
 		display.setCurrent(getPrevScreen());
 	}
@@ -125,8 +120,8 @@ public class GeneralSettings extends AbstractView{
 		return Utilities.stringToBoolean(settings.getSetting(KEY_DELETE_DATA_AFTER_UPLOAD),true);
 	}
 	
-	public static boolean forceCompleteForms() {
+	public static void setDeleteDataAfterUpload(boolean delete){
 		Settings settings = new Settings(STORAGE_NAME_SETTINGS,true);
-		return Utilities.stringToBoolean(settings.getSetting(KEY_FORCE_COMPLETE_FORMS),true);
+		settings.setSetting(KEY_DELETE_DATA_AFTER_UPLOAD,Utilities.booleanToString(delete));
 	}
 }
