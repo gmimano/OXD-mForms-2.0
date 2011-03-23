@@ -50,8 +50,7 @@ public class EpihandyXform{
 	public static final String ATTRIBUTE_VALUE_DISABLE = "disable";
 	public static final String ATTRIBUTE_VALUE_SHOW = "show";
 	public static final String ATTRIBUTE_VALUE_HIDE = "hide";
-	public static final int MAX_NUMBER_OF_QUESTIONS = 32767;
-	
+
 	private static short nextOptionId = 1;
 
 	/**
@@ -589,7 +588,7 @@ public class EpihandyXform{
 					if(formDef.getPages() == null)
 						qtn.setId(Short.parseShort("1"));
 					else{
-						if(((PageDef)formDef.getPages().elementAt(0)).getQuestions().size() > MAX_NUMBER_OF_QUESTIONS){
+						if(((PageDef)formDef.getPages().elementAt(0)).getQuestions().size() > 126){
 							System.out.println("Failed parsing Xform because it exceeds the currently supported maximum number of questions. Count="+((PageDef)formDef.getPages().elementAt(0)).getQuestions().size());
 							break;
 						}
@@ -1388,7 +1387,7 @@ public class EpihandyXform{
 
 
 	private static boolean isNumQuestionsBiggerThanMax(FormDef formDef){
-		return ((PageDef)formDef.getPages().elementAt(0)).getQuestions().size() > MAX_NUMBER_OF_QUESTIONS;
+		return ((PageDef)formDef.getPages().elementAt(0)).getQuestions().size() > 126;
 	}
 
 	private static String addNonBindControl(FormDef formDef,Element child,Hashtable relevants, String ref, String bind){
