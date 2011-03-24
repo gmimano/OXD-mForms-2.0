@@ -64,7 +64,7 @@ public class StudyDataList  implements Persistent{
 	 * @throws IllegalAccessException
 	 */
 	public void read(DataInputStream dis) throws IOException, InstantiationException, IllegalAccessException {
-		setStudies(PersistentHelper.read(dis,StudyData.class));
+		setStudies(PersistentHelper.readMedium(dis,StudyData.class));
 	}
 
 	/** 
@@ -74,6 +74,6 @@ public class StudyDataList  implements Persistent{
 	 * @throws IOException
 	 */
 	public void write(DataOutputStream dos) throws IOException {
-		PersistentHelper.write(getStudies(), dos);
+		PersistentHelper.writeMedium(getStudies(), dos);
 	}
 }

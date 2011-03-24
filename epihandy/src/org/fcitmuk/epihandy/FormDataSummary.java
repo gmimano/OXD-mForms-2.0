@@ -14,7 +14,7 @@ import org.fcitmuk.db.util.AbstractRecord;
  */
 public class FormDataSummary  extends AbstractRecord {
 	
-	byte studyIndex;
+	short studyIndex;
 	short formIndex;
 	private String reference;
 
@@ -25,18 +25,18 @@ public class FormDataSummary  extends AbstractRecord {
 
 	public void read(DataInputStream dis) throws IOException,
 			InstantiationException, IllegalAccessException {
-		studyIndex = dis.readByte();
+		studyIndex = dis.readShort();
 		formIndex = dis.readShort();
 		reference = dis.readUTF().intern();
 	}
 
 	public void write(DataOutputStream dos) throws IOException {
-		dos.writeByte(studyIndex);
+		dos.writeShort(studyIndex);
 		dos.writeShort(formIndex);
 		dos.writeUTF(reference);
 	}
 
-	public byte getStudyIndex() {
+	public short getStudyIndex() {
 		return studyIndex;
 	}
 

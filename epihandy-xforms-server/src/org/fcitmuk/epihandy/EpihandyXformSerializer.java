@@ -72,7 +72,7 @@ public class EpihandyXformSerializer {
 
 		DataOutputStream dos = new DataOutputStream(os);
 
-		dos.writeByte(users.size());
+		dos.writeShort(users.size());
 		for (Object[] user : users) {
 			serializeUser(new User((Integer) user[0], (String) user[1],
 					(String) user[2], (String) user[3]), dos);

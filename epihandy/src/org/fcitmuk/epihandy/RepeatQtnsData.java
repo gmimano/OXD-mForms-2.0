@@ -173,11 +173,11 @@ public class RepeatQtnsData implements Persistent {
 	
 	/** Reads a page definition object from the supplied stream. */
 	public void read(DataInputStream dis) throws IOException, InstantiationException, IllegalAccessException {
-		setQuestions(PersistentHelper.read(dis,QuestionData.class));
+		setQuestions(PersistentHelper.readMedium(dis,QuestionData.class));
 	}
 
 	/** Write the page definition object to the supplied stream. */
 	public void write(DataOutputStream dos) throws IOException {
-		PersistentHelper.write(getQuestions(), dos);
+		PersistentHelper.writeMedium(getQuestions(), dos);
 	}
 }

@@ -16,7 +16,7 @@ import org.fcitmuk.db.util.Persistent;
  */
 public class UploadError implements Persistent {
 
-	byte studyIndex;
+	short studyIndex;
 	short formIndex;
 	String description;
 
@@ -26,7 +26,7 @@ public class UploadError implements Persistent {
 		description = "Uninitialized Error";
 	}
 
-	public UploadError(byte study, short form, String description) {
+	public UploadError(short study, short form, String description) {
 		studyIndex = study;
 		formIndex = form;
 		this.description = description;
@@ -34,18 +34,18 @@ public class UploadError implements Persistent {
 
 	public void read(DataInputStream dis) throws IOException,
 			InstantiationException, IllegalAccessException {
-		studyIndex = dis.readByte();
+		studyIndex = dis.readShort();
 		formIndex = dis.readShort();
 		description = dis.readUTF().intern();
 	}
 
 	public void write(DataOutputStream dos) throws IOException {
-		dos.writeByte(studyIndex);
+		dos.writeShort(studyIndex);
 		dos.writeShort(formIndex);
 		dos.writeUTF(description);
 	}
 
-	public byte getStudyIndex() {
+	public short getStudyIndex() {
 		return studyIndex;
 	}
 

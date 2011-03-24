@@ -123,7 +123,7 @@ public class RepeatQtnsDataList  implements Persistent {
 	 * @throws IllegalAccessException
 	 */
 	public void read(DataInputStream dis) throws IOException, InstantiationException, IllegalAccessException {
-		setRepeatQtnsData(PersistentHelper.read(dis,RepeatQtnsData.class));
+		setRepeatQtnsData(PersistentHelper.readMedium(dis,RepeatQtnsData.class));
 		
 		//Set the runtime identifiers.
 		if(repeatQtnsDatas != null){
@@ -139,6 +139,6 @@ public class RepeatQtnsDataList  implements Persistent {
 	 * @throws IOException
 	 */
 	public void write(DataOutputStream dos) throws IOException {
-		PersistentHelper.write(getRepeatQtnsData(), dos);
+		PersistentHelper.writeMedium(getRepeatQtnsData(), dos);
 	}
 }

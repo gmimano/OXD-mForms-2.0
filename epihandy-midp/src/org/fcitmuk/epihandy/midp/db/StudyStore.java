@@ -97,9 +97,9 @@ public class StudyStore {
 	public void storeStudyListFromStream(DataInputStream dis, boolean storeForms)
 			throws MalformedStreamException {
 
-		byte studyCount;
+		short studyCount;
 		try {
-			studyCount = dis.readByte();
+			studyCount = dis.readShort();
 		} catch (IOException e) {
 			throw new MalformedStreamException("Failed to read study count: "
 					+ e.getMessage());

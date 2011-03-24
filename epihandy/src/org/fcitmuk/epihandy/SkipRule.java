@@ -168,7 +168,7 @@ public class SkipRule implements Persistent{
 	public void read(DataInputStream dis) throws IOException, InstantiationException, IllegalAccessException {
 		setId(dis.readShort());
 		setAction(dis.readByte());
-		setConditions(PersistentHelper.read(dis,Condition.class));
+		setConditions(PersistentHelper.readMedium(dis,Condition.class));
 		setActionTargets(PersistentHelper.readShorts(dis));
 		setConditionsOperator(dis.readByte());
 
@@ -180,7 +180,7 @@ public class SkipRule implements Persistent{
 	public void write(DataOutputStream dos) throws IOException {
 		dos.writeShort(getId());
 		dos.writeByte(getAction());
-		PersistentHelper.write(getConditions(), dos);
+		PersistentHelper.writeMedium(getConditions(), dos);
 		PersistentHelper.writeShorts(getActionTargets(), dos);
 		dos.writeByte(getConditionsOperator());
 	}

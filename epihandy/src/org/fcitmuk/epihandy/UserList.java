@@ -65,13 +65,13 @@ public class UserList implements Persistent{
 	 * @see org.fcitmuk.db.util.Persistent#read(java.io.DataInputStream)
 	 */
 	public void read(DataInputStream dis) throws IOException, InstantiationException, IllegalAccessException {
-		setUsers(PersistentHelper.read(dis,User.class));
+		setUsers(PersistentHelper.readMedium(dis,User.class));
 	}
 
 	/**
 	 * @see org.fcitmuk.db.util.Persistent#write(java.io.DataOutputStream)
 	 */
 	public void write(DataOutputStream dos) throws IOException {
-		PersistentHelper.write(getUsers(), dos);
+		PersistentHelper.writeMedium(getUsers(), dos);
 	}
 }

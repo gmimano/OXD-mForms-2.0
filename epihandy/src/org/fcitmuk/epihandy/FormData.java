@@ -424,7 +424,7 @@ public class FormData  extends AbstractRecord{
 
 	public void read(DataInputStream dis) throws IOException, InstantiationException, IllegalAccessException {
 		setDefId(dis.readInt());
-		setPages(PersistentHelper.read(dis,PageData.class));
+		setPages(PersistentHelper.readMedium(dis,PageData.class));
 	}
 
 	public void write(DataOutputStream dos) throws IOException {
