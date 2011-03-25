@@ -429,7 +429,7 @@ public class FormData  extends AbstractRecord{
 
 	public void write(DataOutputStream dos) throws IOException {
 		dos.writeInt(getDefId());
-		PersistentHelper.write(getPages(), dos);
+		PersistentHelper.writeMedium(getPages(), dos);
 	}
 
 	public void updateDynamicOptions(){
