@@ -49,7 +49,7 @@ public class RequestHeader implements Persistent{
 
 	private String userName = EpihandyConstants.EMPTY_STRING;
 	private String password = EpihandyConstants.EMPTY_STRING;
-	private static String serializer = "mforms-proto-1.2.2";
+	private static String serializer = "mforms-proto-1.2.3";
 	private String locale = "en";
 
 
