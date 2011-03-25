@@ -250,7 +250,7 @@ public class TransportLayer implements Runnable, AlertMessageListener {
 	 * Called when the thread starts to run the user request.
 	 *
 	 */
-	protected void handleRequest() {
+	protected synchronized void handleRequest() {
 
 		cancelled = false;
 
@@ -513,13 +513,15 @@ public class TransportLayer implements Runnable, AlertMessageListener {
 				cancelPrompt = false;
 			}
 
-			if(con != null){
-				try{
-					con.close();
-				}catch(IOException e){
+			synchronized (this) {
+				if (con != null) {
+					try {
+						con.close();
+					} catch (IOException e) {
+					}
 				}
+				display.setCurrent(prevScreen);
 			}
-			display.setCurrent(prevScreen);
 		}
 		else{
 			if(cancelPrompt){ //User was asked if really want to cancel current operation and said NO.
