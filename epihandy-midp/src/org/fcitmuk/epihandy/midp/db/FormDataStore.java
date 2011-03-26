@@ -165,7 +165,7 @@ public class FormDataStore {
 			studyCounts.put(new Integer(studyId), studyCount);
 		}
 
-		dos.writeByte(studyFormIds.size());
+		dos.writeShort(studyFormIds.size());
 
 		// Tabulate forms ids grouped into studies: each form is studyId,
 		// formId, and record number
