@@ -138,6 +138,7 @@ public class Condition implements Persistent{
 				break;
 			case QuestionDef.QTN_TYPE_REPEAT:
 			case QuestionDef.QTN_TYPE_NUMERIC:
+			case QuestionDef.QTN_TYPE_PHONENUMBER:
 				ret = isNumericTrue(qn,validation);
 				break;
 			case QuestionDef.QTN_TYPE_DATE:

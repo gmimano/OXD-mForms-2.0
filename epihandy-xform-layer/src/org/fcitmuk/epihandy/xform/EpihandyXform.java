@@ -968,6 +968,8 @@ public class EpihandyXform{
 				String format = node.getAttributeValue(null,"format");
 				if("gps".equals(format))
 					def.setType(QuestionDef.QTN_TYPE_GPS);
+				else if ("phonenumber".equals(format))
+					def.setType(QuestionDef.QTN_TYPE_PHONENUMBER);
 				else
 					def.setType(QuestionDef.QTN_TYPE_TEXT);
 			}

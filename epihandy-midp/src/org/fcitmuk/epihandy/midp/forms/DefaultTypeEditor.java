@@ -63,6 +63,9 @@ public class DefaultTypeEditor extends AbstractView implements TypeEditor,AlertM
 			case QuestionDef.QTN_TYPE_TEXT:
 				currentCtrl = new TextField(qtnText,currentQuestion.getTextAnswer(),EpihandyConstants.MAX_NUM_CHARS,TextField.ANY);
 				break;
+			case QuestionDef.QTN_TYPE_PHONENUMBER:
+				currentCtrl = new TextField(qtnText,currentQuestion.getTextAnswer(),EpihandyConstants.MAX_NUM_CHARS,TextField.PHONENUMBER);
+				break;
 			case QuestionDef.QTN_TYPE_NUMERIC:
 				currentCtrl = new TextField(qtnText,currentQuestion.getTextAnswer(),EpihandyConstants.MAX_NUM_CHARS,TextField.NUMERIC);
 				break;
@@ -218,6 +221,7 @@ public class DefaultTypeEditor extends AbstractView implements TypeEditor,AlertM
 		switch(currentQuestion.getDef().getType()){
 		case QuestionDef.QTN_TYPE_TEXT:
 		case QuestionDef.QTN_TYPE_NUMERIC:
+		case QuestionDef.QTN_TYPE_PHONENUMBER:
 		case QuestionDef.QTN_TYPE_DECIMAL:
 			currentQuestion.setAnswer(((TextField)currentCtrl).getString());
 			break;

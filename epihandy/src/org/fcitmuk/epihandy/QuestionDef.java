@@ -107,6 +107,9 @@ public class QuestionDef implements Persistent{
 	
 	public static final byte QTN_TYPE_GPS = 15;
 	
+	public static final byte QTN_TYPE_BARCODE = 16;
+	
+	public static final byte QTN_TYPE_PHONENUMBER = 17;
 
 	/** This constructor is used mainly during deserialization. */
 	public QuestionDef(){

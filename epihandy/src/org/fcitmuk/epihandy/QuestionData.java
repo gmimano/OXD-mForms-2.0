@@ -171,6 +171,7 @@ public class QuestionData implements Persistent{
 			break;
 		case QuestionDef.QTN_TYPE_DECIMAL:
 		case QuestionDef.QTN_TYPE_NUMERIC:
+		case QuestionDef.QTN_TYPE_PHONENUMBER:
 		case QuestionDef.QTN_TYPE_TEXT:
 			answer = textAnswer;
 			break;
@@ -303,6 +304,7 @@ public class QuestionData implements Persistent{
 			return getAnswer() != null && ((Vector)getAnswer()).size() > 0;
 		case QuestionDef.QTN_TYPE_DECIMAL:
 		case QuestionDef.QTN_TYPE_NUMERIC:
+		case QuestionDef.QTN_TYPE_PHONENUMBER:
 		case QuestionDef.QTN_TYPE_TEXT:
 			return getAnswer() != null && this.getAnswer().toString().length() > 0;
 		}
@@ -387,6 +389,7 @@ public class QuestionData implements Persistent{
 					break;
 				case QuestionDef.QTN_TYPE_DECIMAL:
 				case QuestionDef.QTN_TYPE_NUMERIC:
+				case QuestionDef.QTN_TYPE_PHONENUMBER:
 				case QuestionDef.QTN_TYPE_TEXT:
 					val = getAnswer().toString();
 					break;
@@ -500,6 +503,7 @@ public class QuestionData implements Persistent{
 					break;
 				case QuestionDef.QTN_TYPE_DECIMAL:
 				case QuestionDef.QTN_TYPE_NUMERIC:
+				case QuestionDef.QTN_TYPE_PHONENUMBER:
 				case QuestionDef.QTN_TYPE_TEXT:
 				case QuestionDef.QTN_TYPE_GPS:
 					val = getAnswer().toString();
@@ -634,6 +638,7 @@ public class QuestionData implements Persistent{
 		case QuestionDef.QTN_TYPE_TEXT:
 		case QuestionDef.QTN_TYPE_DECIMAL:
 		case QuestionDef.QTN_TYPE_NUMERIC:
+		case QuestionDef.QTN_TYPE_PHONENUMBER:
 		case QuestionDef.QTN_TYPE_GPS:
 			setAnswer(PersistentHelper.readUTF(dis));
 			break;
@@ -706,6 +711,7 @@ public class QuestionData implements Persistent{
 		case QuestionDef.QTN_TYPE_TEXT:
 		case QuestionDef.QTN_TYPE_DECIMAL:
 		case QuestionDef.QTN_TYPE_NUMERIC:
+		case QuestionDef.QTN_TYPE_PHONENUMBER:
 		case QuestionDef.QTN_TYPE_GPS:
 			PersistentHelper.writeUTF(dos, getTextAnswer());
 			break;
