@@ -175,10 +175,6 @@ public class MenuText {
     public static String DELETE_AFTER_UPLOAD() {
         return getText("DELETE_AFTER_UPLOAD");
     }
-    
-    public static String FORCE_COMPLETE_FORMS() {
-        return getText("FORCE_COMPLETE_FORMS");
-    }
 
     public static String DAY_FIRST() {
         return getText("DAY_FIRST");
