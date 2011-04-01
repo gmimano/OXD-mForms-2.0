@@ -678,10 +678,19 @@ public class QuestionData implements Persistent{
 		case QuestionDef.QTN_TYPE_IMAGE:
 		case QuestionDef.QTN_TYPE_VIDEO:
 		case QuestionDef.QTN_TYPE_AUDIO:
-			if(dis.readBoolean()){
+			if (dis.readBoolean()) {
 				int size = dis.readInt();
 				byte[] data = new byte[size];
-				dis.read(data, 0, size);
+				int written = 0;
+				int totalWritten = 0;
+				do {
+					written = dis.read(data, totalWritten, size - totalWritten);
+					if (written >= 0)
+						totalWritten += written;
+					else
+						throw new IOException(
+								"ERROR: Reached end of stream");
+				} while (written >= 0 && totalWritten < size);
 				answer = data;
 			}
 			break;
@@ -758,11 +767,9 @@ public class QuestionData implements Persistent{
 		case QuestionDef.QTN_TYPE_AUDIO:
 			if(getAnswer() != null){
 				dos.writeBoolean(true);
-				byte[] bytes = (byte[])answer;
-				int len = bytes.length;
-				dos.writeInt(len);
-				for(int index = 0; index < len; index ++)
-					dos.writeByte(bytes[index]);
+				byte[] bytes = (byte[])answer;	
+				dos.writeInt(bytes.length);
+				dos.write(bytes);
 			}
 			else
 				dos.writeBoolean(false);
