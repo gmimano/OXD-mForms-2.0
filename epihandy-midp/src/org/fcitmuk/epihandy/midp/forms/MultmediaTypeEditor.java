@@ -253,27 +253,32 @@ public class MultmediaTypeEditor extends AbstractView implements TypeEditor, Ale
 			return;
 		}
 
-		if(c != DefaultCommands.cmdEdit)
+		if(c != DefaultCommands.cmdEdit && !(c == DefaultCommands.cmdOk && save))
 			stop(type);
 
-		if((c == DefaultCommands.cmdOk && save) || c == DefaultCommands.cmdCancel)
+		if(c == DefaultCommands.cmdCancel)
 			listener.endEdit(save, questionData, null);
 	}
 
 	private boolean saveImage(){
-		boolean save = false;
+		
+		new Thread() {
+			public void run() {
+				try {
+					byte[] image = ((VideoControl) control)
+							.getSnapshot(MultMediaSettings
+									.getPictureParameters());
+					questionData.setAnswer(image);
+					stop(type);
+					listener.endEdit(true, questionData, null);
+				} catch (Exception me) {
+					alertMsg.show(MenuText.IMAGE_SAVE_PROBLEM() + " "
+							+ me.getMessage());
+				}
+			}
+		}.start();
 
-		try {
-			
-			byte[] image = ((VideoControl)control).getSnapshot(MultMediaSettings.getPictureParameters());
-			questionData.setAnswer(image);
-			save = true;
-		} 
-		catch (Exception me) {
-			alertMsg.show(MenuText.IMAGE_SAVE_PROBLEM() + " " + me.getMessage());
-		}
-
-		return save;
+		return true;
 	}
 
 	private boolean saveRecording(){
