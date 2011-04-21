@@ -61,7 +61,11 @@
 
     <target name="package" depends="preverify,select-language" description="Packages code into jar file">
         <mkdir dir="dist" />
-		
+ 
+    	<copy todir="build/res">
+    		<fileset dir="i18n" includes="**/*.properties"></fileset>
+    	</copy>
+    	
         <jar destfile="dist/midp-utils.jar">
             <fileset dir="build/preverified" includes="**/*" />
             <fileset dir="build/res" />
