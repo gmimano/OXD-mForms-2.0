@@ -221,6 +221,10 @@ public class EpihandyController implements Controller, StorageListener, AlertMes
 			rule.setFormData(formData);
 		editor.setTitle(formData.getDef().getName()+ " - " + formViewer.getTitle());
 		editor.startEdit(currentQuestion,rule, GeneralSettings.isSingleQtnEdit(), pos, count, this);
+		
+		if(editor instanceof RepeatTypeEditor)
+			((RepeatTypeEditor)editor).setCurrentFormData(formViewer.getFormData());
+		
 		//no need to save the current view since its managed by the form viewer.
 	}
 

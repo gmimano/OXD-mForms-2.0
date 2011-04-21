@@ -59,7 +59,7 @@ public class RepeatQtnsDef implements Persistent {
 	public void addQuestion(QuestionDef qtn){
 		if(questions == null)
 			questions = new Vector();
-		qtn.setId((short)(questions.size()+1));
+		//qtn.setId((short)(questions.size()+1));
 		questions.addElement(qtn);
 	}
 	

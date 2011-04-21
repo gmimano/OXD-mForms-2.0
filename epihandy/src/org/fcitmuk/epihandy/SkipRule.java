@@ -129,13 +129,60 @@ public class SkipRule implements Persistent{
 			ExecuteAction(data,trueFound);
 		//else do nothing
 	}
+	
+	public void fire(RepeatQtnsData data){
+		boolean trueFound = false, falseFound = false;
+
+		for(int i=0; i<getConditions().size(); i++){
+			Condition condition = (Condition)this.getConditions().elementAt(i);
+			if(condition.isTrue(data,false))
+				trueFound = true;
+			else
+				falseFound = true;
+		}
+		
+		if(getConditions().size() == 1 || getConditionsOperator() == EpihandyConstants.CONDITIONS_OPERATOR_AND)
+			ExecuteAction(data,!falseFound);
+		else if(getConditionsOperator() == EpihandyConstants.CONDITIONS_OPERATOR_OR)
+			ExecuteAction(data,trueFound);
+	}
+
+	private void ExecuteAction(RepeatQtnsData data, boolean conditionTrue) {
+		Vector qtns = this.getActionTargets();
+		for(int i=0; i<qtns.size(); i++){
+			QuestionData qData = data.getQuestionByDefId(Short.parseShort(qtns.elementAt(i).toString()));
+			if(qData != null)
+				ExecuteAction(qData,conditionTrue);
+		}
+	}
 
 	/** Executes the action of a rule for its conditition's true or false value. */
 	public void ExecuteAction(FormData data,boolean conditionTrue){
 		Vector qtns = this.getActionTargets();
-		for(int i=0; i<qtns.size(); i++)
-			ExecuteAction(data.getQuestion(Short.parseShort(qtns.elementAt(i).toString())),conditionTrue);
+		for(int i=0; i<qtns.size(); i++){
+			QuestionData qData = data.getQuestion(Short.parseShort(qtns.elementAt(i).toString()));
+			if(qData != null)
+				ExecuteAction(qData,conditionTrue);
+		}
 	}
+	
+	/*public void ExecuteAction(QuestionDef def, boolean conditionTrue){
+		def.setVisible(true);
+		def.setEnabled(true);
+		def.setMandatory(false);
+		
+		if((action & EpihandyConstants.ACTION_ENABLE) != 0)
+			def.setEnabled(conditionTrue);
+		else if((action & EpihandyConstants.ACTION_DISABLE) != 0)
+			def.setEnabled(!conditionTrue);
+		else if((action & EpihandyConstants.ACTION_SHOW) != 0)
+			def.setVisible(conditionTrue);
+		else if((action & EpihandyConstants.ACTION_HIDE) != 0)
+			def.setVisible(!conditionTrue);
+		
+		if((action & EpihandyConstants.ACTION_MAKE_MANDATORY) != 0)
+			def.setMandatory(conditionTrue);
+	}*/
 
 	/** Executes the rule action on the supplied question. */
 	public void ExecuteAction(QuestionData data,boolean conditionTrue){

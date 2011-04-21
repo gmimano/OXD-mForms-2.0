@@ -391,7 +391,7 @@ public class EpihandyXform{
 		Hashtable constraintMsgs = new Hashtable();
 		Vector repeats = new Vector();
 		Hashtable rptKidMap = new Hashtable();
-		parseElement(formDef,rootNode,id2VarNameMap,null,relevants,actions,constraints,constraintMsgs,repeats,rptKidMap,(int)0,null,instanceNode);
+		parseElement(formDef,rootNode,id2VarNameMap,null,relevants,actions,constraints,constraintMsgs,repeats,rptKidMap,(int)0,(int)0,null,instanceNode);
 		if(formDef.getName() == null || formDef.getName().length() == 0)
 			formDef.setName(formDef.getVariableName());
 		setDefaultValues(instanceNode,formDef,id2VarNameMap);
@@ -535,7 +535,7 @@ public class EpihandyXform{
 		return formData;
 	}
 
-	private static QuestionDef parseElement(FormDef formDef, Element element, Hashtable map,QuestionDef questionDef,Hashtable relevants,Hashtable actions,Hashtable constraints,Hashtable constraintMsgs,Vector repeats, Hashtable rptKidMap, int currentPageNo,QuestionDef parentQtn, Element instanceDataNode){
+	private static QuestionDef parseElement(FormDef formDef, Element element, Hashtable map,QuestionDef questionDef,Hashtable relevants,Hashtable actions,Hashtable constraints,Hashtable constraintMsgs,Vector repeats, Hashtable rptKidMap, int currentPageNo, int currentQuestionNo,QuestionDef parentQtn, Element instanceDataNode){
 		String label = ""; //$NON-NLS-1$
 		String value = ""; //$NON-NLS-1$
 
@@ -548,22 +548,22 @@ public class EpihandyXform{
 				if(tagname.equals("submit"))
 					continue;
 				else if (tagname.equals("head"))
-					parseElement(formDef,child,map,questionDef,relevants,actions,constraints,constraintMsgs,repeats,rptKidMap,currentPageNo,parentQtn,instanceDataNode);
+					parseElement(formDef,child,map,questionDef,relevants,actions,constraints,constraintMsgs,repeats,rptKidMap,currentPageNo,currentQuestionNo,parentQtn,instanceDataNode);
 				else if (tagname.equals("body"))
-					parseElement(formDef, child,map,questionDef,relevants,actions,constraints,constraintMsgs,repeats,rptKidMap,currentPageNo,parentQtn,instanceDataNode);
+					parseElement(formDef, child,map,questionDef,relevants,actions,constraints,constraintMsgs,repeats,rptKidMap,currentPageNo,currentQuestionNo,parentQtn,instanceDataNode);
 				else if (tagname.equals("title")){
 					if(child.getChildCount() > 0 && child.isText(0))
 						formDef.setName(getTextContent(child));
 				}
 				else if (tagname.equals("model"))
-					parseElement(formDef, child,map,questionDef,relevants,actions,constraints,constraintMsgs,repeats,rptKidMap,currentPageNo,parentQtn,instanceDataNode);
+					parseElement(formDef, child,map,questionDef,relevants,actions,constraints,constraintMsgs,repeats,rptKidMap,currentPageNo,currentQuestionNo,parentQtn,instanceDataNode);
 				else if (tagname.equals("group")){
 					String parentName = ((Element)child.getParent()).getName();
 					if(!(parentName.equalsIgnoreCase("group"))){
 						if(formDef.getPageCount() < ++currentPageNo)
 							formDef.addPage();
 					}
-					parseElement(formDef, child,map,questionDef,relevants,actions,constraints,constraintMsgs,repeats,rptKidMap,currentPageNo,parentQtn,instanceDataNode);
+					parseElement(formDef, child,map,questionDef,relevants,actions,constraints,constraintMsgs,repeats,rptKidMap,currentPageNo,currentQuestionNo,parentQtn,instanceDataNode);
 				}
 				else if (tagname.equals("instance")) {
 					if(formDef.getVariableName() != null && formDef.getVariableName().trim().length() > 0)
@@ -585,16 +585,21 @@ public class EpihandyXform{
 						formDef.setName(dataNode.getAttributeValue(null, "name"));
 				} else if (tagname.equals("bind") || tagname.equals("ref")) {
 					QuestionDef qtn = new QuestionDef();
-					if(formDef.getPages() == null)
-						qtn.setId(Short.parseShort("1"));
+					if(formDef.getPages() == null){
+						//qtn.setId(Short.parseShort("1"));
+						qtn.setId((short)++currentQuestionNo);
+					}
 					else{
-						PageDef firstPage = (PageDef)formDef.getPages().elementAt(0);
-						int questionCount = firstPage.getQuestions().size();
-						if(questionCount > Short.MAX_VALUE){
-							System.out.println("Failed parsing Xform because it exceeds the currently supported maximum number of questions. Count=" + questionCount);
+						///PageDef firstPage = (PageDef)formDef.getPages().elementAt(0);
+						//int questionCount = firstPage.getQuestions().size();
+						//if(questionCount > Short.MAX_VALUE){
+						if(currentQuestionNo > Short.MAX_VALUE){
+							//System.out.println("Failed parsing Xform because it exceeds the currently supported maximum number of questions. Count=" + questionCount);
+							System.out.println("Failed parsing Xform because it exceeds the currently supported maximum number of questions. Count=" + currentQuestionNo);
 							break;
 						}
-						qtn.setId((short)(questionCount+1));
+						//qtn.setId((short)(questionCount+1));
+						qtn.setId((short)(++currentQuestionNo));
 					}
 					qtn.setVariableName(child.getAttributeValue(null, "nodeset"));
 					setQuestionType(qtn,child.getAttributeValue(null, "type"),child);
@@ -689,7 +694,7 @@ public class EpihandyXform{
 						}
 
 						questionDef = qtn;
-						parseElement(formDef, child, map,questionDef,relevants,actions,constraints,constraintMsgs,repeats,rptKidMap,currentPageNo,parentQtn,instanceDataNode);
+						parseElement(formDef, child, map,questionDef,relevants,actions,constraints,constraintMsgs,repeats,rptKidMap,currentPageNo,currentQuestionNo,parentQtn,instanceDataNode);
 					}
 				} else if (tagname.equals("label")){
 					String parentName = ((Element)child.getParent()).getName();
@@ -709,7 +714,7 @@ public class EpihandyXform{
 						questionDef.setHelpText(getTextContent(child));
 				}
 				else if (tagname.equals("item"))
-					parseElement(formDef, child,map,questionDef,relevants,actions,constraints,constraintMsgs,repeats,rptKidMap,currentPageNo,parentQtn,instanceDataNode);
+					parseElement(formDef, child,map,questionDef,relevants,actions,constraints,constraintMsgs,repeats,rptKidMap,currentPageNo,currentQuestionNo,parentQtn,instanceDataNode);
 				else if (tagname.equals("value")){
 					value = getTextContent(child);
 				}
@@ -718,7 +723,7 @@ public class EpihandyXform{
 					parseDynamicOptionsList(questionDef,child.getAttributeValue(null,"nodeset"),formDef,(Element)((Element)instanceDataNode.getParent()).getParent());
 				}
 				else
-					parseElement(formDef, child,map,questionDef,relevants,actions,constraints,constraintMsgs,repeats,rptKidMap,currentPageNo,parentQtn,instanceDataNode);
+					parseElement(formDef, child,map,questionDef,relevants,actions,constraints,constraintMsgs,repeats,rptKidMap,currentPageNo,currentQuestionNo,parentQtn,instanceDataNode);
 				// TODO - how are other elements like html:p or br handled?
 			}
 		}
@@ -1060,14 +1065,13 @@ public class EpihandyXform{
 	}
 
 	private static SkipRule buildSkipRule(FormDef formDef, short questionId, String relevant, short skipRuleId, byte action){
-
 		SkipRule skipRule = new SkipRule();
 		skipRule.setId(skipRuleId);
 		//TODO For now we are only dealing with hiding and showing.
 		skipRule.setAction(action); //TODO This should depend on whats in the xforms file
 		skipRule.setConditions(getSkipRuleConditions(formDef,relevant,skipRule.getAction()));
 		skipRule.setConditionsOperator(getConditionsOperator(relevant));
-
+		
 		Vector actionTargets = new Vector();
 		actionTargets.add(new Short(questionId));
 		skipRule.setActionTargets(actionTargets);

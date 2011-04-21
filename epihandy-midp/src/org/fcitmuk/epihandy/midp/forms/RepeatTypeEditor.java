@@ -1,12 +1,16 @@
 package org.fcitmuk.epihandy.midp.forms;
 
+import java.util.Vector;
+
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Displayable;
 
+import org.fcitmuk.epihandy.FormData;
 import org.fcitmuk.epihandy.QuestionData;
 import org.fcitmuk.epihandy.RepeatQtnsData;
 import org.fcitmuk.epihandy.RepeatQtnsDataList;
 import org.fcitmuk.epihandy.RepeatQtnsDef;
+import org.fcitmuk.epihandy.SkipRule;
 import org.fcitmuk.epihandy.ValidationRule;
 import org.fcitmuk.midp.mvc.AbstractView;
 import org.fcitmuk.midp.mvc.CommandAction;
@@ -35,6 +39,23 @@ public class RepeatTypeEditor extends AbstractView implements TypeEditor, TypeEd
 	
 	private TypeEditor typeEditor = new DefaultTypeEditor();
 	private ValidationRule validationRule;
+	private FormData currentFormData;
+	
+	/**
+	 * gets the current FormData
+	 * @return
+	 */
+	public FormData getCurrentFormData() {
+		return currentFormData;
+	}
+
+	/**
+	 * sets the current form data for the repeat type editor
+	 * @param currentFormData
+	 */
+	public void setCurrentFormData(FormData currentFormData) {
+		this.currentFormData = currentFormData;
+	}
 
 	public void startEdit(QuestionData data, ValidationRule validationRule, boolean singleQtnEdit,int pos, int count, TypeEditorListener listener){
 		questionData = data;
@@ -85,8 +106,41 @@ public class RepeatTypeEditor extends AbstractView implements TypeEditor, TypeEd
 	}
 	
 	public void endEdit(boolean save, QuestionData data, Command cmd){
-		rptQtnsData.setQuestionDataById(data);
+		rptQtnsData.setQuestionDataById(data);		
+		
+		//fire skip rules here to enable the repeat skip rules
+		/*if(this.getCurrentFormData() != null)
+			this.getEpihandyController().FireSkipRules(getCurrentFormData());*/
+		fireRepeatSkipRules();
+		
 		dataView.showQtnData(rptQtnsData, this);
+	}
+	
+	private void fireRepeatSkipRules(){
+		Vector rules = this.currentFormData.getDef().getSkipRules();
+		
+		if(rules != null && rules.size() > 0){
+			for(int i = 0; i < rules.size(); i++){
+				SkipRule rule = (SkipRule)rules.elementAt(i);				
+				boolean repeatSkipRule = isRepeatSkipRule(rule);
+				if(repeatSkipRule)
+					rule.fire(this.rptQtnsData);
+			}
+		}
+	}
+	
+	private boolean isRepeatSkipRule(SkipRule rule){
+		Vector actionTargets = rule.getActionTargets();
+		if(actionTargets != null){
+			for(int index = 0; index < actionTargets.size(); index++){
+				short qtnId = Short.parseShort(actionTargets.elementAt(index).toString());
+				QuestionData rQtnData = this.rptQtnsData.getQuestionByDefId(qtnId);
+				if(rQtnData != null)
+					return true;
+			}
+		}
+		
+		return false;
 	}
 	
 	public void execute(View view, Object commandAction, Object data){
@@ -94,10 +148,12 @@ public class RepeatTypeEditor extends AbstractView implements TypeEditor, TypeEd
 		if(view == dataListView){
 			if(commandAction == CommandAction.NEW){
 				rptQtnsData = new RepeatQtnsData((short)(rptQtnsDataList.size()+1),rptQtnsDef);
+				fireRepeatSkipRules();
 				dataView.showQtnData(rptQtnsData, this);
 			}
 			else if(commandAction == CommandAction.EDIT){
 				rptQtnsData = new RepeatQtnsData((RepeatQtnsData)data);
+				fireRepeatSkipRules();
 				dataView.showQtnData(rptQtnsData, this);
 			}
 			else if(commandAction == CommandAction.OK){

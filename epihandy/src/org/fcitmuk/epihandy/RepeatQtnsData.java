@@ -126,6 +126,17 @@ public class RepeatQtnsData implements Persistent {
 		return (QuestionData)questions.elementAt(index);
 	}
 	
+	public QuestionData getQuestion(String variableName){
+		for(int i=0; i<this.getDef().getQuestions().size(); i++){
+			QuestionDef def = (QuestionDef)this.getDef().getQuestions().elementAt(i);
+			
+				if(def.getVariableName().equals(variableName))
+					return getQuestionByDefId(def.getId());
+		}
+		
+		return null;
+	}
+	
 	public void setQuestionDataById(QuestionData questionData){
 		QuestionData data;
 		for(int i=0; i<questions.size(); i++){
@@ -179,5 +190,17 @@ public class RepeatQtnsData implements Persistent {
 	/** Write the page definition object to the supplied stream. */
 	public void write(DataOutputStream dos) throws IOException {
 		PersistentHelper.writeMedium(getQuestions(), dos);
+	}
+
+	public QuestionData getQuestionByDefId(short id) {
+		QuestionData data = null;
+		for(int i=0; i<questions.size(); i++){
+			data = (QuestionData)questions.elementAt(i);
+			if(data.getDef().getId() == id){
+				return data;
+			}
+		}
+		
+		return data;
 	}
 }

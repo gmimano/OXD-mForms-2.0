@@ -20,6 +20,7 @@ public class GeneralSettings extends AbstractView{
 	public static final String KEY_OK_ON_RIGHT = "OK_ON_RIGHT";
 	public static final String KEY_DELETE_DATA_AFTER_UPLOAD = "DELETE_DATA_AFTER_UPLOAD";
 	public static final String STORAGE_NAME_SETTINGS = "fcitmuk.GeneralSettings";
+	public static final String KEY_AUTO_SAVE = "KEY_AUTO_SAVE";
 	
 	private ChoiceGroup currentCtrl;
 	
@@ -44,6 +45,7 @@ public class GeneralSettings extends AbstractView{
 		currentCtrl.setSelectedIndex(1,Utilities.stringToBoolean(settings.getSetting(KEY_QUESTION_NUMBERING)));
 		currentCtrl.setSelectedIndex(2,Utilities.stringToBoolean(settings.getSetting(KEY_OK_ON_RIGHT)));
 		currentCtrl.setSelectedIndex(3,Utilities.stringToBoolean(settings.getSetting(KEY_DELETE_DATA_AFTER_UPLOAD),true));
+		currentCtrl.setSelectedIndex(4,Utilities.stringToBoolean(settings.getSetting(KEY_AUTO_SAVE), false));
 		
 		screen.setCommandListener(this);
 		((Form)screen).append(currentCtrl);
@@ -83,6 +85,7 @@ public class GeneralSettings extends AbstractView{
 		settings.setSetting(KEY_QUESTION_NUMBERING,Utilities.booleanToString((currentCtrl.isSelected(1))));
 		settings.setSetting(KEY_OK_ON_RIGHT,Utilities.booleanToString((currentCtrl.isSelected(2))));
 		settings.setSetting(KEY_DELETE_DATA_AFTER_UPLOAD,Utilities.booleanToString((currentCtrl.isSelected(3))));
+		settings.setSetting(KEY_AUTO_SAVE, Utilities.booleanToString((currentCtrl.isSelected(4))));
 		settings.saveSettings();
 		
 		DefaultCommands.cmdOk = new Command(MenuText.OK(), currentCtrl.isSelected(3) ? Command.CANCEL : Command.OK, 1);
@@ -123,5 +126,10 @@ public class GeneralSettings extends AbstractView{
 	public static void setDeleteDataAfterUpload(boolean delete){
 		Settings settings = new Settings(STORAGE_NAME_SETTINGS,true);
 		settings.setSetting(KEY_DELETE_DATA_AFTER_UPLOAD,Utilities.booleanToString(delete));
+	}
+
+	public static boolean isAutoSave() {
+		Settings settings = new Settings(KEY_AUTO_SAVE, true);
+		return Utilities.stringToBoolean(settings.getSetting(KEY_AUTO_SAVE), false);
 	}
 }
