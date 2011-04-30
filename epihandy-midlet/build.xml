@@ -15,7 +15,7 @@
 	<property name="jzlib" value="../jzlib-1.0.7/dist/jzlib-1.0.7.jar"/>
 	<property name="cldc_classes.zip" value="../epihandy-midp/lib/cldc_classes.zip"/>
 
-	<property name="midlet-version" value="1.2.0" />
+	<property name="midlet-version" value="1.2.2" />
 	<property name="midlet-name" value="OpenXdata mForms" />
 	<property name="midlet-description" value="Mobile data collection tool for OpenXdata" />
 	<property name="midlet-icon" value="/icons/openxdata.png" />
