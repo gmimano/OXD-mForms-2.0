@@ -1,4 +1,4 @@
-<project name="motech-mforms" default="build">
+<project name="openxdata-mforms" default="build">
 	<target name="build">
 		<ant antfile="epihandy-midlet/build.xml" inheritall="false"/>
 	</target>
