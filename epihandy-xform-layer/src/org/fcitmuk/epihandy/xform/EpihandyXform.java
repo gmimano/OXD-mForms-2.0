@@ -203,14 +203,20 @@ public class EpihandyXform{
 		for(int i=0; i<repeatQtnsData.size(); i++){
 			QuestionData data = repeatQtnsData.getQuestion(i);
 			if(data.getValueAnswer() != null)
-				updateRepeatRowModel(data,rptParentNode,instanceNode,index,nested);
+				updateRepeatRowModel(repeatQtnsData, data,rptParentNode,instanceNode,index,nested);
 		}
 	}
 
-	private static void updateRepeatRowModel(QuestionData questionData, Element rptParentNode,Element instanceNode, int index, boolean nested){
+	private static void updateRepeatRowModel(RepeatQtnsData parentQuestionData, QuestionData questionData, Element rptParentNode,Element instanceNode, int index, boolean nested){
 		//make multiple copies of this repeat node and fill the with answers in each item in the repeatQtnsDataList
 		String xpath = questionData.getDef().getVariableName();
 
+		if(xpath.startsWith(parentQuestionData.getDef().getQtnDef().getVariableName()))
+			xpath = xpath.substring(parentQuestionData.getDef().getQtnDef().getVariableName().length());
+		
+		if(xpath.startsWith("/"))
+			xpath = new String(xpath.toCharArray(), 1, xpath.length()-1).intern();
+		
 		XPathExpression xpls = new XPathExpression(rptParentNode/*instanceNode*/, xpath);
 		Vector result = xpls.getResult();
 
