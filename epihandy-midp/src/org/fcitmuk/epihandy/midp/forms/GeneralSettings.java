@@ -39,6 +39,7 @@ public class GeneralSettings extends AbstractView{
 		currentCtrl.append(MenuText.NUMBERING(), null);
 		currentCtrl.append(MenuText.OK_ON_RIGHT(), null);
 		currentCtrl.append(MenuText.DELETE_AFTER_UPLOAD(), null);
+		currentCtrl.append(MenuText.AUTO_SAVE(), null);
 		
 		Settings settings = new Settings(STORAGE_NAME_SETTINGS,true);
 		currentCtrl.setSelectedIndex(0,Utilities.stringToBoolean(settings.getSetting(KEY_SINGLE_QUESTION_EDIT)));
