@@ -101,7 +101,8 @@ public class RptQtnsDataView extends AbstractView implements AlertMessageListene
 			if(rptQtnsData.isAnswered())
 				screen.addCommand(DefaultCommands.cmdOk);
 
-			((List)screen).setSelectedIndex(currentQuestionIndex,true); //should have atleast one question
+			if(((List)screen).size() > currentQuestionIndex)
+				((List)screen).setSelectedIndex(currentQuestionIndex,true); //should have atleast one question
 			
 			display.setCurrent(screen);
 		}
