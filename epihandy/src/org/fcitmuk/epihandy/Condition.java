@@ -149,7 +149,7 @@ public class Condition implements Persistent {
 
 	private String getRealValue(RepeatQtnsData data) {
 		String rootNode = data.getDef().getQtnDef().getVariableName();
-		int expressionFunction = getExpressionFunction();
+		int expressionFunction = getAggregateFunction();
 		if (value.startsWith(rootNode + "/")) {
 			QuestionData qn2 = data.getQuestion("/" + value);
 			if (qn2 != null) {
@@ -208,15 +208,37 @@ public class Condition implements Persistent {
 			QuestionData qn = data.getQuestion(this.questionId);
 
 			if (qn != null) {
-				String realValue = getRealValue(data);
-				if (realValue == null || realValue.trim().length() == 0) {
-					return (qn.getAnswer() == null || qn.getValueAnswer().trim().length() == 0);
-				} else if (qn.getAnswer() == null || qn.getValueAnswer().trim().length() == 0) {
-					if (qn.getDef().getType() != QuestionDef.QTN_TYPE_REPEAT) {
-						return false;
+				if (isBindExpression(data)) {
+					QuestionData qn2 = data.getQuestion("/" + value);
+					if (qn2 != null) {
+						value = qn2.getValueAnswer();
+						if (value == null || value.trim().length() == 0) {
+							value = tempValue;
+							if (qn2.getAnswer() == null
+									|| qn2.getValueAnswer().trim().length() == 0)
+								return true; // Both questions not answered yet
+							return false;
+						} else if (qn.getAnswer() == null
+								|| qn.getValueAnswer().trim().length() == 0) {
+							if (qn.getDef().getType() != QuestionDef.QTN_TYPE_REPEAT) {
+								value = tempValue;
+								return false;
+							}
+						}
 					}
+				} else if (isAggregateFunction()) {
+					String realValue = getRealValue(data);
+					if (realValue == null || realValue.trim().length() == 0) {
+						return (qn.getAnswer() == null || qn.getValueAnswer()
+								.trim().length() == 0);
+					} else if (qn.getAnswer() == null
+							|| qn.getValueAnswer().trim().length() == 0) {
+						if (qn.getDef().getType() != QuestionDef.QTN_TYPE_REPEAT) {
+							return false;
+						}
+					}
+					value = realValue;
 				}
-				value = realValue;
 
 				ret = isTrue(qn, validation);
 			}
@@ -282,15 +304,8 @@ public class Condition implements Persistent {
 	 */
 	private String getRealValue(FormData data) {
 		String rootNode = data.getDef().getVariableName();
-		int expressionFunction = getExpressionFunction();
-		if (value.startsWith(rootNode + "/")) {
-			QuestionData qn2 = data.getQuestion("/" + value);
-			if (qn2 != null) {
-				return qn2.getValueAnswer();
-			} else {
-				return null;
-			}
-		} else if (expressionFunction > 0) {
+		int expressionFunction = getAggregateFunction();
+		if (isAggregateFunction()) {
 			int lastIndexOf = value.lastIndexOf(')');
 			if (lastIndexOf < 0) {
 				lastIndexOf = value.length();
@@ -330,7 +345,15 @@ public class Condition implements Persistent {
 		return value;
 	}
 
-	private int getExpressionFunction() {
+	private boolean isBindExpression(FormData data) {
+		return value.startsWith(data.getDef().getVariableName() + "/");
+	}
+	
+	private boolean isAggregateFunction() {
+		return getAggregateFunction() > 0;
+	}
+	
+	private int getAggregateFunction() {
 		if (value.startsWith("sum(")) {
 			return FUNC_SUM;
 		} else if (value.startsWith("avg(")) {
