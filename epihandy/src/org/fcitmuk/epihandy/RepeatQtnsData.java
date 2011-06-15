@@ -193,14 +193,14 @@ public class RepeatQtnsData implements Persistent {
 	}
 
 	public QuestionData getQuestionByDefId(short id) {
-		QuestionData data = null;
+		QuestionData result = null;
 		for(int i=0; i<questions.size(); i++){
-			data = (QuestionData)questions.elementAt(i);
-			if(data.getDef().getId() == id){
-				return data;
+			QuestionData qd = (QuestionData)questions.elementAt(i);
+			if(qd.getDef().getId() == id){
+				result = qd;
 			}
 		}
 		
-		return data;
+		return result;
 	}
 }
