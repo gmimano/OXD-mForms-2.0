@@ -82,8 +82,12 @@ public class DynamicOptionDef  implements Persistent {
 			return;
 		
 		parentToChildOptions = new Hashtable();
-		for(int i=0; i<len; i++ )
-			parentToChildOptions.put(new Short(dis.readShort()), PersistentHelper.readMedium(dis, OptionDef.class));
+		for (int i = 0; i < len; i++) {
+			short parentOptId = dis.readShort();
+			Vector childOpts = PersistentHelper.readMedium(dis, OptionDef.class);
+			if (childOpts != null)
+				parentToChildOptions.put(new Short(parentOptId), childOpts);
+		}
 	}
 
 	public void write(DataOutputStream dos) throws IOException {
@@ -92,11 +96,14 @@ public class DynamicOptionDef  implements Persistent {
 		if(parentToChildOptions != null){
 			dos.writeShort(parentToChildOptions.size());
 			Enumeration keys = parentToChildOptions.keys();
-			Short key;
-			while(keys.hasMoreElements()){
-				key = (Short)keys.nextElement();
-				dos.writeShort(key.shortValue());
-				PersistentHelper.writeMedium((Vector)parentToChildOptions.get(key), dos);
+			while (keys.hasMoreElements()) {
+				Short parentOptId = (Short) keys.nextElement();
+				Vector childOpts = (Vector) parentToChildOptions
+						.get(parentOptId);
+				if (childOpts != null && !childOpts.isEmpty()) {
+					dos.writeShort(parentOptId.shortValue());
+					PersistentHelper.writeMedium(childOpts, dos);
+				}
 			}
 		}
 		else
