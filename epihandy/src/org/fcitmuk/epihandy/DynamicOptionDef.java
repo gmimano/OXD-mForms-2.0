@@ -100,10 +100,8 @@ public class DynamicOptionDef  implements Persistent {
 				Short parentOptId = (Short) keys.nextElement();
 				Vector childOpts = (Vector) parentToChildOptions
 						.get(parentOptId);
-				if (childOpts != null && !childOpts.isEmpty()) {
-					dos.writeShort(parentOptId.shortValue());
-					PersistentHelper.writeMedium(childOpts, dos);
-				}
+				dos.writeShort(parentOptId.shortValue());
+				PersistentHelper.writeMedium(childOpts, dos);
 			}
 		}
 		else
