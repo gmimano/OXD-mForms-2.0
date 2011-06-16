@@ -9,7 +9,7 @@
 	
 	<property name="dbutils" value="../dbutils/dist/dbutils.jar" />
 	<property name="xforms-layer" value="../epihandy-xform-layer/dist/epihandy-xform-layer.jar" />
-	<property name="version" value="0.9.1" />
+	<property name="version" value="0.9.2" />
 	
 	<path id="classpath">
 		<pathelement location="${dbutils}"/>
