@@ -5,28 +5,41 @@
 <!-- ** @author Daniel Kayiwa                               ** -->
 <!-- ** @version 1.0                                        ** -->
 <!-- ********************************************************* -->
-<project name="epihandy-xforms-server" default="package">
-	
+<project xmlns:artifact="antlib:org.apache.maven.artifact.ant" name="epihandy-xforms-server" default="package">
+
 	<property name="dbutils" value="../dbutils/dist/dbutils.jar" />
 	<property name="xforms-layer" value="../epihandy-xform-layer/dist/epihandy-xform-layer.jar" />
-	<property name="version" value="0.9.3" />
 	
+	<property name="groupId" value="org.openxdata" />
+	<property name="artifactId" value="${ant.project.name}" />
+	<property name="version" value="0.9.4-SNAPSHOT" />
+	
+	<property name="jar.name" value="${ant.project.name}-${version}.jar" />
+	<property name="sourcejar.name" value="${ant.project.name}-${version}-sources.jar" />
+	<property name="javadocjar.name" value="${ant.project.name}-${version}-javadoc.jar" />
+
 	<path id="classpath">
 		<pathelement location="${dbutils}"/>
 		<pathelement location="${xforms-layer}"/>
 	</path>
-	
+
+	<path id="maven-ant-tasks.classpath" path="lib/maven-ant-tasks-2.1.3.jar" />
+	<typedef resource="org/apache/maven/artifact/ant/antlib.xml" uri="antlib:org.apache.maven.artifact.ant" classpathref="maven-ant-tasks.classpath" />
+
 	<!-- *********************************************************** -->
 	<!-- **                     TARGETS                           ** -->
 	<!-- *********************************************************** -->
 	<target name="init" description="initialization">
+		<condition property="version.isSnapshot">
+			<contains string="${version}" substring="SNAPSHOT" />
+		</condition>
 	</target>
 
 	<target name="clean" description="Delete bin and dist directories">
 		<delete dir="dist" />
 		<delete dir="bin" />
 	</target>
-	
+
 	<target name="build-dependencies">
 		<ant antfile="../dbutils/build.xml" target="package" inheritall="false">
 			<property name="debug" value="true" />
@@ -40,26 +53,26 @@
 
 	<target name="compile" depends="build-dependencies,clean,init" description="Compiles the API">
 		<mkdir dir="bin" />
-		
+
 		<!--  Compile midlet java files -->
 		<javac destdir="bin" classpathref="classpath" debug="true">
 			<src path="src/" />
 			<include name="**/*.java" />
-		</javac>	
+		</javac>
 	</target>
-	
+
 	<target name="package" depends="compile" description="Packages ${ant.project.name} into jar file">
 		<mkdir dir="dist" />
-		
+
 		<!-- Create distributable jar file -->
-		<jar destfile="dist/${ant.project.name}-${version}.jar">
+		<jar destfile="dist/${jar.name}">
 			<zipfileset dir="bin" prefix="" />
 			<zipfileset src="..\epihandy-xform-layer\dist\epihandy-xform-layer.jar" />
 		</jar>
 	</target>
-	
+
 	<target name="source-bundle">
-		<jar destfile="dist/${ant.project.name}-${version}-sources.jar">
+		<jar destfile="dist/${sourcejar.name}">
 			<zipfileset dir="../epihandy/src" includes="**/*.java" />
 			<zipfileset dir="../epihandy-xform-layer/src" includes="**/*.java" />
 			<zipfileset dir="../minixpath/src" includes="**/*.java" />
@@ -67,7 +80,7 @@
 			<zipfileset dir="src" includes="**/*.java" />
 		</jar>
 	</target>
-	
+
 	<target name="javadoc-bundle">
 		<javadoc destdir="dist/api">
 			<fileset dir="../epihandy/src" includes="**/*.java" />
@@ -76,13 +89,42 @@
 			<fileset dir="../dbutils/src" includes="**/*.java" />
 			<fileset dir="src" includes="**/*.java" />
 		</javadoc>
-		<jar destfile="dist/${ant.project.name}-${version}-javadoc.jar" basedir="dist/api" />
+		<jar destfile="dist/${javadocjar.name}" basedir="dist/api" />
 		<delete dir="dist/api" />
 	</target>
 	
-	<target name="deploy" depends="package" description="Deploys to the tomcat lib dirrectory.">
-		<copy tofile="H:\openxdata\Server\openxdata server\lib\${ant.project.name}.jar" file="dist\${ant.project.name}.jar"/>
+	<target name="generate-pom" description="Generates a maven pom file.">
+		<artifact:pom id="pomid" groupid="${groupId}" artifactid="${artifactId}" version="${version}" />
+		<artifact:writepom pomrefid="pomid" file="dist/pom.xml"/>
+	</target>
+	
+	<target name="install" depends="package,javadoc-bundle,source-bundle,generate-pom" description="Installs built artifacts to local repository.">
+		<artifact:install file="dist/${jar.name}">
+			<artifact:pom file="dist/pom.xml" />
+			<artifact:attach file="dist/${javadocjar.name}" type="jar" classifier="javadoc" />
+			<artifact:attach file="dist/${sourcejar.name}" type="jar" classifier="sources" />
+		</artifact:install>
+	</target>
+	
+	<target name="deploy-snapshot" depends="init,package,javadoc-bundle,source-bundle,generate-pom" description="Deploys built artifacts to remote snapshot repository." if="version.isSnapshot">
+		<artifact:deploy file="dist/${jar.name}">
+			<artifact:remoteRepository id="openxdata-snapshots" url="https://nexus.openxdata.org/content/repositories/snapshots" />
+			<artifact:pom file="dist/pom.xml" />
+			<artifact:attach file="dist/${javadocjar.name}" type="jar" classifier="javadoc" />
+			<artifact:attach file="dist/${sourcejar.name}" type="jar" classifier="sources" />
+		</artifact:deploy>
+	</target>
+	
+	<target name="deploy-release" depends="init,package,javadoc-bundle,source-bundle,generate-pom" description="Deploys built artifacts to remote release repository." unless="version.isSnapshot">
+		<artifact:deploy file="dist/${jar.name}">
+			<artifact:remoteRepository id="openxdata-releases" url="https://nexus.openxdata.org/content/repositories/releases" />
+			<artifact:pom file="dist/pom.xml" />
+			<artifact:attach file="dist/${javadocjar.name}" type="jar" classifier="javadoc" />
+			<artifact:attach file="dist/${sourcejar.name}" type="jar" classifier="sources" />
+		</artifact:deploy>
 	</target>
 
+	<target name="deploy" depends="deploy-snapshot,deploy-release" description="Deploys the built artifacts to the appropriate repo based on version." />
+	
 </project>
 
