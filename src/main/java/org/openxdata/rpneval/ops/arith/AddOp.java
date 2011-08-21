@@ -2,13 +2,11 @@ package org.openxdata.rpneval.ops.arith;
 
 public class AddOp extends ArithmeticOp {
 
-	@Override
 	public String getName() {
 		return "+";
 	}
 
-	@Override
 	Object eval(double op1, double op2) {
-		return op1 + op2;
+		return new Double(op1 + op2);
 	}
 }

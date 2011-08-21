@@ -5,7 +5,6 @@ import java.util.Stack;
 
 import org.openxdata.rpneval.Operator;
 
-@SuppressWarnings("rawtypes")
 public class DefaultEvaluator extends AbstractEvaluator {
 
 	private Stack evalStack;
@@ -17,17 +16,18 @@ public class DefaultEvaluator extends AbstractEvaluator {
 		operators = new Hashtable();
 	}
 
-	@Override
 	public Stack getStack() {
 		return evalStack;
 	}
 
-	@Override
+	public void setStack(Stack stack) {
+		this.evalStack = stack;
+	}
+
 	public boolean isOperator(Object term) {
 		return operators.containsKey(term);
 	}
 
-	@Override
 	public Operator getOperator(Object term) {
 		return (Operator) operators.get(term);
 	}
@@ -40,7 +40,6 @@ public class DefaultEvaluator extends AbstractEvaluator {
 		environment = table;
 	}
 
-	@Override
 	public Hashtable getEnvironment() {
 		return environment;
 	}

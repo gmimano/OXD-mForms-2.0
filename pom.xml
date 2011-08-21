@@ -37,7 +37,7 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.0</version>
+			<version>3.8</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -70,11 +70,13 @@
 		<pluginManagement>
 			<plugins>
 				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-compiler-plugin</artifactId>
 					<configuration>
-						<source>1.6</source>
-						<target>1.6</target>
+						<source>1.3</source>
+						<target>1.1</target>
+						<compilerArguments>
+							<bootclasspath>${settings.localRepository}/org/microemu/cldcapi11/${microemu.version}/cldcapi11-${microemu.version}.jar${path.separator}${settings.localRepository}/org/microemu/midpapi20/${microemu.version}/midpapi20-${microemu.version}.jar</bootclasspath>
+						</compilerArguments>
 					</configuration>
 				</plugin>
 			</plugins>
@@ -83,6 +85,7 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<microemu.version>2.0.4</microemu.version>
 	</properties>
 
 </project>

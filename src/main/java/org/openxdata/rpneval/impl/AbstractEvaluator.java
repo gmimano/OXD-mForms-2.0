@@ -7,15 +7,13 @@ import org.openxdata.rpneval.EvaluationException;
 import org.openxdata.rpneval.Evaluator;
 import org.openxdata.rpneval.Operator;
 
-@SuppressWarnings({ "rawtypes", "unchecked" })
 public abstract class AbstractEvaluator implements Evaluator {
 
 	public Object evaluate(Object[] expression) throws EvaluationException {
 
-		Stack evalStack = getStack();
+		Stack evalStack = new Stack(); // Ensure we're working clean
 
-		// Make sure the stack is empty before we start
-		evalStack.clear();
+		setStack(evalStack); // So downstream objects can access
 
 		for (int i = 0; i < expression.length; i++) {
 			Object term = expression[i];
@@ -40,6 +38,8 @@ public abstract class AbstractEvaluator implements Evaluator {
 	}
 
 	public abstract Stack getStack();
+
+	public abstract void setStack(Stack stack);
 
 	public abstract Hashtable getEnvironment();
 
