@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>org.openxdata</groupId>
+	<artifactId>mforms</artifactId>
+	<packaging>pom</packaging>
+	<name>OpenXData mForms</name>
+	<version>1.3-SNAPSHOT</version>
+
+	<description>OpenXData's mobile data collection app for J2ME.</description>
+
+	<organization>
+		<name>OpenXData</name>
+		<url>http://openxdata.org</url>
+	</organization>
+
+	<modules>
+		<module>mforms-midlet</module>
+	</modules>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.microemu</groupId>
+				<artifactId>microemulator</artifactId>
+				<version>${microemu.version}</version>
+				<scope>provided</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.microemu</groupId>
+				<artifactId>microemu-jsr-135</artifactId>
+				<version>${microemu.version}</version>
+				<scope>provided</scope>
+				<exclusions>
+					<exclusion>
+						<groupId>org.microemu</groupId>
+						<artifactId>microemu-midp</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			<dependency>
+				<groupId>org.bouncycastle</groupId>
+				<artifactId>lcrypto</artifactId>
+				<version>${bouncycastle.version}</version>
+				<classifier>j2me</classifier>
+			</dependency>
+			<dependency>
+				<groupId>org.openxdata</groupId>
+				<artifactId>rpn-evaluator</artifactId>
+				<version>1.0-SNAPSHOT</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<configuration>
+						<source>1.3</source>
+						<target>1.1</target>
+						<compilerArguments>
+							<bootclasspath>${settings.localRepository}/org/microemu/cldcapi11/${microemu.version}/cldcapi11-${microemu.version}.jar${path.separator}${settings.localRepository}/org/microemu/midpapi20/${microemu.version}/midpapi20-${microemu.version}.jar</bootclasspath>
+						</compilerArguments>
+					</configuration>
+				</plugin>
+				<!-- Configure Eclipse -->
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-eclipse-plugin</artifactId>
+					<configuration>
+						<buildcommands>
+							<buildcommand>org.eclipse.jdt.core.javabuilder</buildcommand>
+							<buildcommand>eclipseme.core.preverifier</buildcommand>
+						</buildcommands>
+						<projectnatures>
+							<projectnature>org.eclipse.jdt.core.javanature</projectnature>
+							<projectnature>eclipseme.core.nature</projectnature>
+						</projectnatures>
+						<classpathContainers>
+							<classpathContainer>J2MELIB</classpathContainer>
+							<classpathContainer>org.eclipse.jdt.launching.JRE_CONTAINER</classpathContainer>
+						</classpathContainers>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+
+	<properties>
+		<microemu.version>2.0.4</microemu.version>
+		<bouncycastle.version>146</bouncycastle.version>
+	</properties>
+
+</project>
+

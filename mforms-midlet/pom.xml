@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.openxdata</groupId>
+		<artifactId>mforms</artifactId>
+		<version>1.3-SNAPSHOT</version>
+	</parent>
+
+	<groupId>org.openxdata</groupId>
+	<artifactId>mforms-midlet</artifactId>
+	<name>OpenXData mForms - MIDlet</name>
+	<version>1.3-SNAPSHOT</version>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.microemu</groupId>
+			<artifactId>microemulator</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.microemu</groupId>
+			<artifactId>microemu-jsr-135</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.bouncycastle</groupId>
+			<artifactId>lcrypto</artifactId>
+			<classifier>j2me</classifier>
+		</dependency>
+		<dependency>
+			<groupId>org.openxdata</groupId>
+			<artifactId>rpn-evaluator</artifactId>
+		</dependency>
+	</dependencies>
+
+	<properties>
+		<j2me.midlet.configuration>CLDC-1.1</j2me.midlet.configuration>
+		<j2me.midlet.profile>MIDP-2.0</j2me.midlet.profile>
+		<j2me.midlet.vendor>${project.organization.name}</j2me.midlet.vendor>
+		<j2me.midlet.name>${project.parent.name}</j2me.midlet.name>
+		<j2me.midlet.version>${version}</j2me.midlet.version>
+		<httpDownloadUrl>http://localhost:8080/openxdata/mpsubmit</httpDownloadUrl>
+		<httpUploadUrl>http://localhost:8080/openxdata/mpsubmit</httpUploadUrl>
+	</properties>
+
+	<build>
+		<resources>
+			<resource>
+				<directory>src/main/filtered-resources</directory>
+				<filtering>true</filtering>
+			</resource>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>false</filtering>
+			</resource>
+		</resources>
+		<plugins>
+			<plugin>
+				<groupId>com.pyx4me</groupId>
+				<artifactId>j2me-maven-plugin</artifactId>
+				<version>2.0.4</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>package</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<useWtkLibs>false</useWtkLibs>
+					<proguardPreverify>true</proguardPreverify>
+					<proguard>true</proguard>
+					<obfuscate>true</obfuscate>
+					<midlets>
+						<MIDlet>
+							<name>${project.name}</name>
+							<icon>/icons/openxdata.png</icon>
+							<class>org.openxdata.mforms.MainForm</class>
+						</MIDlet>
+					</midlets>
+					<jadAttributes>
+						<MIDlet-Permissions>javax.microedition.media.control.VideoControl.getSnapshot</MIDlet-Permissions>
+					</jadAttributes>
+					<libs>
+						<lib>${settings.localRepository}/org/microemu/cldcapi11/${microemu.version}/cldcapi11-${microemu.version}.jar</lib>
+						<lib>${settings.localRepository}/org/microemu/midpapi20/${microemu.version}/midpapi20-${microemu.version}.jar</lib>
+					</libs>
+					<dependencies>
+						<dependency>
+							<groupId>org.microemu</groupId>
+							<artifactId>microemulator</artifactId>
+							<exclude>true</exclude>
+						</dependency>
+					</dependencies>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>
