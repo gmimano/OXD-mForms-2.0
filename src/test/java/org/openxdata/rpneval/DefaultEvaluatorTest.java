@@ -15,6 +15,7 @@ import org.openxdata.rpneval.ops.arith.LessThanOrEqualOp;
 import org.openxdata.rpneval.ops.arith.MulOp;
 import org.openxdata.rpneval.ops.arith.SubOp;
 import org.openxdata.rpneval.ops.bool.AndOp;
+import org.openxdata.rpneval.ops.bool.NotOp;
 import org.openxdata.rpneval.ops.bool.OrOp;
 import org.openxdata.rpneval.ops.xpath.LenOp;
 
@@ -27,7 +28,7 @@ public class DefaultEvaluatorTest extends TestCase {
 		Operator[] ops = { new AddOp(), new SubOp(), new MulOp(), new DivOp(),
 				new LenOp(), new LessThanOp(), new GreaterThanOp(),
 				new AndOp(), new OrOp(), new GreaterThanOrEqualOp(),
-				new LessThanOrEqualOp() };
+				new LessThanOrEqualOp(), new NotOp() };
 		for (int i = 0; i < ops.length; i++) {
 			Operator op = ops[i];
 			opMap.put(op.getName(), op);
@@ -63,5 +64,9 @@ public class DefaultEvaluatorTest extends TestCase {
 		expression = StringUtils.split("2 3 >= 3 2 > and");
 		result = eval.evaluate(expression);
 		assertEquals("result should be false", Boolean.FALSE, result);
+
+		expression = StringUtils.split("2 3 >= 3 2 > and not");
+		result = eval.evaluate(expression);
+		assertEquals("result should be true", Boolean.TRUE, result);
 	}
 }
