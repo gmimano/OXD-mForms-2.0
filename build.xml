@@ -1,9 +1,0 @@
-<project name="openxdata-mforms" default="build">
-	<target name="build">
-		<ant antfile="epihandy-midlet/build.xml" inheritall="false"/>
-	</target>
-
-	<target name="run">
-		<ant antfile="epihandy-midlet/build.xml" target="run-obfuscated" inheritall="false"/>
-	</target>
-</project>
