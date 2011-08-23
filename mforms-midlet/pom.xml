@@ -30,8 +30,17 @@
 			<classifier>j2me</classifier>
 		</dependency>
 		<dependency>
+			<groupId>com.jcraft</groupId>
+			<artifactId>jzlib</artifactId>
+			<classifier>j2me</classifier>
+		</dependency>
+		<dependency>
 			<groupId>org.openxdata</groupId>
 			<artifactId>rpn-evaluator</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.wtk</groupId>
+			<artifactId>jsr-179</artifactId>
 		</dependency>
 	</dependencies>
 
@@ -77,7 +86,7 @@
 						<MIDlet>
 							<name>${project.name}</name>
 							<icon>/icons/openxdata.png</icon>
-							<class>org.openxdata.mforms.MainForm</class>
+							<class>org.fcitmuk.epihandy.forms.MainForm</class>
 						</MIDlet>
 					</midlets>
 					<jadAttributes>

@@ -48,9 +48,21 @@
 				<classifier>j2me</classifier>
 			</dependency>
 			<dependency>
+				<groupId>com.jcraft</groupId>
+				<artifactId>jzlib</artifactId>
+				<version>1.0.7</version>
+				<classifier>j2me</classifier>
+			</dependency>
+			<dependency>
 				<groupId>org.openxdata</groupId>
 				<artifactId>rpn-evaluator</artifactId>
 				<version>1.0-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>com.sun.wtk</groupId>
+				<artifactId>jsr-179</artifactId>
+				<version>1.0.1</version>
+				<scope>provided</scope>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
