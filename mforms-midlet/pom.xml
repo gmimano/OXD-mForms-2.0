@@ -86,7 +86,7 @@
 						<MIDlet>
 							<name>${project.parent.name}</name>
 							<icon>/icons/openxdata.png</icon>
-							<class>org.fcitmuk.epihandy.forms.MainForm</class>
+							<class>org.openxdata.mforms.forms.MainForm</class>
 						</MIDlet>
 					</midlets>
 					<jadAttributes>
