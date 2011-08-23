@@ -18,6 +18,7 @@
 	</organization>
 
 	<modules>
+		<module>mforms-model</module>
 		<module>mforms-midlet</module>
 	</modules>
 
