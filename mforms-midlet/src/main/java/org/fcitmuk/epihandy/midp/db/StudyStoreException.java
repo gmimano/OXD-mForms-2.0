@@ -2,6 +2,8 @@ package org.fcitmuk.epihandy.midp.db;
 
 public class StudyStoreException extends Exception {
 
+	private static final long serialVersionUID = -376474769293241044L;
+
 	public StudyStoreException() {
 		super();
 	}
