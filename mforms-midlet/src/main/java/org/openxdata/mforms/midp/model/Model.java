@@ -4,12 +4,12 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.Vector;
 
-import org.openxdata.mforms.FormData;
-import org.openxdata.mforms.FormDef;
 import org.openxdata.mforms.midp.db.FormDataStore;
 import org.openxdata.mforms.midp.db.StoredFormDef;
 import org.openxdata.mforms.midp.db.StoredStudyDef;
 import org.openxdata.mforms.midp.db.StudyStore;
+import org.openxdata.mforms.model.FormData;
+import org.openxdata.mforms.model.FormDef;
 
 /**
  * The state of the application.

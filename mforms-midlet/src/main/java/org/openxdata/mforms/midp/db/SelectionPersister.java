@@ -1,8 +1,8 @@
 package org.openxdata.mforms.midp.db;
 
-import org.openxdata.mforms.EpihandyConstants;
 import org.openxdata.mforms.midp.model.Model;
 import org.openxdata.mforms.midp.model.ModelListener;
+import org.openxdata.mforms.model.EpihandyConstants;
 import org.openxdata.midp.db.util.Settings;
 
 /**

@@ -9,10 +9,10 @@ import javax.microedition.location.Criteria;
 import javax.microedition.location.Location;
 import javax.microedition.location.LocationProvider;
 
-import org.openxdata.mforms.QuestionData;
-import org.openxdata.mforms.ValidationRule;
 import org.openxdata.mforms.midp.forms.GPSTypeEditor;
 import org.openxdata.mforms.midp.forms.TypeEditorListener;
+import org.openxdata.mforms.model.QuestionData;
+import org.openxdata.mforms.model.ValidationRule;
 import org.openxdata.util.AlertMessage;
 import org.openxdata.util.AlertMessageListener;
 import org.openxdata.util.DefaultCommands;

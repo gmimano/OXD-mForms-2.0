@@ -2,7 +2,7 @@ package org.openxdata.mforms.midp.forms;
 
 import javax.microedition.lcdui.Command;
 
-import org.openxdata.mforms.QuestionData;
+import org.openxdata.mforms.model.QuestionData;
 
 
 

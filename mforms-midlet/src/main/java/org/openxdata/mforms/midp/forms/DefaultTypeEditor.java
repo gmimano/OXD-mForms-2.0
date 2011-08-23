@@ -13,12 +13,12 @@ import javax.microedition.lcdui.Item;
 import javax.microedition.lcdui.TextField;
 import javax.microedition.lcdui.Ticker;
 
-import org.openxdata.mforms.EpihandyConstants;
-import org.openxdata.mforms.OptionData;
-import org.openxdata.mforms.OptionDef;
-import org.openxdata.mforms.QuestionData;
-import org.openxdata.mforms.QuestionDef;
-import org.openxdata.mforms.ValidationRule;
+import org.openxdata.mforms.model.EpihandyConstants;
+import org.openxdata.mforms.model.OptionData;
+import org.openxdata.mforms.model.OptionDef;
+import org.openxdata.mforms.model.QuestionData;
+import org.openxdata.mforms.model.QuestionDef;
+import org.openxdata.mforms.model.ValidationRule;
 import org.openxdata.midp.mvc.AbstractView;
 import org.openxdata.util.AlertMessage;
 import org.openxdata.util.AlertMessageListener;

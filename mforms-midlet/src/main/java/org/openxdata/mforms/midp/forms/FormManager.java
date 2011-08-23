@@ -7,9 +7,9 @@ import javax.microedition.lcdui.Displayable;
 
 import org.openxdata.communication.TransportLayer;
 import org.openxdata.communication.TransportLayerListener;
-import org.openxdata.db.util.Persistent;
-import org.openxdata.mforms.QuestionData;
-import org.openxdata.mforms.QuestionDef;
+import org.openxdata.mforms.model.QuestionData;
+import org.openxdata.mforms.model.QuestionDef;
+import org.openxdata.mforms.persistent.Persistent;
 import org.openxdata.midp.mvc.AbstractView;
 import org.openxdata.util.DefaultCommands;
 import org.openxdata.util.MenuText;

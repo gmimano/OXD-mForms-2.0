@@ -5,9 +5,9 @@ import java.io.IOException;
 import java.util.Hashtable;
 import java.util.Vector;
 
-import org.openxdata.db.util.Record;
-import org.openxdata.mforms.FormData;
-import org.openxdata.mforms.FormDataError;
+import org.openxdata.mforms.model.FormData;
+import org.openxdata.mforms.model.FormDataError;
+import org.openxdata.mforms.persistent.Record;
 import org.openxdata.midp.db.util.Storage;
 import org.openxdata.midp.db.util.StorageFactory;
 

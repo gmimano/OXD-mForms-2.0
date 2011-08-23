@@ -8,9 +8,9 @@ import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.List;
 
-import org.openxdata.mforms.EpihandyConstants;
-import org.openxdata.mforms.QuestionData;
-import org.openxdata.mforms.RepeatQtnsData;
+import org.openxdata.mforms.model.EpihandyConstants;
+import org.openxdata.mforms.model.QuestionData;
+import org.openxdata.mforms.model.RepeatQtnsData;
 import org.openxdata.midp.mvc.AbstractView;
 import org.openxdata.midp.mvc.CommandAction;
 import org.openxdata.midp.mvc.Controller;

@@ -14,9 +14,9 @@ import javax.microedition.media.Player;
 import javax.microedition.media.control.RecordControl;
 import javax.microedition.media.control.VideoControl;
 
-import org.openxdata.mforms.QuestionData;
-import org.openxdata.mforms.QuestionDef;
-import org.openxdata.mforms.ValidationRule;
+import org.openxdata.mforms.model.QuestionData;
+import org.openxdata.mforms.model.QuestionDef;
+import org.openxdata.mforms.model.ValidationRule;
 import org.openxdata.midp.mvc.AbstractView;
 import org.openxdata.util.AlertMessage;
 import org.openxdata.util.AlertMessageListener;

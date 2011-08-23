@@ -14,8 +14,8 @@ import javax.microedition.lcdui.Alert;
 import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Displayable;
 
-import org.openxdata.db.util.Persistent;
-import org.openxdata.mforms.ResponseHeader;
+import org.openxdata.mforms.model.ResponseHeader;
+import org.openxdata.mforms.persistent.Persistent;
 import org.openxdata.midp.db.util.Settings;
 import org.openxdata.util.AlertMessage;
 import org.openxdata.util.AlertMessageListener;

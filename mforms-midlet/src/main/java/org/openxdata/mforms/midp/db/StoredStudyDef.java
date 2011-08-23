@@ -4,8 +4,8 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-import org.openxdata.db.util.Persistent;
-import org.openxdata.db.util.Record;
+import org.openxdata.mforms.persistent.Persistent;
+import org.openxdata.mforms.persistent.Record;
 
 /**
  * A light weight representation for a {@studyDef}. It is intended to be used as

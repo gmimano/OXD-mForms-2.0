@@ -7,13 +7,13 @@ import javax.microedition.midlet.MIDlet;
 
 import org.openxdata.communication.TransportLayer;
 import org.openxdata.communication.TransportLayerListener;
-import org.openxdata.db.util.Persistent;
-import org.openxdata.mforms.RequestHeader;
 import org.openxdata.mforms.midp.db.EpihandyDataStorage;
 import org.openxdata.mforms.midp.forms.FormManager;
 import org.openxdata.mforms.midp.forms.LogonListener;
 import org.openxdata.mforms.midp.forms.LogoutListener;
 import org.openxdata.mforms.midp.forms.UserManager;
+import org.openxdata.mforms.model.RequestHeader;
+import org.openxdata.mforms.persistent.Persistent;
 import org.openxdata.midp.db.util.StorageListener;
 import org.openxdata.util.AlertMessage;
 import org.openxdata.util.AlertMessageListener;

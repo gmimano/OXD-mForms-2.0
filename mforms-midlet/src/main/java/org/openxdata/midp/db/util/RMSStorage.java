@@ -9,9 +9,9 @@ import javax.microedition.rms.RecordStore;
 import javax.microedition.rms.RecordStoreException;
 import javax.microedition.rms.RecordStoreNotOpenException;
 
-import org.openxdata.db.util.Persistent;
-import org.openxdata.db.util.Record;
-import org.openxdata.db.util.Serializer;
+import org.openxdata.mforms.persistent.Persistent;
+import org.openxdata.mforms.persistent.Record;
+import org.openxdata.mforms.persistent.Serializer;
 
 //TODO Exceptions in this class should be propagated to the user in some way.
 

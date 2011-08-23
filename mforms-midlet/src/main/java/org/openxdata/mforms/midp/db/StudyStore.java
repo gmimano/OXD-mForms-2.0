@@ -4,7 +4,7 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.Vector;
 
-import org.openxdata.mforms.FormDef;
+import org.openxdata.mforms.model.FormDef;
 import org.openxdata.midp.db.util.Storage;
 import org.openxdata.midp.db.util.StorageFactory;
 

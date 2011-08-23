@@ -3,8 +3,8 @@ package org.openxdata.midp.db.util;
 import java.io.OutputStream;
 import java.util.Vector;
 
-import org.openxdata.db.util.Persistent;
-import org.openxdata.db.util.Record;
+import org.openxdata.mforms.persistent.Persistent;
+import org.openxdata.mforms.persistent.Record;
 
 /**
  * An interface that all concrete storages should implement. This interface shields 

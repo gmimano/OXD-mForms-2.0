@@ -1,7 +1,7 @@
 package org.openxdata.mforms.midp.forms;
 
-import org.openxdata.mforms.QuestionData;
-import org.openxdata.mforms.ValidationRule;
+import org.openxdata.mforms.model.QuestionData;
+import org.openxdata.mforms.model.ValidationRule;
 import org.openxdata.midp.mvc.View;
 
 /**

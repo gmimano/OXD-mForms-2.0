@@ -4,10 +4,10 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-import org.openxdata.db.util.Persistent;
 import org.openxdata.mforms.midp.db.MalformedStreamException;
 import org.openxdata.mforms.midp.db.StudyStore;
 import org.openxdata.mforms.midp.model.Model;
+import org.openxdata.mforms.persistent.Persistent;
 
 /**
  * A class that enables study download with the existing transport layer.

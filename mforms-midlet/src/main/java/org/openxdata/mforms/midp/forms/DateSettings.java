@@ -7,7 +7,7 @@ import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Form;
 
-import org.openxdata.mforms.QuestionData;
+import org.openxdata.mforms.model.QuestionData;
 import org.openxdata.midp.db.util.Settings;
 import org.openxdata.midp.mvc.AbstractView;
 import org.openxdata.util.DefaultCommands;

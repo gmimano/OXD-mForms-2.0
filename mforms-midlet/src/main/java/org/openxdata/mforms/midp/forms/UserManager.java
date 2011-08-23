@@ -7,9 +7,9 @@ import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Displayable;
 
 import org.bouncycastle.crypto.digests.SHA1Digest;
-import org.openxdata.mforms.User;
-import org.openxdata.mforms.UserList;
 import org.openxdata.mforms.midp.db.EpihandyDataStorage;
+import org.openxdata.mforms.model.User;
+import org.openxdata.mforms.model.UserList;
 import org.openxdata.midp.db.util.Settings;
 import org.openxdata.midp.mvc.AbstractView;
 import org.openxdata.util.AlertMessage;

@@ -6,10 +6,10 @@ import java.io.IOException;
 import java.util.Hashtable;
 import java.util.Vector;
 
-import org.openxdata.db.util.Persistent;
-import org.openxdata.mforms.FormData;
-import org.openxdata.mforms.FormDef;
 import org.openxdata.mforms.midp.model.Model;
+import org.openxdata.mforms.model.FormData;
+import org.openxdata.mforms.model.FormDef;
+import org.openxdata.mforms.persistent.Persistent;
 
 /**
  * This class is meant to implement an extremely memory efficient implementation

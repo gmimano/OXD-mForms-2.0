@@ -8,10 +8,10 @@ import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.List;
 
-import org.openxdata.mforms.FormData;
-import org.openxdata.mforms.FormDef;
 import org.openxdata.mforms.midp.model.Model;
 import org.openxdata.mforms.midp.model.ModelListener;
+import org.openxdata.mforms.model.FormData;
+import org.openxdata.mforms.model.FormDef;
 import org.openxdata.midp.mvc.AbstractView;
 import org.openxdata.util.AlertMessage;
 import org.openxdata.util.AlertMessageListener;

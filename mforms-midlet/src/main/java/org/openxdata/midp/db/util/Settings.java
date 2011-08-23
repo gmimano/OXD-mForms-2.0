@@ -3,7 +3,7 @@ package org.openxdata.midp.db.util;
 import java.io.*;
 import java.util.*;
 
-import org.openxdata.db.util.*;
+import org.openxdata.mforms.persistent.*;
 
 
 /**

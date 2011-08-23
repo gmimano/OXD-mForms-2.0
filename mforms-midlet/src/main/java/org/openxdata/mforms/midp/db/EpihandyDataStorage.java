@@ -2,10 +2,10 @@ package org.openxdata.mforms.midp.db;
 
 import java.util.Vector;
 
-import org.openxdata.mforms.LanguageList;
-import org.openxdata.mforms.MenuTextList;
-import org.openxdata.mforms.User;
-import org.openxdata.mforms.UserList;
+import org.openxdata.mforms.model.LanguageList;
+import org.openxdata.mforms.model.MenuTextList;
+import org.openxdata.mforms.model.User;
+import org.openxdata.mforms.model.UserList;
 import org.openxdata.midp.db.util.Storage;
 import org.openxdata.midp.db.util.StorageFactory;
 import org.openxdata.midp.db.util.StorageListener;

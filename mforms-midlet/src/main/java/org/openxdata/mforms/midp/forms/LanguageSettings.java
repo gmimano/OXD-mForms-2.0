@@ -9,8 +9,8 @@ import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.List;
 
-import org.openxdata.mforms.LanguageList;
 import org.openxdata.mforms.midp.db.EpihandyDataStorage;
+import org.openxdata.mforms.model.LanguageList;
 import org.openxdata.midp.db.util.Settings;
 import org.openxdata.midp.mvc.AbstractView;
 import org.openxdata.util.AlertMessage;

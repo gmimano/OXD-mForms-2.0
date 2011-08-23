@@ -5,11 +5,11 @@ import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.List;
 
-import org.openxdata.mforms.EpihandyConstants;
-import org.openxdata.mforms.RepeatQtnsData;
-import org.openxdata.mforms.RepeatQtnsDataList;
-import org.openxdata.mforms.RepeatQtnsDef;
-import org.openxdata.mforms.ValidationRule;
+import org.openxdata.mforms.model.EpihandyConstants;
+import org.openxdata.mforms.model.RepeatQtnsData;
+import org.openxdata.mforms.model.RepeatQtnsDataList;
+import org.openxdata.mforms.model.RepeatQtnsDef;
+import org.openxdata.mforms.model.ValidationRule;
 import org.openxdata.midp.mvc.AbstractView;
 import org.openxdata.midp.mvc.CommandAction;
 import org.openxdata.util.AlertMessage;

@@ -1,6 +1,6 @@
 package org.openxdata.communication;
 
-import org.openxdata.db.util.*;
+import org.openxdata.mforms.persistent.*;
 
 /**
  * Interface through which the transport layer communicates to the user.

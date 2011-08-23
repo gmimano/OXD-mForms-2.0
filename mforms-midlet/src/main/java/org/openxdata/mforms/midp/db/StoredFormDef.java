@@ -4,9 +4,9 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-import org.openxdata.db.util.Persistent;
-import org.openxdata.db.util.Record;
-import org.openxdata.mforms.FormDef;
+import org.openxdata.mforms.model.FormDef;
+import org.openxdata.mforms.persistent.Persistent;
+import org.openxdata.mforms.persistent.Record;
 
 /**
  * An abbreviated representation of a form definition. It can be thought of as a
