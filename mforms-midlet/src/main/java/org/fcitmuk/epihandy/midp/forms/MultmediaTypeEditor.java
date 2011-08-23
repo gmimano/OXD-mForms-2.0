@@ -269,7 +269,7 @@ public class MultmediaTypeEditor extends AbstractView implements TypeEditor, Ale
 							.getSnapshot(MultMediaSettings
 									.getPictureParameters());
 					questionData.setAnswer(image);
-					stop(type);
+					MultmediaTypeEditor.this.stop(type);
 					listener.endEdit(true, questionData, null);
 				} catch (Exception me) {
 					alertMsg.show(MenuText.IMAGE_SAVE_PROBLEM() + " "
