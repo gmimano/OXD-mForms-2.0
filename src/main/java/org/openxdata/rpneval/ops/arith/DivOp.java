@@ -14,4 +14,11 @@ public class DivOp extends ArithmeticOp {
 					+ op2);
 		return new Double(op1 / op2);
 	}
+
+	Object eval(long op1, long op2) throws EvaluationException {
+		if (op2 == 0)
+			throw new EvaluationException("result not defined: " + op1 + "/"
+					+ op2);
+		return new Long(op1 / op2);
+	}
 }

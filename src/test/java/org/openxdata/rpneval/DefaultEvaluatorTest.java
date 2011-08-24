@@ -39,7 +39,11 @@ public class DefaultEvaluatorTest extends TestCase {
 	public void testArithEvaluation() throws EvaluationException {
 		String[] expression = StringUtils.split("3 2 / 15 3 - * 1 +");
 		Object result = eval.evaluate(expression);
-		assertEquals("evaluation incorrect", new Double(19.0), result);
+		assertEquals("evaluation incorrect", new Long(13), result);
+
+		expression = StringUtils.split("3.0 2 / 15 3 - * 1 +");
+		result = eval.evaluate(expression);
+		assertEquals("evaluation incorrect", new Double(19), result);
 	}
 
 	public void testSimpleXPathEvaluation() throws EvaluationException {

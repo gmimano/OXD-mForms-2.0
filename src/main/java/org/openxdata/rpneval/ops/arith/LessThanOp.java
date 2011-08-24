@@ -12,4 +12,8 @@ public class LessThanOp extends ArithmeticOp {
 		return new Boolean(op1 < op2);
 	}
 
+	Object eval(long op1, long op2) throws EvaluationException {
+		return new Boolean(op1 < op2);
+	}
+
 }
