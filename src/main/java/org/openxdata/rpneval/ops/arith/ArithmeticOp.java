@@ -39,9 +39,9 @@ public abstract class ArithmeticOp implements Operator {
 				String op = (String) operands[i];
 				try {
 					if (op.indexOf('.') < 0)
-						operands[i] = new Long(op);
+						operands[i] = new Long(Long.parseLong(op)); // see CDLC
 					else
-						operands[i] = new Double(op);
+						operands[i] = Double.valueOf(op);
 				} catch (NumberFormatException nfe) {
 					throw new EvaluationException(
 							"failed to convert value to number: " + op);
