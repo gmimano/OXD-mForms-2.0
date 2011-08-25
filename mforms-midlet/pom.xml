@@ -22,12 +22,20 @@
 			<version>1.3-SNAPSHOT</version>
 		</dependency>
 		<dependency>
-			<groupId>org.microemu</groupId>
-			<artifactId>microemulator</artifactId>
+			<groupId>com.sun.wtk</groupId>
+			<artifactId>cldc</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.microemu</groupId>
-			<artifactId>microemu-jsr-135</artifactId>
+			<groupId>com.sun.wtk</groupId>
+			<artifactId>midp</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.wtk</groupId>
+			<artifactId>mmapi</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.wtk</groupId>
+			<artifactId>jsr-179</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.bouncycastle</groupId>
@@ -42,10 +50,6 @@
 		<dependency>
 			<groupId>org.openxdata</groupId>
 			<artifactId>rpn-evaluator</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.sun.wtk</groupId>
-			<artifactId>jsr-179</artifactId>
 		</dependency>
 	</dependencies>
 
@@ -97,17 +101,6 @@
 					<jadAttributes>
 						<MIDlet-Permissions>javax.microedition.media.control.VideoControl.getSnapshot</MIDlet-Permissions>
 					</jadAttributes>
-					<libs>
-						<lib>${settings.localRepository}/org/microemu/cldcapi11/${microemu.version}/cldcapi11-${microemu.version}.jar</lib>
-						<lib>${settings.localRepository}/org/microemu/midpapi20/${microemu.version}/midpapi20-${microemu.version}.jar</lib>
-					</libs>
-					<dependencies>
-						<dependency>
-							<groupId>org.microemu</groupId>
-							<artifactId>microemulator</artifactId>
-							<exclude>true</exclude>
-						</dependency>
-					</dependencies>
 				</configuration>
 			</plugin>
 		</plugins>
