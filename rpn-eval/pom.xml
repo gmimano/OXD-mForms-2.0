@@ -2,36 +2,21 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.openxdata</groupId>
+		<artifactId>mforms</artifactId>
+		<version>1.3-SNAPSHOT</version>
+	</parent>
+
 	<groupId>org.openxdata</groupId>
-	<artifactId>rpn-evaluator</artifactId>
-	<version>1.0-SNAPSHOT</version>
-	<name>OpenXdata Reverse Polish Notation Evaluator</name>
+	<artifactId>rpn-eval</artifactId>
+	<version>1.3-SNAPSHOT</version>
+	<name>OpenXdata mForms - Reverse Polish Notation Evaluator</name>
 	<url>http://openxdata.org</url>
 	<description>
 		A simplified reverse polish notation expression evaluator.
 	</description>
-
-	<repositories>
-		<repository>
-			<id>oxd-public</id>
-			<name>OpenXData Public Repository</name>
-			<url>http://nexus.openxdata.org/content/groups/public</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
-	</repositories>
-
-	<pluginRepositories>
-		<pluginRepository>
-			<id>oxd-public</id>
-			<name>OpenXData Public Repository</name>
-			<url>http://nexus.openxdata.org/content/groups/public</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</pluginRepository>
-	</pluginRepositories>
 
 	<dependencies>
 		<dependency>
@@ -65,39 +50,5 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-
-	<build>
-		<pluginManagement>
-			<plugins>
-				<plugin>
-					<artifactId>maven-compiler-plugin</artifactId>
-					<configuration>
-						<source>1.3</source>
-						<target>1.1</target>
-						<compilerArguments>
-							<bootclasspath>${settings.localRepository}/com/sun/wtk/cldc/1.1/cldc-1.1.jar${path.separator}${settings.localRepository}/com/sun/wtk/midp/2.0/midp-2.0.jar</bootclasspath>
-						</compilerArguments>
-					</configuration>
-					<dependencies>
-						<dependency>
-							<groupId>com.sun.wtk</groupId>
-							<artifactId>cldc</artifactId>
-							<version>1.1</version>
-						</dependency>
-						<dependency>
-							<groupId>com.sun.wtk</groupId>
-							<artifactId>midp</artifactId>
-							<version>2.0</version>
-						</dependency>
-					</dependencies>
-				</plugin>
-			</plugins>
-		</pluginManagement>
-	</build>
-
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<microemu.version>2.0.4</microemu.version>
-	</properties>
 
 </project>
