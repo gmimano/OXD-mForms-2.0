@@ -9,9 +9,13 @@ import org.openxdata.util.StringUtils;
 
 public class EvaluatorFactory {
 
-	public static final String DEFAULT_PROFILE = "default";
+	public static final String PROPFILE_NAME = "rpneval.properties";
 	public static final String EVALCLASS_PROP = "implClass";
 	public static final String OPCLASSES_PROP = "opClasses";
+	public static final String DEFPROF_PROP = "defaultProfile";
+
+	public static Properties configProps = new Properties();
+	public static String defaultProfile;
 
 	// Contains profile -> evaluator Class
 	public static Hashtable evalClasses = new Hashtable();
@@ -20,13 +24,22 @@ public class EvaluatorFactory {
 	public static Hashtable evalOps = new Hashtable();
 
 	static {
-		try {
-			loadProfile(DEFAULT_PROFILE);
-		} catch (Exception e) {
-			throw new RuntimeException(
-					"failed to load default evaluator profile: "
+		// Load properties, first default file, then overwrite with overrides
+		String[] propFiles = { PROPFILE_NAME, "/" + PROPFILE_NAME };
+		for (int i = 0; i < propFiles.length; i++) {
+			InputStream propStream = EvaluatorFactory.class
+					.getResourceAsStream(propFiles[i]);
+			if (propStream != null)
+				try {
+					configProps.load(propStream);
+				} catch (IOException e) {
+					throw new RuntimeException("failed to init evaluator: "
 							+ e.getMessage());
+				}
 		}
+
+		// Set the default profile from loaded properties
+		defaultProfile = configProps.getProperty(DEFPROF_PROP);
 	}
 
 	public static void loadProfile(String profile) throws IOException,
@@ -37,25 +50,15 @@ public class EvaluatorFactory {
 		if (evalClasses.contains(profile))
 			return;
 
-		Properties props = new Properties();
-
-		String propFileName = "evalprofile.properties";
-
-		if (!DEFAULT_PROFILE.equals(profile))
-			propFileName = profile + "-" + propFileName;
-
-		InputStream propStream = EvaluatorFactory.class
-				.getResourceAsStream(propFileName);
-
-		props.load(propStream);
-
 		// Load and store the evaluator class
-		String evalClassName = props.getProperty(EVALCLASS_PROP);
+		String evalClassName = configProps.getProperty(profile + "."
+				+ EVALCLASS_PROP);
 		Class evalClass = Class.forName(evalClassName);
 		evalClasses.put(profile, evalClass);
 
 		// Load and store the operator instances
-		String opClassNames = props.getProperty(OPCLASSES_PROP);
+		String opClassNames = configProps.getProperty(profile + "."
+				+ OPCLASSES_PROP);
 		String[] opClasses = StringUtils.split(opClassNames);
 		Operator[] ops = new Operator[opClasses.length];
 		for (int i = 0; i < opClasses.length; i++)
@@ -67,7 +70,7 @@ public class EvaluatorFactory {
 			throws EvaluationException {
 
 		if (profile == null)
-			profile = DEFAULT_PROFILE;
+			profile = defaultProfile;
 
 		try {
 			loadProfile(profile);
