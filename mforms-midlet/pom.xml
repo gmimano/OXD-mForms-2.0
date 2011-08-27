@@ -94,6 +94,12 @@
 					<jadAttributes>
 						<MIDlet-Permissions>javax.microedition.media.control.VideoControl.getSnapshot</MIDlet-Permissions>
 					</jadAttributes>
+					<proguardOptions>
+						<options>
+							<option>-keep public class * implements org.openxdata.rpneval.Operator</option>
+							<option>-keep public class * implements org.openxdata.rpneval.Evaluator</option>
+						</options>
+					</proguardOptions>
 				</configuration>
 			</plugin>
 		</plugins>

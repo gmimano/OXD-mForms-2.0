@@ -43,4 +43,13 @@ public class DefaultEvaluator extends AbstractEvaluator {
 	public Hashtable getEnvironment() {
 		return environment;
 	}
+
+	public void setOperators(Operator[] ops) {
+		if (ops == null)
+			ops = new Operator[] {};
+		for (int i = 0; i < ops.length; i++) {
+			Operator op = ops[i];
+			operators.put(op.getName(), op);
+		}
+	}
 }
