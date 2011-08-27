@@ -41,6 +41,10 @@
 			<artifactId>rpn-eval</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>org.openxdata</groupId>
+			<artifactId>mforms-utils</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>org.bouncycastle</groupId>
 			<artifactId>lcrypto</artifactId>
 			<classifier>j2me</classifier>
