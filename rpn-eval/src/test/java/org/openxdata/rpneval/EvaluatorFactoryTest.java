@@ -28,9 +28,9 @@ public class EvaluatorFactoryTest extends TestCase {
 		Evaluator eval = EvaluatorFactory.getInstance();
 		assertNotNull(eval);
 		assertTrue(eval instanceof NonDefaultEvaluator);
-		NonDefaultEvaluator defaultEval = (NonDefaultEvaluator) eval;
-		assertNotNull(defaultEval.getOperator("+"));
-		assertNull(defaultEval.getOperator("len")); // shouldn't be present
+		NonDefaultEvaluator overriddenEval = (NonDefaultEvaluator) eval;
+		assertNotNull(overriddenEval.getOperator("+"));
+		assertNull(overriddenEval.getOperator("len")); // shouldn't be present
 	}
 
 	public void testGetInstanceOverridenNamedProfile()
@@ -38,8 +38,8 @@ public class EvaluatorFactoryTest extends TestCase {
 		Evaluator eval = EvaluatorFactory.getInstance("arithmetic");
 		assertNotNull(eval);
 		assertTrue(eval instanceof NonDefaultEvaluator);
-		NonDefaultEvaluator defaultEval = (NonDefaultEvaluator) eval;
-		assertNotNull(defaultEval.getOperator("+"));
-		assertNull(defaultEval.getOperator("or")); // shouldn't be present
+		NonDefaultEvaluator nonDefaultEval = (NonDefaultEvaluator) eval;
+		assertNotNull(nonDefaultEval.getOperator("+"));
+		assertNull(nonDefaultEval.getOperator("or")); // shouldn't be present
 	}
 }
