@@ -5,6 +5,7 @@ import java.util.Hashtable;
 import junit.framework.TestCase;
 
 import org.apache.commons.lang.StringUtils;
+import org.openxdata.rpneval.helpers.EnvironmentAwareOp;
 import org.openxdata.rpneval.impl.DefaultEvaluator;
 import org.openxdata.rpneval.ops.arith.AddOp;
 import org.openxdata.rpneval.ops.arith.DivOp;
@@ -17,7 +18,6 @@ import org.openxdata.rpneval.ops.arith.SubOp;
 import org.openxdata.rpneval.ops.bool.AndOp;
 import org.openxdata.rpneval.ops.bool.NotOp;
 import org.openxdata.rpneval.ops.bool.OrOp;
-import org.openxdata.rpneval.ops.xpath.LenOp;
 
 public class DefaultEvaluatorTest extends TestCase {
 
@@ -26,9 +26,9 @@ public class DefaultEvaluatorTest extends TestCase {
 	public void setUp() {
 		Hashtable opMap = new Hashtable();
 		Operator[] ops = { new AddOp(), new SubOp(), new MulOp(), new DivOp(),
-				new LenOp(), new LessThanOp(), new GreaterThanOp(),
-				new AndOp(), new OrOp(), new GreaterThanOrEqualOp(),
-				new LessThanOrEqualOp(), new NotOp() };
+				new LessThanOp(), new GreaterThanOp(), new AndOp(), new OrOp(),
+				new GreaterThanOrEqualOp(), new LessThanOrEqualOp(),
+				new NotOp(), new EnvironmentAwareOp() };
 		for (int i = 0; i < ops.length; i++) {
 			Operator op = ops[i];
 			opMap.put(op.getName(), op);
@@ -46,13 +46,13 @@ public class DefaultEvaluatorTest extends TestCase {
 		assertEquals("evaluation incorrect", new Double(19), result);
 	}
 
-	public void testSimpleXPathEvaluation() throws EvaluationException {
-		String[] expression = StringUtils.split("/form/instance/element len");
+	public void testEnvironmentEvaluation() throws EvaluationException {
+		String[] expression = StringUtils.split("envop");
 		Hashtable env = new Hashtable();
-		env.put("xml", "how are you doing?");
+		env.put("key", "value");
 		eval.setEnvironment(env);
 		Object result = eval.evaluate(expression);
-		assertEquals("length didn't match", new Double(18), result);
+		assertEquals("value", result);
 	}
 
 	public void testBooleanEvaluation() throws EvaluationException {

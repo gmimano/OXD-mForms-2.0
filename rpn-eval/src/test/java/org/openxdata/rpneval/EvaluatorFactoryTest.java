@@ -1,5 +1,6 @@
 package org.openxdata.rpneval;
 
+import org.openxdata.rpneval.helpers.NonDefaultEvaluator;
 import org.openxdata.rpneval.impl.DefaultEvaluator;
 
 import junit.framework.TestCase;

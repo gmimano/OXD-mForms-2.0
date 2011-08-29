@@ -1,4 +1,4 @@
-package org.openxdata.rpneval.ops.xpath;
+package org.openxdata.rpneval.helpers;
 
 import java.util.Hashtable;
 import java.util.Stack;
@@ -6,20 +6,19 @@ import java.util.Stack;
 import org.openxdata.rpneval.EvaluationException;
 import org.openxdata.rpneval.Operator;
 
-public class LenOp implements Operator {
+public class EnvironmentAwareOp implements Operator {
 
 	public String getName() {
-		return "len";
+		return "envop";
 	}
 
 	public int getArity(Stack stack) throws EvaluationException {
-		return 1;
+		return 0;
 	}
 
 	public Object eval(Object[] operands, Hashtable env)
 			throws EvaluationException {
-		String val = (String) env.get("xml");
-		return new Double(val.length());
+		return env.get("key");
 	}
 
 }

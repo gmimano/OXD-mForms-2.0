@@ -1,4 +1,4 @@
-package org.openxdata.rpneval;
+package org.openxdata.rpneval.helpers;
 
 import org.openxdata.rpneval.impl.DefaultEvaluator;
 
