@@ -81,4 +81,10 @@ public class DefaultEvaluatorTest extends TestCase {
 		Object result = eval.evaluate(expression);
 		assertEquals("result should be true", Boolean.TRUE, result);
 	}
+
+	public void testBoolConversionEvaluation() throws EvaluationException {
+		String[] expression = StringUtils.split("false true or");
+		Object result = eval.evaluate(expression);
+		assertEquals("result should be true", Boolean.TRUE, result);
+	}
 }

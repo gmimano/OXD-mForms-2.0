@@ -5,6 +5,7 @@ import java.util.Stack;
 
 import org.openxdata.rpneval.EvaluationException;
 import org.openxdata.rpneval.Operator;
+import org.openxdata.util.StringUtils;
 
 public abstract class BooleanOp implements Operator {
 
@@ -17,6 +18,12 @@ public abstract class BooleanOp implements Operator {
 
 		if (operands[0] == null || operands[1] == null)
 			throw new EvaluationException("and op expects non-null operands");
+
+		if (operands[0] instanceof String)
+			operands[0] = StringUtils.toBoolean((String) operands[0]);
+
+		if (operands[1] instanceof String)
+			operands[1] = StringUtils.toBoolean((String) operands[1]);
 
 		if (!(operands[0] instanceof Boolean)
 				|| !(operands[1] instanceof Boolean))
