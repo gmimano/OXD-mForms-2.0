@@ -5,6 +5,7 @@ import java.util.Stack;
 
 import org.openxdata.rpneval.EvaluationException;
 import org.openxdata.rpneval.Evaluator;
+import org.openxdata.rpneval.NoResultException;
 import org.openxdata.rpneval.Operator;
 
 public abstract class AbstractEvaluator implements Evaluator {
@@ -19,8 +20,12 @@ public abstract class AbstractEvaluator implements Evaluator {
 			Object term = expression[i];
 			if (isOperator(term)) {
 				Operator operator = getOperator(term);
-				Object result = evaluateOp(operator);
-				evalStack.push(result);
+				try {
+					Object result = evaluateOp(operator);
+					evalStack.push(result);
+				} catch (NoResultException e) {
+					// operator doesn't produce a value, so don't alter stack
+				}
 			} else
 				evalStack.push(term);
 		}

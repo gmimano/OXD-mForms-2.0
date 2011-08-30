@@ -5,6 +5,7 @@ import java.util.Hashtable;
 import junit.framework.TestCase;
 
 import org.openxdata.rpneval.helpers.EnvironmentAwareOp;
+import org.openxdata.rpneval.helpers.NoOp;
 import org.openxdata.rpneval.impl.DefaultEvaluator;
 import org.openxdata.rpneval.ops.arith.AddOp;
 import org.openxdata.rpneval.ops.arith.DivOp;
@@ -28,7 +29,7 @@ public class DefaultEvaluatorTest extends TestCase {
 		Operator[] ops = { new AddOp(), new SubOp(), new MulOp(), new DivOp(),
 				new LessThanOp(), new GreaterThanOp(), new AndOp(), new OrOp(),
 				new GreaterThanOrEqualOp(), new LessThanOrEqualOp(),
-				new NotOp(), new EnvironmentAwareOp() };
+				new NotOp(), new EnvironmentAwareOp(), new NoOp() };
 		for (int i = 0; i < ops.length; i++) {
 			Operator op = ops[i];
 			opMap.put(op.getName(), op);
@@ -71,6 +72,13 @@ public class DefaultEvaluatorTest extends TestCase {
 
 		expression = StringUtils.split("2 3 >= 3 2 > and not");
 		result = eval.evaluate(expression);
+		assertEquals("result should be true", Boolean.TRUE, result);
+	}
+
+	public void testNoResultEvaluation() throws EvaluationException {
+		String[] expression = StringUtils
+				.split("1 1 + noop 1 2 + < 1 2 + noop 2 0 + > and noop");
+		Object result = eval.evaluate(expression);
 		assertEquals("result should be true", Boolean.TRUE, result);
 	}
 }
