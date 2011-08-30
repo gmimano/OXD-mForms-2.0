@@ -54,6 +54,10 @@
 			<artifactId>jzlib</artifactId>
 			<classifier>j2me</classifier>
 		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -96,8 +100,8 @@
 					</jadAttributes>
 					<proguardOptions>
 						<options>
-							<option>-keep public class * implements org.openxdata.rpneval.Operator</option>
-							<option>-keep public class * implements org.openxdata.rpneval.Evaluator</option>
+							<option>-keep public class * implements	org.openxdata.rpneval.Operator</option>
+							<option>-keep public class * implements	org.openxdata.rpneval.Evaluator</option>
 						</options>
 					</proguardOptions>
 				</configuration>

@@ -4,7 +4,6 @@ import java.util.Hashtable;
 
 import junit.framework.TestCase;
 
-import org.apache.commons.lang.StringUtils;
 import org.openxdata.rpneval.helpers.EnvironmentAwareOp;
 import org.openxdata.rpneval.impl.DefaultEvaluator;
 import org.openxdata.rpneval.ops.arith.AddOp;
@@ -18,6 +17,7 @@ import org.openxdata.rpneval.ops.arith.SubOp;
 import org.openxdata.rpneval.ops.bool.AndOp;
 import org.openxdata.rpneval.ops.bool.NotOp;
 import org.openxdata.rpneval.ops.bool.OrOp;
+import org.openxdata.util.StringUtils;
 
 public class DefaultEvaluatorTest extends TestCase {
 
