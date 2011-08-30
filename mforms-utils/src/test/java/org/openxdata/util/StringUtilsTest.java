@@ -34,4 +34,11 @@ public class StringUtilsTest extends TestCase {
 		assertEquals("", values[6]);
 		assertEquals("three", values[3]);
 	}
+
+	public void testToBoolean() {
+		assertEquals(Boolean.TRUE, StringUtils.toBoolean("true"));
+		assertEquals(Boolean.FALSE, StringUtils.toBoolean("false"));
+		assertEquals(Boolean.FALSE, StringUtils.toBoolean(null));
+		assertEquals(Boolean.FALSE, StringUtils.toBoolean("blahblah"));
+	}
 }

@@ -35,4 +35,10 @@ public class StringUtils {
 
 		return result;
 	}
+
+	public static Boolean toBoolean(String value) {
+		if ("true".equals(value))
+			return Boolean.TRUE;
+		return Boolean.FALSE;
+	}
 }
