@@ -244,6 +244,16 @@ public class PersistentHelper {
 			dos.writeShort(0);
 	}
 	
+	public static void writeStrings(String[] strArray, DataOutputStream dos)
+			throws IOException {
+		if (strArray != null) {
+			dos.writeShort(strArray.length);
+			for (int i = 0; i < strArray.length; i++)
+				dos.writeUTF((String) strArray[i]);
+		} else
+			dos.writeShort(0);
+	}
+	
 	/**
 	 * Reads a small vector (byte size) of persistent objects of a certain class from a stream.
 	 * 
@@ -399,6 +409,20 @@ public class PersistentHelper {
 			shortVector.addElement(new Short(dis.readShort()));
 		
 		return shortVector;
+	}
+	
+	public static String[] readStrings(DataInputStream dis) throws IOException {
+
+		short len = dis.readShort();
+		if (len == 0)
+			return null;
+
+		String[] strArray = new String[len];
+
+		for (int i = 0; i < len; i++)
+			strArray[i] = dis.readUTF();
+
+		return strArray;
 	}
 	
 	/**

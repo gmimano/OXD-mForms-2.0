@@ -21,6 +21,7 @@ import org.openxdata.mforms.model.QuestionData;
 import org.openxdata.mforms.model.QuestionDef;
 import org.openxdata.mforms.model.ValidationRule;
 import org.openxdata.midp.mvc.AbstractView;
+import org.openxdata.rpneval.EvaluationException;
 import org.openxdata.util.AlertMessage;
 import org.openxdata.util.AlertMessageListener;
 import org.openxdata.util.DefaultCommands;
@@ -219,7 +220,7 @@ public class FormView extends AbstractView implements AlertMessageListener, Mode
 
 			screen.setTitle(formData.getDef().getName() + " - " + title);
 
-			getEpihandyController().FireSkipRules(formData);
+			getEpihandyController().fireSkipRules(formData);
 
 			currentPageIndex = 0;
 			currentQuestionIndex = 0;
@@ -606,7 +607,7 @@ public class FormView extends AbstractView implements AlertMessageListener, Mode
 	 * @param d
 	 *            - the screen object the command was issued for.
 	 */
-	private void handleSaveCommand(Displayable d) {
+	private void handleSaveCommand(Displayable d) throws EvaluationException {
 		// if autosave is enabled, we save the form regardless 
 		// whether the form is unanswered required questions
 		
@@ -651,7 +652,7 @@ public class FormView extends AbstractView implements AlertMessageListener, Mode
 		return false;
 	}
 
-	private String selectInvalidQtn(int pageNo){	
+	private String selectInvalidQtn(int pageNo) throws EvaluationException{	
 
 		if (pageNo != currentPageIndex)
 			showPage(pageNo, new Integer(0));
@@ -682,7 +683,7 @@ public class FormView extends AbstractView implements AlertMessageListener, Mode
 		}
 	}
 
-	private String selectInvalidQtn() {
+	private String selectInvalidQtn() throws EvaluationException {
 		Vector pages = formData.getPages();
 		for(int i = 0; i < pages.size(); i++){
 			String errorMsg = selectInvalidQtn(i);

@@ -3,10 +3,14 @@ package org.openxdata.mforms.model;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.Hashtable;
 import java.util.Vector;
 
 import org.openxdata.mforms.persistent.Persistent;
 import org.openxdata.mforms.persistent.PersistentHelper;
+import org.openxdata.rpneval.EvaluationException;
+import org.openxdata.rpneval.Evaluator;
+import org.openxdata.rpneval.EvaluatorFactory;
 
 
 /**
@@ -19,16 +23,8 @@ import org.openxdata.mforms.persistent.PersistentHelper;
  */
 public class SkipRule implements Persistent{
 
-	/** The numeric identifier of a rule. This is assigned in code and hence
-	 * is not known by the user.
-	 */
-	private short id = EpihandyConstants.NULL_ID;
-
-	/** A list of conditions (Condition object) to be tested for a rule. 
-	 * E.g. If sex is Male. If age is greatern than 4. etc
-	 */
-	private Vector conditions;
-
+	private String [] expression;
+	
 	/** The action taken when conditions are true.
 	 * Example of actions are Disable, Hide, Show, etc
 	 */
@@ -45,27 +41,25 @@ public class SkipRule implements Persistent{
 
 	/** Copy constructor. */
 	public SkipRule(SkipRule skipRule){
-		setId(skipRule.getId());
+		setExpression(getExpression());
 		setAction(skipRule.getAction());
-		setConditionsOperator(skipRule.getConditionsOperator());
-		copyConditions(skipRule.getConditions());
 		copyActionTargets(skipRule.getActionTargets());
 	}
-
-	/** Construct a Rule object from parameters. 
-	 * 
-	 * @param ruleId 
-	 * @param conditions 
-	 * @param action
-	 * @param actionTargets
-	 */
-	public SkipRule(short ruleId, Vector conditions, byte action, Vector actionTargets) {
-		setId(ruleId);
-		setConditions(conditions);
+	
+	public SkipRule(String [] expression, byte action, Vector actionTargets) {
+		setExpression(expression);
 		setAction(action);
 		setActionTargets(actionTargets);
 	}
 
+	public void setExpression(String[] expression) {
+		this.expression = expression;
+	}
+
+	public String[] getExpression() {
+		return expression;
+	}
+	
 	public byte getAction() {
 		return action;
 	}
@@ -81,111 +75,38 @@ public class SkipRule implements Persistent{
 	public void setActionTargets(Vector actionTargets) {
 		this.actionTargets = actionTargets;
 	}
-
-	public Vector getConditions() {
-		return conditions;
-	}
-
-	public void setConditions(Vector conditions) {
-		this.conditions = conditions;
-	}
-
-	public short getId() {
-		return id;
-	}
-
-	public void setId(short id) {
-		this.id = id;
-	}
-
-	//TODO This is very very wiered
-	public short getConditionsOperator() {
-		return id;
-	}
-
-	public void setConditionsOperator(short id) {
-		this.id = id;
-	}
-
-	/** 
+	
+	/**
 	 * Checks conditions of a rule and executes the corresponding actions
 	 * 
 	 * @param data
+	 * @throws EvaluationException
 	 */
-	public void fire(FormData data){
-		boolean trueFound = false, falseFound = false;
-
-		for(int i=0; i<getConditions().size(); i++){
-			Condition condition = (Condition)this.getConditions().elementAt(i);
-			if(condition.isTrue(data,false))
-				trueFound = true;
-			else
-				falseFound = true;
-		}
-
-		if(getConditions().size() == 1 || getConditionsOperator() == EpihandyConstants.CONDITIONS_OPERATOR_AND)
-			ExecuteAction(data,!falseFound);
-		else if(getConditionsOperator() == EpihandyConstants.CONDITIONS_OPERATOR_OR)
-			ExecuteAction(data,trueFound);
-		//else do nothing
-	}
-	
-	public void fire(RepeatQtnsData data){
-		boolean trueFound = false, falseFound = false;
-
-		for(int i=0; i<getConditions().size(); i++){
-			Condition condition = (Condition)this.getConditions().elementAt(i);
-			if(condition.isTrue(data,false))
-				trueFound = true;
-			else
-				falseFound = true;
-		}
-		
-		if(getConditions().size() == 1 || getConditionsOperator() == EpihandyConstants.CONDITIONS_OPERATOR_AND)
-			ExecuteAction(data,!falseFound);
-		else if(getConditionsOperator() == EpihandyConstants.CONDITIONS_OPERATOR_OR)
-			ExecuteAction(data,trueFound);
+	public void fire(FormData data) throws EvaluationException {
+		Object result = evaluate(data);
+		executeAction(data, ((Boolean) result).booleanValue());
 	}
 
-	private void ExecuteAction(RepeatQtnsData data, boolean conditionTrue) {
-		Vector qtns = this.getActionTargets();
-		for(int i=0; i<qtns.size(); i++){
-			QuestionData qData = data.getQuestionByDefId(Short.parseShort(qtns.elementAt(i).toString()));
-			if(qData != null)
-				ExecuteAction(qData,conditionTrue);
-		}
+	private Object evaluate(FormData data) throws EvaluationException {
+		Evaluator eval = EvaluatorFactory.getInstance();
+		Hashtable env = new Hashtable();
+		env.put("data", data);
+		Object result = eval.evaluate(expression);
+		return result;
 	}
 
 	/** Executes the action of a rule for its conditition's true or false value. */
-	public void ExecuteAction(FormData data,boolean conditionTrue){
+	public void executeAction(FormData data,boolean conditionTrue){
 		Vector qtns = this.getActionTargets();
 		for(int i=0; i<qtns.size(); i++){
 			QuestionData qData = data.getQuestion(Short.parseShort(qtns.elementAt(i).toString()));
 			if(qData != null)
-				ExecuteAction(qData,conditionTrue);
+				executeAction(qData,conditionTrue);
 		}
 	}
-	
-	/*public void ExecuteAction(QuestionDef def, boolean conditionTrue){
-		def.setVisible(true);
-		def.setEnabled(true);
-		def.setMandatory(false);
-		
-		if((action & EpihandyConstants.ACTION_ENABLE) != 0)
-			def.setEnabled(conditionTrue);
-		else if((action & EpihandyConstants.ACTION_DISABLE) != 0)
-			def.setEnabled(!conditionTrue);
-		else if((action & EpihandyConstants.ACTION_SHOW) != 0)
-			def.setVisible(conditionTrue);
-		else if((action & EpihandyConstants.ACTION_HIDE) != 0)
-			def.setVisible(!conditionTrue);
-		
-		if((action & EpihandyConstants.ACTION_MAKE_MANDATORY) != 0)
-			def.setMandatory(conditionTrue);
-	}*/
 
 	/** Executes the rule action on the supplied question. */
-	public void ExecuteAction(QuestionData data,boolean conditionTrue){
+	public void executeAction(QuestionData data,boolean conditionTrue){
 		
 		QuestionDef qtn = data.getDef();
 		
@@ -212,30 +133,22 @@ public class SkipRule implements Persistent{
 	/**
 	 * @see org.openxdata.mforms.persistent.Persistent#read(java.io.DataInputStream)
 	 */
-	public void read(DataInputStream dis) throws IOException, InstantiationException, IllegalAccessException {
-		setId(dis.readShort());
+	public void read(DataInputStream dis) throws IOException,
+			InstantiationException, IllegalAccessException {
+		String[] expression = PersistentHelper.readStrings(dis);
+		setExpression(expression);
 		setAction(dis.readByte());
-		setConditions(PersistentHelper.readMedium(dis,Condition.class));
 		setActionTargets(PersistentHelper.readShorts(dis));
-		setConditionsOperator(dis.readByte());
-
 	}
 
 	/**
 	 * @see org.openxdata.mforms.persistent.Persistent#write(java.io.DataOutputStream)
 	 */
 	public void write(DataOutputStream dos) throws IOException {
-		dos.writeShort(getId());
+		String[] expression = getExpression();
+		PersistentHelper.writeStrings(expression, dos);
 		dos.writeByte(getAction());
-		PersistentHelper.writeMedium(getConditions(), dos);
 		PersistentHelper.writeShorts(getActionTargets(), dos);
-		dos.writeByte(getConditionsOperator());
-	}
-
-	private void copyConditions(Vector conditions){
-		this.conditions = new Vector();
-		for(int i=0; i<conditions.size(); i++)
-			this.conditions.addElement(new Condition((Condition)conditions.elementAt(i)));
 	}
 
 	private void copyActionTargets(Vector actionTargets){

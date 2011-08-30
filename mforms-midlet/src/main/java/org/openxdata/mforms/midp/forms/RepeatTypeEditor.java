@@ -1,7 +1,5 @@
 package org.openxdata.mforms.midp.forms;
 
-import java.util.Vector;
-
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Displayable;
 
@@ -10,12 +8,12 @@ import org.openxdata.mforms.model.QuestionData;
 import org.openxdata.mforms.model.RepeatQtnsData;
 import org.openxdata.mforms.model.RepeatQtnsDataList;
 import org.openxdata.mforms.model.RepeatQtnsDef;
-import org.openxdata.mforms.model.SkipRule;
 import org.openxdata.mforms.model.ValidationRule;
 import org.openxdata.midp.mvc.AbstractView;
 import org.openxdata.midp.mvc.CommandAction;
 import org.openxdata.midp.mvc.Controller;
 import org.openxdata.midp.mvc.View;
+import org.openxdata.rpneval.EvaluationException;
 import org.openxdata.util.DefaultCommands;
 
 
@@ -105,42 +103,18 @@ public class RepeatTypeEditor extends AbstractView implements TypeEditor, TypeEd
 		return (EpihandyController)controller;
 	}
 	
-	public void endEdit(boolean save, QuestionData data, Command cmd){
-		rptQtnsData.setQuestionDataById(data);		
-		
-		//fire skip rules here to enable the repeat skip rules
-		/*if(this.getCurrentFormData() != null)
-			this.getEpihandyController().FireSkipRules(getCurrentFormData());*/
+	public void endEdit(boolean save, QuestionData data, Command cmd) {
+		rptQtnsData.setQuestionDataById(data);
 		fireRepeatSkipRules();
-		
 		dataView.showQtnData(rptQtnsData, this);
 	}
 	
-	private void fireRepeatSkipRules(){
-		Vector rules = this.currentFormData.getDef().getSkipRules();
-		
-		if(rules != null && rules.size() > 0){
-			for(int i = 0; i < rules.size(); i++){
-				SkipRule rule = (SkipRule)rules.elementAt(i);				
-				boolean repeatSkipRule = isRepeatSkipRule(rule);
-				if(repeatSkipRule)
-					rule.fire(this.rptQtnsData);
-			}
+	protected void fireRepeatSkipRules() {
+		try {
+			getEpihandyController().fireSkipRules(currentFormData);
+		} catch (EvaluationException e) {
+			getEpihandyController().errorOccured("error skip rules", e);
 		}
-	}
-	
-	private boolean isRepeatSkipRule(SkipRule rule){
-		Vector actionTargets = rule.getActionTargets();
-		if(actionTargets != null){
-			for(int index = 0; index < actionTargets.size(); index++){
-				short qtnId = Short.parseShort(actionTargets.elementAt(index).toString());
-				QuestionData rQtnData = this.rptQtnsData.getQuestionByDefId(qtnId);
-				if(rQtnData != null)
-					return true;
-			}
-		}
-		
-		return false;
 	}
 	
 	public void execute(View view, Object commandAction, Object data){

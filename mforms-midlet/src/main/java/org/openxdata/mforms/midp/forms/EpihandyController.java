@@ -29,6 +29,7 @@ import org.openxdata.midp.db.util.Settings;
 import org.openxdata.midp.db.util.StorageListener;
 import org.openxdata.midp.mvc.Controller;
 import org.openxdata.midp.mvc.View;
+import org.openxdata.rpneval.EvaluationException;
 import org.openxdata.util.AlertMessage;
 import org.openxdata.util.AlertMessageListener;
 import org.openxdata.util.DefaultCommands;
@@ -241,7 +242,11 @@ public class EpihandyController implements Controller, StorageListener, AlertMes
 	/** Stops editing of a question. */
 	public void endEdit(boolean save, QuestionData data, Command cmd){
 		if(save){
-			FireSkipRules(formViewer.getFormData());
+			try {
+				fireSkipRules(formViewer.getFormData());
+			} catch (EvaluationException e) {
+				errorOccured("error firing skip rules", e);
+			}
 			formViewer.getFormData().buildQuestionDataDescription();
 			
 			int type = data.getDef().getType();
@@ -253,12 +258,16 @@ public class EpihandyController implements Controller, StorageListener, AlertMes
 		//no saving of current view since it was type editor displayed.
 	}
 
-	/** Fires rules in the form. */
-	void FireSkipRules(FormData formData){		
+	/**
+	 * Fires rules in the form.
+	 * 
+	 * @throws EvaluationException
+	 */
+	void fireSkipRules(FormData formData) throws EvaluationException {
 		Vector rules = formData.getDef().getSkipRules();
-		if(rules != null && rules.size() > 0){
-			for(int i=0; i<rules.size(); i++){
-				SkipRule rule = (SkipRule)rules.elementAt(i);
+		if (rules != null && rules.size() > 0) {
+			for (int i = 0; i < rules.size(); i++) {
+				SkipRule rule = (SkipRule) rules.elementAt(i);
 				rule.fire(formData);
 			}
 		}
@@ -352,42 +361,12 @@ public class EpihandyController implements Controller, StorageListener, AlertMes
 		logoutListener.onLogout();
 	}
 
-	public void closeStudyList(boolean save, StoredStudyDef studyDef){
-
-		if(save){
-			//if(studyEditingMode)
-				showFormDefList();
-			prevScreen.setTitle(alertMsg.getTitle() + " - " + studyDef.getName());
+	public void closeStudyList(boolean save, StoredStudyDef studyDef) {
+		if (save) {
+			showFormDefList();
+			prevScreen.setTitle(alertMsg.getTitle() + " - "
+					+ studyDef.getName());
 		}
-
-		//if(!studyEditingMode)
-			//sdisplay.setCurrent(prevScreen);
-		
-
-		/*if (studyDef.getId() != currentStudy.getId()) {
-			// only open selected study if a different/new study is selected
-			studyDef = getStudyWithForms(null,studyDef);
-	
-			if (save) {
-				//Save settings for next run (i think this is always set??)
-				Settings settings = new Settings(OpenXdataConstants.STORAGE_NAME_EPIHANDY_SETTINGS,true);
-				settings.setSetting(OpenXdataConstants.KEY_LAST_SELECTED_STUDY,String.valueOf(studyDef.getId()));
-				settings.saveSettings();
-	
-				formDefListViewer.setStudy(studyDef);
-	
-				prevScreen.setTitle(alertMsg.getTitle() + " - " + studyDef.getName());
-			}
-		} else {
-			studyDef = currentStudy; // currentStudy could contain forms
-		}
-		
-		if (studyEditingMode || !GeneralSettings.isMainMenu()) {
-			showFormDefList(studyDef);
-		} else {
-			display.setCurrent(prevScreen);
-		}*/
-
 	}
 
 	public void errorOccured(String errorMessage, Exception e){
